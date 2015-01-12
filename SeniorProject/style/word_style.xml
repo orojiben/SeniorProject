@@ -1,0 +1,22 @@
+<styles>
+  <style>
+    <Nameformat>Engineering</Nameformat>
+    <Margin>3.81,2.54,2.54,2.54</Margin>
+    <fonts>
+      <font>new</font>
+    </fonts>
+    <dictionarys>
+      <dictionary>thai</dictionary>
+    </dictionarys>
+  </style>
+  <style>
+    <Nameformat>Graduate</Nameformat>
+    <Margin>2,3,3,3</Margin>
+    <fonts>
+      <font>thai</font>
+    </fonts>
+    <dictionarys>
+      <dictionary>thai</dictionary>
+    </dictionarys>
+  </style>
+</styles>

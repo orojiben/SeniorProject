@@ -10,7 +10,7 @@ namespace SeniorProject
 {
     static class StyleFile
     {
-        private static string path = @"c:\PJ\word_style.xml";
+        private static string path = @"..\..\style\word_style.xml";
 
 
         static public void CheckCreateFile()
@@ -222,7 +222,7 @@ namespace SeniorProject
         public static void WriteXML(string title)
         {
 
-            using (XmlWriter writer = XmlWriter.Create(@"c:\PJ\text.xml"))
+            using (XmlWriter writer = XmlWriter.Create(@"..\..\style\text.xml"))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("Employees");
@@ -261,13 +261,13 @@ namespace SeniorProject
             userNode.InnerText = "Jane Doe";
             rootNode.AppendChild(userNode);
 
-            xmlDoc.Save(@"c:\PJ\test-doc.xml");
+            xmlDoc.Save(@"..\..\style\test-doc.xml");
         }
 
         public static void WriteXML3(string title)
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"c:\PJ\test-doc.xml");
+            xmlDoc.Load(@"..\..\style\test-doc.xml");
             XmlNodeList userNodes = xmlDoc.SelectNodes("//users/user");
             foreach (XmlNode userNode in userNodes)
             {
@@ -284,7 +284,7 @@ namespace SeniorProject
             user.InnerText = "Ben Doe";
             forAdd.AppendChild(user);
 
-            xmlDoc.Save(@"c:\PJ\test-doc.xml");
+            xmlDoc.Save(@"..\..\style\test-doc.xml");
         }
     }
 }
