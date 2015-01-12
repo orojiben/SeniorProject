@@ -3,7 +3,7 @@
     <Nameformat>Engineering</Nameformat>
     <Margin>3.81,2.54,2.54,2.54</Margin>
     <fonts>
-      <font>new</font>
+      <font>Angsana New</font>
     </fonts>
     <dictionarys>
       <dictionary>thai</dictionary>
@@ -13,7 +13,7 @@
     <Nameformat>Graduate</Nameformat>
     <Margin>2,3,3,3</Margin>
     <fonts>
-      <font>thai</font>
+      <font>TH Sarabun New</font>
     </fonts>
     <dictionarys>
       <dictionary>thai</dictionary>

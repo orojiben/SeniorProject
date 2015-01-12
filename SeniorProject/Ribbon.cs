@@ -337,15 +337,12 @@ namespace SeniorProject
 
         private void ShowFont()
         {
-            Globals.ThisAddIn.GetFont(font[0]);
-            
-            //Globals.ThisAddIn.GetFont("Tahoma");
+            FontManager.GetFont(font[0]);
         }
 
         private void btn_correctFont_Click(object sender, RibbonControlEventArgs e)
         {
-            Globals.ThisAddIn.CorrectFont(font[0]);
-            //Globals.ThisAddIn.CorrectFont("Tahoma");
+            FontManager.CorrectFont(font[0]);
         }
 
         private void button3_Click(object sender, RibbonControlEventArgs e)

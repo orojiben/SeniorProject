@@ -152,6 +152,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="FontManager.cs" />
     <Compile Include="MarginPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
