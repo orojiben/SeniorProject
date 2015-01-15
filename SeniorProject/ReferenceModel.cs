@@ -136,11 +136,16 @@ namespace SeniorProject
                int value = Model_1(r, cout);
                if (value == 0)
                {
-                   break;
+                   value = Model_2(r, cout);
+                   if (value == 0)
+                   {
+                       break;
+                   }
                }
-               r = r.Application.ActiveDocument.Range(95);
-               //System.Windows.Forms.MessageBox.Show(rr.Text + " ^^");
                cout += value;
+               r = r.Application.ActiveDocument.Range(cout);
+               //System.Windows.Forms.MessageBox.Show(rr.Text + " ^^");
+               
             }
         }
 
@@ -201,6 +206,62 @@ namespace SeniorProject
             return 0;
         }
 
+        private int Model_2(Word.Range r, int cout)
+        {
+            Match match;
+            string str = r.Text;
+            match = Regex.Match(r.Text, @"^(([a-zA-Z])*((\,)(\s)(([a-zA-Z])+(\.)(\s)?)*)?((\s)[a][n][d](\s)([a-zA-Z])*((\,)((\s)([a-zA-Z])+(\.))*)?)?((\s)(\()([0-9]{4})(\)(\.)))((\s)([a-zA-Z])([a-zA-Z]|(\s))*(\.))((\s)(([a-zA-Z]|(\s))*(\,)(\s))*([a-zA-Z]|(\s))*(\:)(\s)([a-zA-Z]|(\s))*(\.))(\n|\r))");
+            if (match.Success)
+            {
+                str = str.Remove(0, match.Value.Length);
+                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
+                int countCheck = 0;
+                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
+                {
+                    if (rngWord.Text == "(" || rngWord.Text == "). " || rngWord.Text == ")")
+                    {
+                        countCheck++;
+                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                    }
+                    else if (countCheck == 1)
+                    {
+                        Match matchBC = Regex.Match(rngWord.Text, @"^([0-9]{4})");
+                        if (matchBC.Success)
+                        {
+                            countCheck++;
+                            //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                        }
+
+                    }
+                    else if (countCheck == 3)
+                    {
+
+                        if (rngWord.Bold != 0)
+                        {
+                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
+
+                        }
+                        else if (rngWord.Text == ". ")
+                        {
+                            cout = +match.Value.Length;
+                            return cout;
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+
+                    }
+                }
+                // lsS.Add(match.Value);
+                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
+                //System.Windows.Forms.MessageBox.Show(match.Value);
+                //System.Windows.Forms.MessageBox.Show(str);
+
+            }
+            return 0;
+        }
 
     }
 }
