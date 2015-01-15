@@ -157,6 +157,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReferenceModel.cs" />
     <Compile Include="Sign_Containner.cs">
       <SubType>Form</SubType>
     </Compile>

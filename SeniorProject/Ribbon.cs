@@ -20,8 +20,11 @@ namespace SeniorProject
         List<MarginPage> list;
         List<Styles> loadStyles;
         private List<string> font;
+        ReferenceModel rm;
+
         private void Ribbon1_Load(object sender, RibbonUIEventArgs e)
         {
+            rm = new ReferenceModel();
             loadStyles = StyleFile.LoadStyle();
             this.rng = Globals.ThisAddIn.Application.ActiveDocument.Range(0, 0);
             this.leftDf = this.rng.PageSetup.LeftMargin;
@@ -122,7 +125,7 @@ namespace SeniorProject
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
             //FindAndReplace("ben","orojiben");
-            this.CeckBio();
+            rm.runCheckReferenceAll();
         }
 
         private void FindAndReplace(
@@ -148,7 +151,7 @@ namespace SeniorProject
             List<string> lsS = new List<string>();
             foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
             {
-                FindReferences(lsR, lsS, range, wordApp);
+                //FindReferences(lsR, lsS, range, wordApp);
                 foreach (Word.Range rS in lsR)
                 {
                     //System.Windows.Forms.MessageBox.Show(rS.Text + "");
@@ -221,104 +224,8 @@ namespace SeniorProject
             }
         }
 
-        private void CeckBio()
-        {
-            var wordApp = Globals.ThisAddIn.Application;
 
-            List<Word.Range> lsR = new List<Word.Range>();
-            List<string> lsS = new List<string>();
-            foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
-            {
-                FindReferences(lsR, lsS, range, wordApp);
-                foreach (Word.Range rS in lsR)
-                {
-                    System.Windows.Forms.MessageBox.Show(rS.Text + "");
-                }
-                int c = 0;
-                Match match;
-
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in range.Words)
-                {
-                    Word.Range range2 = rngWord;
-                    //  System.Windows.Forms.MessageBox.Show(range2.Text + " " + range2.Text.Length);
-                    if (range2.Text == "(" || range2.Text == "). " || range2.Text == ")" || range2.Text == ").")
-                    {
-                        c++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (c == 1)
-                    {
-                        match = Regex.Match(range2.Text, @"^([0-9]{4})");
-                        if (match.Success)
-                        {
-                            c++;
-                            //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                        }
-
-                    }
-                    else if (c == 3)
-                    {
-                        if (range2.Text == ".")
-                        {
-                            c = 0;
-                        }
-                        else
-                        {
-                            if (range2.Bold != 0)
-                            {
-                                //System.Windows.Forms.MessageBox.Show(range2.Text + " " + range2.Font.NameBi);
-                            }
-                        }
-
-                    }
-                    while (range2 != null)//&& range2.Bold != 0)
-                    {
-                        range2.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                        if (range2.Text[0] == 13)
-                        {
-                            // System.Windows.Forms.MessageBox.Show("1");
-                        }
-                        else if (range2.Text[0] == 11)
-                        {
-                            //  System.Windows.Forms.MessageBox.Show("2");
-                        }
-
-                        // int s = range2.Text[0];
-                        // System.Windows.Forms.MessageBox.Show(s+"");
-
-                        range2 = range2.NextStoryRange;
-                    }
-
-                }
-            }
-        }
-
-        private void FindReferences(List<Word.Range> lsR, List<string> lsS, Word.Range r, Word.Application doc)
-        {
-            string str = r.Text;
-            lsR.Clear();
-
-            Match match;
-            int cout = 0;
-            // System.Windows.Forms.MessageBox.Show(str);
-            while (true)
-            {//((((([\(])|([0-9a-zA-Zก-ฮะ-์])|([\)])|(\.)|(\,)|(\:)|([ \f\t\v]))*)(\n|\r)))
-                match = Regex.Match(str, @"^(([a-zA-Z])*((\,)(\s)(([a-zA-Z])+(\.)(\s)?)*)?((\s)[a][n][d](\s)([a-zA-Z])*((\,)((\s)([a-zA-Z])+(\.))*)?)?((\s)(\()([0-9]{4})(\)(\.)))((\s)([a-zA-Z])([a-zA-Z]|(\s))*(\.))((\s)(([a-zA-Z]|(\s))*(\,)(\s))*([a-zA-Z]|(\s))*(\:)(\s)([a-zA-Z]|(\s))*(\.))(\n|\r))");
-                if (match.Success)
-                {
-                    str = str.Remove(0, match.Value.Length);
-                    lsS.Add(match.Value);
-                    lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                    //System.Windows.Forms.MessageBox.Show(match.Value);
-                    //System.Windows.Forms.MessageBox.Show(str);
-                    cout = +match.Value.Length;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
+        
 
         private void btn_checkRoyalWord_Click(object sender, RibbonControlEventArgs e)
         {
@@ -363,7 +270,7 @@ namespace SeniorProject
         {
 
             this.ShowFont();
-            this.CeckBio();
+            rm.runCheckReferenceAll();
             Verify_Royal_Word_TH verify_th = new Verify_Royal_Word_TH();
         }
 
