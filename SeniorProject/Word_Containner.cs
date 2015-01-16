@@ -148,7 +148,6 @@ namespace SeniorProject
                     ref hanjaPhoneticHangul);
             }
             catch
-                (Exception e)
             {
             }
 

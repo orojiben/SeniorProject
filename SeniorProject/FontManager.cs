@@ -28,9 +28,60 @@ namespace SeniorProject
             return str;
         }
 
-        public static void CheckFontSize(int small, int medium, int large)
+        public static void CheckFontSize(float small, float medium, float large)
         {
-            
+            try
+            {
+                Globals.ThisAddIn.Application.ActiveDocument.DeleteAllComments();
+            }
+            catch
+            {
+
+            }
+            List<string> text = GetText();
+            int begin = 0, comBegin = 0, comLast = 0;
+            float lastSize = 0,tmp = 0;
+            Word.Range rng;
+            foreach (string i in text)
+            {
+                try
+                {
+                    rng = Globals.ThisAddIn.Application.ActiveDocument.Range(begin, begin + i.Length);
+
+                    //rng.Select();
+                    if (lastSize == 0)
+                    {
+                        lastSize = rng.Font.Size;
+                        comLast += i.Length;
+
+                    }
+                    else if (lastSize == rng.Font.Size)
+                    {
+                        comLast += i.Length;
+                        //begin = comLast + 1;
+                    }
+                    else
+                    {
+                        tmp = lastSize;
+                        lastSize = rng.Font.Size;
+                        rng = Globals.ThisAddIn.Application.ActiveDocument.Range(comBegin, comLast);
+                        rng.Select();
+                        if ((tmp != small) && (tmp != medium)&& (tmp != large))
+                        {
+                            rng.Comments.Add(rng, tmp.ToString());
+                        }
+                        comBegin = comLast;
+                        comLast = comBegin + i.Length + 1;
+                    }
+                    begin = comLast;
+                }
+                catch { }
+            }
+            rng = Globals.ThisAddIn.Application.ActiveDocument.Range(comBegin, comLast);
+            if ((tmp != small) && (tmp != medium) && (tmp != large))
+            {
+                rng.Comments.Add(rng, lastSize.ToString());
+            }
 
         }
 
@@ -40,7 +91,7 @@ namespace SeniorProject
             {
                 Globals.ThisAddIn.Application.ActiveDocument.DeleteAllComments();
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -100,7 +151,7 @@ namespace SeniorProject
             {
                 app.DeleteAllComments();
             }
-            catch (Exception e)
+            catch
             {
 
             }

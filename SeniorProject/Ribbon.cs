@@ -182,6 +182,11 @@ namespace SeniorProject
 
         }
 
+        private void button1_Click_1(object sender, RibbonControlEventArgs e)
+        {
+            FontManager.CheckFontSize(16, 18, 20);
+        }
+
         /*Match match = Regex.Match(this.code, @"^[\(\)\{};]");
             if (match.Success)
             {
