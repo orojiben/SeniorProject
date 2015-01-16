@@ -28,9 +28,22 @@ namespace SeniorProject
             return str;
         }
 
-
-        public static void GetFont(string font)
+        public static void CheckFontSize(int small, int medium, int large)
         {
+            
+
+        }
+
+        public static void CheckFontName(string font)
+        {
+            try
+            {
+                Globals.ThisAddIn.Application.ActiveDocument.DeleteAllComments();
+            }
+            catch (Exception e)
+            {
+
+            }
             List<string> text = GetText();
             int begin = 0, comBegin = 0, comLast = 0;
             string lastFont = "", tmp = "";

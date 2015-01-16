@@ -147,7 +147,7 @@ namespace SeniorProject
 
         private void ShowFont()
         {
-            FontManager.GetFont(font[0]);
+            FontManager.CheckFontName(font[0]);
         }
 
         private void btn_correctFont_Click(object sender, RibbonControlEventArgs e)
