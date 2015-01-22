@@ -147,7 +147,8 @@ namespace SeniorProject
 
         private void ShowFont()
         {
-            FontManager.CheckFontName(font[0]);
+            //FontManager.CheckFontName("abc","def",Globals.ThisAddIn.Application.ActiveDocument);
+            FontManager.CheckFontName("Angsana New");
         }
 
         private void btn_correctFont_Click(object sender, RibbonControlEventArgs e)

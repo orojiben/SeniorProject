@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace SeniorProject
             }
             List<string> text = GetText();
             int begin = 0, comBegin = 0, comLast = 0;
-            float lastSize = 0,tmp = 0;
+            float lastSize = 0, tmp = 0;
             Word.Range rng;
             foreach (string i in text)
             {
@@ -66,7 +67,7 @@ namespace SeniorProject
                         lastSize = rng.Font.Size;
                         rng = Globals.ThisAddIn.Application.ActiveDocument.Range(comBegin, comLast);
                         rng.Select();
-                        if ((tmp != small) && (tmp != medium)&& (tmp != large))
+                        if ((tmp != small) && (tmp != medium) && (tmp != large))
                         {
                             rng.Comments.Add(rng, tmp.ToString());
                         }
@@ -84,6 +85,15 @@ namespace SeniorProject
             }
 
         }
+
+        //public static void CheckFontName(string find_s, string replace_s, Document document)
+        //{
+        //    try
+        //    {
+        //        Globals.ThisAddIn.Application.ActiveDocument.DeleteAllComments();
+        //    }
+        //    catch { }
+        //}
 
         public static void CheckFontName(string font)
         {
