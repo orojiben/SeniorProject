@@ -48,17 +48,26 @@ namespace SeniorProject
                 try
                 {
                     rng = Globals.ThisAddIn.Application.ActiveDocument.Range(begin, begin + i.Length);
+                    string textToCheck = rng.Text;
 
                     //rng.Select();
                     if (lastSize == 0)
                     {
                         lastSize = rng.Font.Size;
                         comLast += i.Length;
+                        if (textToCheck.Contains('\r'))
+                        {
+                            comLast++;
+                        }
 
                     }
                     else if (lastSize == rng.Font.Size)
                     {
                         comLast += i.Length;
+                        if (textToCheck.Contains('\r'))
+                        {
+                            comLast++;
+                        }
                         //begin = comLast + 1;
                     }
                     else
@@ -72,7 +81,7 @@ namespace SeniorProject
                             rng.Comments.Add(rng, tmp.ToString());
                         }
                         comBegin = comLast;
-                        comLast = comBegin + i.Length + 1;
+                        comLast = comBegin + i.Length;
                     }
                     begin = comLast;
                 }
@@ -86,13 +95,21 @@ namespace SeniorProject
 
         }
 
-        //public static void CheckFontName(string find_s, string replace_s, Document document)
+        //public static void CheckFontName(string find_s)
         //{
         //    try
         //    {
         //        Globals.ThisAddIn.Application.ActiveDocument.DeleteAllComments();
         //    }
         //    catch { }
+        //    Word.Range rng = Globals.ThisAddIn.Application.ActiveDocument.Range();
+        //    rng.Find.Font.Name = "Angsana New";
+        //    //g.Find.HitHighlight("", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing
+        //    //    , Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+        //    //    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+        //    rng.Find.Execute(Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing
+        //        , Type.Missing, true, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+        //    //rng.Select();
         //}
 
         public static void CheckFontName(string font)
@@ -114,17 +131,25 @@ namespace SeniorProject
                 try
                 {
                     rng = Globals.ThisAddIn.Application.ActiveDocument.Range(begin, begin + i.Length);
-
+                    string textToCheck = rng.Text;
                     //rng.Select();
                     if (lastFont == "")
                     {
                         lastFont = rng.Font.Name;
                         comLast += i.Length;
+                        if (textToCheck.Contains('\r'))
+                        {
+                            comLast++;
+                        }
 
                     }
                     else if (lastFont == rng.Font.Name)
                     {
                         comLast += i.Length;
+                        if (textToCheck.Contains('\r'))
+                        {
+                            comLast++;
+                        }
                         //begin = comLast + 1;
                     }
                     else
