@@ -158,9 +158,17 @@ namespace SeniorProject
            // SampleRegexUsage(r,ref check);
             string[] strSpliteRanges = Regex.Split(r.Text, "\r");
             int cout = 0;
+            Lexer l = new Lexer();
             foreach (string strSpliteRange in strSpliteRanges)
             {
                 if (strSpliteRange.Length == 0)
+                {
+                    break;
+                }
+                l.sentence = strSpliteRange;
+                //l.ForNames();
+                System.Windows.Forms.MessageBox.Show(l.ForNames() + " ^^");
+               /* if (strSpliteRange.Length == 0)
                 {
                     break;
                 }
@@ -170,7 +178,7 @@ namespace SeniorProject
                     break;
                 }
                 cout += value;
-                r = r.Application.ActiveDocument.Range(cout);
+                r = r.Application.ActiveDocument.Range(cout);*/
             }
 
             /*int cout = 0;
@@ -192,7 +200,7 @@ namespace SeniorProject
           //หนังสือทั่วไป เอกสารประเภทหนังสือ
         private int ModelBookTypeBookTH(Word.Range r,string strCheck ,int cout)
         {
-            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+[ผ][ู][้][แ][ป][ล]\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\((([0-9ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\))";
+            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s(\((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+[ผ][ู][้][แ][ป][ล]\)\.\s)?(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.(\s)?(\((([0-9ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\))?)";
             int checkValue = -1;
             var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
@@ -251,7 +259,6 @@ namespace SeniorProject
             
             int checkValue = -1;
             int checkValue2 = -1;
-            string str = r.Text;
             string []strCheckSplites = Regex.Split(strCheck,". ใน ");
             if (strCheckSplites.Length == 2)
             {
@@ -261,18 +268,14 @@ namespace SeniorProject
                 var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
                 string strSecond = strCheckSplites[1];
-                string regex2 = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([บ][ร][ร][ณ][า][ธ][ิ][ก][า][ร]\)\,\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
+                string regex2 = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([บ][ร][ร][ณ][า][ธ][ิ][ก][า][ร]\)\,\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
                 var task2 = Task.Factory.StartNew(() => CheckStringMatch(strSecond, regex2, ref checkValue2));
                 var completedWithinAllotedTime2 = task2.Wait(TimeSpan.FromMilliseconds(1000));
-            }
-            else
-            {
-                return 0;
             }
 
             if (checkValue != -1 && checkValue2 != -1)
             {
-                checkValue += checkValue2-5;
+                checkValue += checkValue2;
                 System.Windows.Forms.MessageBox.Show("บทความในหนังสือ เอกสารประเภทหนังสือ");
                 Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
                 int countCheck = 0;
@@ -312,9 +315,314 @@ namespace SeniorProject
                     }
                 }
             }
+            return ModelBookTypeEncyclopediaTH(r, strCheck, cout);
+        }
+
+        //หนังสือสารานุกรม เอกสารประเภทหนังสือ
+        private int ModelBookTypeEncyclopediaTH(Word.Range r, string strCheck, int cout)
+        {
+            int checkValue = -1;
+            int checkValue2 = -1;
+            string []strCheckSplites = Regex.Split(strCheck,". ใน ");
+            if (strCheckSplites.Length == 2)
+            {
+                string strFirst = strCheckSplites[0]+". ใน ";
+                string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s[ใ][น]\s)";
+                var task = Task.Factory.StartNew(() => CheckStringMatch(strFirst, regex, ref checkValue) );
+                var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+
+                string strSecond = strCheckSplites[1];
+                string regex2 = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
+                var task2 = Task.Factory.StartNew(() => CheckStringMatch(strSecond, regex2, ref checkValue2));
+                var completedWithinAllotedTime2 = task2.Wait(TimeSpan.FromMilliseconds(1000));
+            }
+
+
+            if (checkValue != -1 && checkValue2 != -1)
+            {
+                checkValue += checkValue2;
+                System.Windows.Forms.MessageBox.Show("หนังสือสารานุกรม เอกสารประเภทหนังสือ");
+                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
+                int countCheck = 0;
+                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
+                {
+                    
+                    if (rngWord.Text == "). " || rngWord.Text == "ใน ")
+                    {
+                        countCheck++;
+                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                    }
+                    else if (countCheck == 2)
+                    {
+
+                        if (rngWord.Bold != 0)
+                        {
+                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
+
+                        }
+                        else
+                        {
+                            if (rngWord.Text == "(" || rngWord.Text == "หน้า" || rngWord.Text == "หน้า ")
+                            {
+                                countCheck++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else if (countCheck == 4)
+                    {
+                        System.Windows.Forms.MessageBox.Show("หนังสือสารานุกรม เอกสารประเภทหนังสือ จบ");
+                        cout = +checkValue;
+                        return cout;
+                    }
+                }
+            }
+            return ModelBookTypeHandoutLibraryTH(r, strCheck,cout);
+
+        }
+
+        //เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ
+        private int ModelBookTypeHandoutLibraryTH(Word.Range r, string strCheck, int cout)
+        {
+
+            int checkValue = -1;
+            int checkValue2 = -1;
+            string[] strCheckSplites = Regex.Split(strCheck, ". ใน ");
+            if (strCheckSplites.Length == 2)
+            {
+                string strFirst = strCheckSplites[0] + ". ใน ";
+                string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([ผ][ู][้][บ][ร][ร][ย][า][ย]\)\.\s\((([1-9])|([1-3][0-9]))((\s)?\-(\s)?([1-9])|([1-3][0-9]))?\s(([ม][ก][ร][า][ค][ม])|([ก][ุ][ภ][า][พ][ั][น][ธ][์])|([ม][ี][น][า][ค][ม])|([เ][ม][ษ][า][ย][น])|([พ][ฤ][ษ][พ][า][ค][ม])|([ม][ิ][ถ][ุ][น][า][ย][น])|([ก][ร][ก][ฎ][า][ค][ม])|([ส][ิ][ง][ห][า][ค][ม])|([ก][ั][น][ย][า][ย][น])|([ต][ุ][ล][า][ค][ม])|([พ][ฤ][ศ][จ][ิ][ก][า][ย][น])|([ธ][ั][น][ว][า][ค][ม]))\s[1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s[ใ][น]\s)";
+                var task = Task.Factory.StartNew(() => CheckStringMatch(strFirst, regex, ref checkValue));
+                var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+
+                string strSecond = strCheckSplites[1];
+                string regex2 = @"(([0-9ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
+                var task2 = Task.Factory.StartNew(() => CheckStringMatch(strSecond, regex2, ref checkValue2));
+                var completedWithinAllotedTime2 = task2.Wait(TimeSpan.FromMilliseconds(1000));
+            }
+
+
+            if (checkValue != -1 && checkValue2 != -1)
+            {
+                checkValue += checkValue2;
+                System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ");
+                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
+                int countCheck = 0;
+                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
+                {
+
+                    if (rngWord.Text == "). " || rngWord.Text == "ใน ")
+                    {
+                        countCheck++;
+                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                    }
+                    else if (countCheck == 3)
+                    {
+
+                        if (rngWord.Bold != 0)
+                        {
+                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
+
+                        }
+                        else
+                        {
+                            if (rngWord.Text == "(" || rngWord.Text == "หน้า" || rngWord.Text == "หน้า ")
+                            {
+                                countCheck++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else if (countCheck == 5)
+                    {
+                        System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ จบ");
+                        cout = +checkValue;
+                        return cout;
+                    }
+                }
+            }
+            return ModelBookTypeHandoutLibraryTH2(r, strCheck, cout);
+        }
+
+        //เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ
+        private int ModelBookTypeHandoutLibraryTH2(Word.Range r, string strCheck, int cout)
+        {
+
+            int checkValue = -1;
+            string regex = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\((([ผ][ู][้][บ][ร][ร][ย][า][ย])|([ผ][ู][้][ป][า][ฐ][ก][ถ][า]))\)\.\s\((([1-9])|([1-3][0-9]))((\s)?\-(\s)?([1-9])|([1-3][0-9]))?\s(([ม][ก][ร][า][ค][ม])|([ก][ุ][ภ][า][พ][ั][น][ธ][์])|([ม][ี][น][า][ค][ม])|([เ][ม][ษ][า][ย][น])|([พ][ฤ][ษ][พ][า][ค][ม])|([ม][ิ][ถ][ุ][น][า][ย][น])|([ก][ร][ก][ฎ][า][ค][ม])|([ส][ิ][ง][ห][า][ค][ม])|([ก][ั][น][ย][า][ย][น])|([ต][ุ][ล][า][ค][ม])|([พ][ฤ][ศ][จ][ิ][ก][า][ย][น])|([ธ][ั][น][ว][า][ค][ม]))\s[1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.";
+            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
+            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+
+            if (checkValue != -1)
+            {
+                System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ");
+                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
+                int countCheck = 0;
+                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
+                {
+
+                    if (rngWord.Text == "). ")
+                    {
+                        countCheck++;
+                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                    }
+                    else if (countCheck == 2 || countCheck == 3)
+                    {
+
+                        if (rngWord.Bold != 0)
+                        {
+                            if (countCheck == 3)
+                            {
+                                countCheck = 2;
+                            }
+                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
+                            if (rngWord.Text[rngWord.Text.Length - 2] == '.')
+                            {
+                                countCheck++;
+                            }
+
+                        }
+                        else if (countCheck == 3)
+                        {
+                            System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ จบ");
+                            cout = +checkValue;
+                            return cout;
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+
+                    }
+                }
+            }
+            return ModelJournalTypeArticlesTH( r,  strCheck,  cout);
+        }
+
+        //บทความทั่วไป เอกสารประเภทวารสาร
+        private int ModelJournalTypeArticlesTH(Word.Range r, string strCheck, int cout)
+        {
+
+            int checkValue = -1;
+            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+((\?\s)|(\.\s))((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+\,\s[1-9]([0-9])*\([1-9]([0-9])*\)\,\s([1-9]([0-9])*)((\s)?\-(\s)?([1-9]([0-9])*))?\.)";
+            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
+            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+
+            if (checkValue != -1)
+            {
+                System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
+                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
+                int countCheck = 0;
+                int countCheck2 = 0;
+                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
+                {
+
+                    if (countCheck2 == 0 && (rngWord.Text == "). " || rngWord.Text == ". " || rngWord.Text == "? "))
+                    {
+                        countCheck++;
+                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                    }
+                    else if (countCheck == 2 || countCheck == 3)
+                    {
+
+                        if (rngWord.Bold != 0)
+                        {
+                            countCheck2 = 1;
+                            if (countCheck == 3)
+                            {
+                                countCheck = 2;
+                            }
+                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
+                            if (rngWord.Text == ", ")
+                            {
+                                countCheck++;
+                            }
+
+                        }
+                        else if (countCheck == 3)
+                        {
+                            System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร จบ");
+                            cout = +checkValue;
+                            return cout;
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+
+                    }
+                }
+            }
             return 0;
         }
 
+        //บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร
+        private int ModelJournalTypeReviewTH(Word.Range r, string strCheck, int cout)
+        {
+
+            int checkValue = -1;
+            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+((\?\s)|(\.\s))((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+\,\s[1-9]([0-9])*\([1-9]([0-9])*\)\,\s([1-9]([0-9])*)((\s)?\-(\s)?([1-9]([0-9])*))?\.)";
+            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
+            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+
+            if (checkValue != -1)
+            {
+                System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
+                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
+                int countCheck = 0;
+                int countCheck2 = 0;
+                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
+                {
+
+                    if (countCheck2 == 0 && (rngWord.Text == "). " || rngWord.Text == ". " || rngWord.Text == "? "))
+                    {
+                        countCheck++;
+                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
+                    }
+                    else if (countCheck == 2 || countCheck == 3)
+                    {
+
+                        if (rngWord.Bold != 0)
+                        {
+                            countCheck2 = 1;
+                            if (countCheck == 3)
+                            {
+                                countCheck = 2;
+                            }
+                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
+                            if (rngWord.Text == ", ")
+                            {
+                                countCheck++;
+                            }
+
+                        }
+                        else if (countCheck == 3)
+                        {
+                            System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร จบ");
+                            cout = +checkValue;
+                            return cout;
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+
+                    }
+                }
+            }
+            return 0;
+        }
 
         private void CheckStringMatch(string strFromRange, string regex, ref int checkValue)
         {

@@ -157,7 +157,8 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ReferenceModel.cs" />
+    <Compile Include="ReferenceModel\ReferenceModel.cs" />
+    <Compile Include="ReferenceModel\Lexer.cs" />
     <Compile Include="Sign_Containner.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,6 +212,7 @@
     </Compile>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
