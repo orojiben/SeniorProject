@@ -158,16 +158,30 @@ namespace SeniorProject
            // SampleRegexUsage(r,ref check);
             string[] strSpliteRanges = Regex.Split(r.Text, "\r");
             int cout = 0;
-            Lexer l = new Lexer();
+
+            System.Windows.Forms.MessageBox.Show(strSpliteRanges.Length + " ^^");
             foreach (string strSpliteRange in strSpliteRanges)
             {
                 if (strSpliteRange.Length == 0)
                 {
                     break;
                 }
-                l.sentence = strSpliteRange;
+                int value = ModelBookTypeBookTH(r, strSpliteRange, cout);// ModelBookTypeBookTH(r, cout);
+               
+                if (value == 0)
+                {
+                    System.Windows.Forms.MessageBox.Show(value + "");
+                    break;
+                }
+                cout += value;
+                r = r.Application.ActiveDocument.Range(cout);
+               // l.sentence = strSpliteRange;
                 //l.ForNames();
-                System.Windows.Forms.MessageBox.Show(l.ForNames() + " ^^");
+              //  bool v1 = l.ForNames();
+              //  bool v2 = l.ForYear();
+             //   bool v3 = l.ForBookName();
+             //   bool v4 = l.ForPlaceEnd();
+               // System.Windows.Forms.MessageBox.Show(v1 + " " + v2 + " " + (v3&&v4) + " ^^");
                /* if (strSpliteRange.Length == 0)
                 {
                     break;
@@ -197,8 +211,40 @@ namespace SeniorProject
             }*/
         }
 
+
+           //หนังสือทั่วไป เอกสารประเภทหนังสือ
+        private int ModelBookTypeBookTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (!l.ForBookTranslator())
+                        {
+                            return ModelBookTypeArticleTH(r, strCheck, cout);
+                        }
+
+                        if (l.ForPlaceEnd())
+                        {
+                            if (!l.ForBookAddEnd())
+                            {
+                                return ModelBookTypeArticleTH(r, strCheck, cout);
+                            }
+                            System.Windows.Forms.MessageBox.Show("หนังสือทั่วไป เอกสารประเภทหนังสือ");
+                            return l.countLength;
+                        }
+                        
+                    }
+                }
+            }
+            return ModelBookTypeArticleTH(r, strCheck, cout);
+        }
           //หนังสือทั่วไป เอกสารประเภทหนังสือ
-        private int ModelBookTypeBookTH(Word.Range r,string strCheck ,int cout)
+        /*private int ModelBookTypeBookTH(Word.Range r,string strCheck ,int cout)
         {
             string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s(\((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+[ผ][ู][้][แ][ป][ล]\)\.\s)?(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.(\s)?(\((([0-9ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\))?)";
             int checkValue = -1;
@@ -252,9 +298,38 @@ namespace SeniorProject
 
             return ModelBookTypeArticleTH( r, strCheck, cout);
             
-        }
+        }*/
+        
         //บทความในหนังสือ เอกสารประเภทหนังสือ
-        private int ModelBookTypeArticleTH(Word.Range r,string strCheck, int cout)
+        private int ModelBookTypeArticleTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameIn())
+                        {
+                            if (l.ForPage())
+                            {
+                                if (l.ForPlaceEnd())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("บทความในหนังสือ เอกสารประเภทหนังสือ");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelBookTypeEncyclopediaTH(r, strCheck, cout);
+        }
+
+        //บทความในหนังสือ เอกสารประเภทหนังสือ
+        /*private int ModelBookTypeArticleTH(Word.Range r,string strCheck, int cout)
         {
             
             int checkValue = -1;
@@ -316,10 +391,10 @@ namespace SeniorProject
                 }
             }
             return ModelBookTypeEncyclopediaTH(r, strCheck, cout);
-        }
+        }*/
 
         //หนังสือสารานุกรม เอกสารประเภทหนังสือ
-        private int ModelBookTypeEncyclopediaTH(Word.Range r, string strCheck, int cout)
+        /*private int ModelBookTypeEncyclopediaTH(Word.Range r, string strCheck, int cout)
         {
             int checkValue = -1;
             int checkValue2 = -1;
@@ -383,10 +458,40 @@ namespace SeniorProject
             }
             return ModelBookTypeHandoutLibraryTH(r, strCheck,cout);
 
+        }*/
+         //หนังสือสารานุกรม เอกสารประเภทหนังสือ
+        private int ModelBookTypeEncyclopediaTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameInDotEditor())
+                        {
+                            if (l.ForPageAndBook())
+                            {
+                                if (l.ForPlaceEnd())
+                                {
+
+                                    System.Windows.Forms.MessageBox.Show("หนังสือสารานุกรม เอกสารประเภทหนังสือ");
+                                    return l.countLength;
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelBookTypeHandoutLibraryTH( r,  strCheck,  cout);
         }
 
+
         //เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ
-        private int ModelBookTypeHandoutLibraryTH(Word.Range r, string strCheck, int cout)
+        /*private int ModelBookTypeHandoutLibraryTH(Word.Range r, string strCheck, int cout)
         {
 
             int checkValue = -1;
@@ -450,10 +555,41 @@ namespace SeniorProject
                 }
             }
             return ModelBookTypeHandoutLibraryTH2(r, strCheck, cout);
+        }*/
+
+         //เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ
+        private int ModelBookTypeHandoutLibraryTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNamesNF())
+            {
+                if (l.ForNarrator())
+                {
+                    if (l.ForDate())
+                    {
+                        if (l.ForBookName())
+                        {
+                            if (l.ForBookNameInDotEditor())
+                            {
+                                if (l.ForPageAndBook())
+                                {
+                                    if (l.ForPlaceEnd())
+                                    {
+                                        System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ");
+                                        return l.countLength;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelBookTypeHandoutLibraryTH2(r, strCheck, cout);
         }
 
         //เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ
-        private int ModelBookTypeHandoutLibraryTH2(Word.Range r, string strCheck, int cout)
+        /*private int ModelBookTypeHandoutLibraryTH2(Word.Range r, string strCheck, int cout)
         {
 
             int checkValue = -1;
@@ -506,10 +642,36 @@ namespace SeniorProject
                 }
             }
             return ModelJournalTypeArticlesTH( r,  strCheck,  cout);
+        }*/
+
+         //เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ
+        private int ModelBookTypeHandoutLibraryTH2(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNamesNF())
+            {
+                if (l.ForNarrator())
+                {
+                    if (l.ForDate())
+                    {
+                        if (l.ForBookName())
+                        {
+
+                            if (l.ForPlaceEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ");
+                                return l.countLength;
+                            }
+                        }   
+                    }
+                }
+            }
+            return ModelJournalTypeArticlesTH(r,strCheck,cout);
         }
 
         //บทความทั่วไป เอกสารประเภทวารสาร
-        private int ModelJournalTypeArticlesTH(Word.Range r, string strCheck, int cout)
+        /*private int ModelJournalTypeArticlesTH(Word.Range r, string strCheck, int cout)
         {
 
             int checkValue = -1;
@@ -564,10 +726,36 @@ namespace SeniorProject
                 }
             }
             return 0;
+        }*/
+
+        //บทความทั่วไป เอกสารประเภทวารสาร
+        private int ModelJournalTypeArticlesTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if (l.ForYearAndNumber())
+                            {
+                                System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ModelJournalTypeReviewTH(r, strCheck, cout);
         }
 
         //บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร
-        private int ModelJournalTypeReviewTH(Word.Range r, string strCheck, int cout)
+        /*private int ModelJournalTypeReviewTH(Word.Range r, string strCheck, int cout)
         {
 
             int checkValue = -1;
@@ -616,6 +804,560 @@ namespace SeniorProject
                         {
 
                             break;
+                        }
+
+                    }
+                }
+            }
+            return 0;
+        }*/
+
+         //บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร
+        private int ModelJournalTypeReviewTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameReview(0))
+                        {
+                            if (l.ForBookNameEC())
+                            {
+                                if (l.ForYearAndNumber())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ModelJournalTypeInterviewTH(r, strCheck, cout);
+        }
+
+        //บทสัมภาษณ์ เอกสารประเภทวารสาร
+        private int ModelJournalTypeInterviewTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookNameES())
+                    {
+                        if (l.ForNamesInterviewer(0))
+                        {
+                            if (l.ForBookNameEC())
+                            {
+                                if (l.ForYearAndNumber())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("บทสัมภาษณ์ เอกสารประเภทวารสาร");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ModelNewspaperTypeBookTH(r, strCheck, cout);
+        }
+
+        //หนังสือพิมพ์ทั่วไป เอกสารประเภทหนังสือพิมพ์
+        private int ModelNewspaperTypeBookTH(Word.Range r, string strCheck, int cout)
+        {
+             Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForDate())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if (l.ForPageEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("หนังสือพิมพ์ทั่วไป เอกสารประเภทหนังสือพิมพ์");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ModelNewspaperTypeColumnTH(r, strCheck, cout);
+        }
+
+        //กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์
+        private int ModelNewspaperTypeColumnTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForDate())
+                {
+                    if (l.ForColumnEnd())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if (l.ForPageEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelNewspaperTypeInterviewTH(r, strCheck, cout);
+        }
+
+         //กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์
+        private int ModelNewspaperTypeInterviewTH(Word.Range r, string strCheck, int cout)
+        {
+             Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForDate())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForNamesInterviewer(0))
+                        {
+                            if (l.ForBookNameEC())
+                            {
+                                if (l.ForPageEnd())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ModelThesisTypeThesisTH(r, strCheck, cout);
+        }
+
+        //วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง
+        private int ModelThesisTypeThesisTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if (l.ForBookNameEC())
+                            {
+                                if (l.ForBookNameEnd())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ModelThesisTypeThesisAbstractBookTH(r, strCheck, cout);
+        }
+
+        //วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง หนังสือรวมบทคัดย่อ
+        private int ModelThesisTypeThesisAbstractBookTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookNameToIn())
+                    {
+                        if (l.ForBookNameInDotEditor())
+                        {
+                            if (l.ForPage())
+                            {
+                                if (l.ForPlaceEnd())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง หนังสือรวมบทคัดย่อ");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            return ModelThesisTypeThesisAbstractJournalTH(r, strCheck, cout);
+        }
+
+        //วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง สิ่งพิมพ์ประเภทวารสาร
+        private int ModelThesisTypeThesisAbstractJournalTH(Word.Range r, string strCheck, int cout)
+        {
+             Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if (l.ForYearAndNumber())
+                            {
+                                System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง สิ่งพิมพ์ประเภทวารสาร");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelThesisTypeThesisOnlineTH(r, strCheck, cout);
+        }
+
+        //ฐานข้อมูลวิทยานิพนธ์ออนไลน์ เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง
+        private int ModelThesisTypeThesisOnlineTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if (l.ForBookNameEC())
+                            {
+                                if (l.ForBookName())
+                                {
+                                    if (l.ForSearch())
+                                    {
+                                        if (l.ForURLTH())
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ฐานข้อมูลวิทยานิพนธ์ออนไลน์ เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง");
+                                            return l.countLength;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelOtherTypeLetterTH(r, strCheck, cout);
+        }
+
+
+        //จดหมายข่าว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ
+        private int ModelOtherTypeLetterTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+
+            if (l.ForNames())
+            {
+                if (l.ForMonthYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookNameEC())
+                        {
+                            if(l.ForYearAndNumber())
+                            {
+                                System.Windows.Forms.MessageBox.Show("จดหมายข่าว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelOtherTypeBrochuresAndLeafletsTH(r, strCheck, cout);
+        }
+
+        //จุลสารและแผ่นพับ เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ
+        private int ModelOtherTypeBrochuresAndLeafletsTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+
+            if (l.ForBookNameToBracket())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBrochuresAndLeaflets())
+                    {
+                        if (l.ForPlaceEnd())
+                        {
+                            System.Windows.Forms.MessageBox.Show("จุลสารและแผ่นพับ เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                            return l.countLength;
+                        }
+                    }
+                }
+            }
+            return ModelOtherTypeArchivesTH(r, strCheck, cout);
+        }
+
+        //จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ
+        private int ModelOtherTypeArchivesTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+
+            if (l.ForNames())
+            {
+                if (l.ForDate())
+                {
+                    string sentenceCopy = l.sentence;
+                    int countLengthCopy = l.countLength;
+                    if (l.ForColumnEnd())
+                    {
+                        if (l.ForBookName())
+                        {
+                            if (l.ForPageEnd())
+                            {
+                                return l.countLength;
+                            }
+                        }
+                        else
+                        {
+                            if (l.ForBookNameEnd())
+                            {
+                                return l.countLength;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        l.sentence = sentenceCopy;
+                        l.countLength = countLengthCopy;
+                        if (l.ForBookName())
+                        {
+                            if (l.ForPageEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                                return l.countLength;
+                            }
+                        }
+                        else
+                        {
+                            if (l.ForBookNameEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                                return l.countLength;
+                            }
+                        }
+                    }
+
+                }
+            }
+            return ModelOtherTypeGovernmentGazetteTH(r, strCheck, cout);
+        }
+
+        //สารสนเทศในราชกิจจานุเบกษา เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ
+        private int ModelOtherTypeGovernmentGazetteTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+
+            if (l.ForBookNameToBracket())
+            {
+                if (l.ForDate())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForAt())
+                        {
+                            if (l.ForPageEnd2())
+                            {
+                                System.Windows.Forms.MessageBox.Show("สารสนเทศในราชกิจจานุเบกษา เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelMaterialNotPublishedTypeAudioTH(r, strCheck, cout);
+        }
+
+        //สื่อประเภทบันทึกเสียง เอกสารประเภทวัสดุไม่ตีพิมพ์
+        private int ModelMaterialNotPublishedTypeAudioTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            bool check = false;
+            if (l.ForNameOnePrevious())
+            {
+                if (l.ForNameYear())
+                {
+                    if (l.ForBookNameES())
+                    {
+                        if (l.ForBookNameReview(0))
+                        {
+                            if (l.ForBookNameEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("สื่อประเภทบันทึกเสียง เอกสารประเภทวัสดุไม่ตีพิมพ์");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+            }
+            l.sentence = strCheck;
+            check = true;
+            if (check)
+            {
+                if (l.ForBookNameES())
+                {
+                    if (l.ForBookNameReview(0))
+                    {
+                        if (l.ForNameYear())
+                        {
+                            if (l.ForBookNameEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("สื่อประเภทบันทึกเสียง เอกสารประเภทวัสดุไม่ตีพิมพ์");
+                                return l.countLength;
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelMaterialNotPublishedTypeImageTH(r, strCheck, cout);
+        }
+
+        //ฐานข้อมูลสำเร็จรูป เอกสารประเภทวัสดุไม่ตีพิมพ์
+        private int ModelMaterialNotPublishedTypeImageTH(Word.Range r, string strCheck, int cout)
+        {
+             Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForYear())
+                {
+                    if (l.ForBookNameES())
+                    {
+                        if (l.ForBookNameReview(0))
+                        {
+
+                        }
+                    }
+                }
+
+            }
+            return ModelOnlineTypeOnlineTH(r, strCheck, cout);
+        }
+
+        //บทความออนไลน์ เอกสารประเภทสื่อออนไลน์
+        private int ModelOnlineTypeOnlineTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForDate())
+                {
+                    if (l.ForBookName())
+                    {
+
+                        if (l.ForSearch())
+                        {
+                            if (l.ForURLTH())
+                            {
+                                System.Windows.Forms.MessageBox.Show("บทความออนไลน์ เอกสารประเภทสื่อออนไลน์");
+                                return l.countLength;
+                            }
+                        }
+
+                    }
+                }
+            }
+            return ModelOnlineTypeOtherTH(r, strCheck, cout);
+        }
+
+        //บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์
+        private int ModelOnlineTypeOtherTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                bool check = false;
+                string sentenceCopy = l.sentence;
+                int countLengthCopy = l.countLength;
+                if (l.ForDate())
+                {
+                    check = true;
+                }
+                else
+                {
+                    l.sentence = sentenceCopy;
+                    l.countLength = countLengthCopy;
+                    if (l.ForMonthYear())
+                    {
+                        check = true;
+                    }
+                }
+                if (check)
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookName())
+                        {
+                            if (l.ForSearch())
+                            {
+                                if (l.ForURLTH())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์");
+                                    return l.countLength;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ModelOnlineTypeElectronicTH(r, strCheck, cout);
+        }
+
+        //บทเรียนอิเล็กทรอนิกส์ เอกสารประเภทสื่อออนไลน์
+        private int ModelOnlineTypeElectronicTH(Word.Range r, string strCheck, int cout)
+        {
+            Lexer l = new Lexer();
+            l.sentence = strCheck;
+            if (l.ForNames())
+            {
+                if (l.ForNameYear())
+                {
+                    if (l.ForBookName())
+                    {
+                        if (l.ForBookName())
+                        {
+                            if (l.ForSearch())
+                            {
+                                if (l.ForURLTH())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("บทเรียนอิเล็กทรอนิกส์ เอกสารประเภทสื่อออนไลน์");
+                                    return l.countLength;
+                                }
+                            }
                         }
 
                     }
