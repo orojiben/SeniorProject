@@ -10,7 +10,7 @@ namespace SeniorProject
 {
     static class StyleFile
     {
-        private static string path = @"..\..\style\word_style.xml";
+        private static string path = @"styles\word_style.xml";
 
 
         static public void CheckCreateFile()
@@ -53,6 +53,14 @@ namespace SeniorProject
                         {
                             // Console.Write("\n" + nodeClass2.InnerText + "\n");
                             style.addFont(nodeClass2.InnerText);
+                        }
+                    }
+                    else if (nodeClass1.LocalName == "Departments")
+                    {
+                        foreach (XmlNode nodeClass2 in nodeClass1.ChildNodes)
+                        {
+                            // Console.Write("\n" + nodeClass2.InnerText + "\n");
+                            style.addDepartment(nodeClass2.InnerText);
                         }
                     }
                     else if (nodeClass1.LocalName == "Margin")
@@ -128,7 +136,7 @@ namespace SeniorProject
                 XmlNode marginNode = xmlDoc.CreateElement("Margin");
                 XmlNode fontsNode = xmlDoc.CreateElement("fonts");
 
-                foreach (string font in style.Font)
+                foreach (string font in style.Fonts)
                 {
                     XmlNode fontNode = xmlDoc.CreateElement("font");
                     fontNode.InnerText = font;
@@ -136,7 +144,7 @@ namespace SeniorProject
                 }
 
                 XmlNode dictionarysNode = xmlDoc.CreateElement("dictionarys");
-                foreach (string dictionary in style.Dictionary)
+                foreach (string dictionary in style.Dictionarys)
                 {
                     XmlNode dictionaryNode = xmlDoc.CreateElement("dictionary");
                     dictionaryNode.InnerText = dictionary;
@@ -176,14 +184,14 @@ namespace SeniorProject
                         node.ChildNodes[1].InnerText = style.Margin;
                         node.ChildNodes[2].RemoveAll();
                         XmlNode fontsNode = xmlDoc.CreateElement("fonts");
-                        foreach (string value in style.Font)
+                        foreach (string value in style.Fonts)
                         {
                             XmlNode fontNode = xmlDoc.CreateElement("font");
                             fontNode.InnerText = value;
                             node.ChildNodes[2].AppendChild(fontNode);
                         }
                         node.ChildNodes[3].RemoveAll();
-                        foreach (string value in style.Dictionary)
+                        foreach (string value in style.Dictionarys)
                         {
                             XmlNode dictionaryNode = xmlDoc.CreateElement("dictionary");
                             dictionaryNode.InnerText = value;

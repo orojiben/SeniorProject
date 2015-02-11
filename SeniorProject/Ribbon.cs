@@ -58,12 +58,12 @@ namespace SeniorProject
 
             try
             {
-                this.dropDown1.Items.Clear();
+                this.ddn_Model.Items.Clear();
                 foreach (Styles s in this.loadStyles)
                 {
                     Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
                     ribbonDropDownItemImpl1.Label = s.Name;
-                    this.dropDown1.Items.Add(ribbonDropDownItemImpl1);
+                    this.ddn_Model.Items.Add(ribbonDropDownItemImpl1);
                 }
                 Styles styles = this.loadStyles[0];
                 string[] words = styles.Margin.Split(',');
@@ -74,7 +74,7 @@ namespace SeniorProject
                 float bottomMargin = centimeterToPoint((float)(Convert.ToDouble(words[3])));
                 marginPage = new MarginPage(leftMargin, rightMargin, topMargin, bottomMargin);
                 paperPage = new PaperPage(styles.Paper);
-                font = styles.Font;
+                font = styles.Fonts;
 
             }
             catch { };
@@ -90,7 +90,7 @@ namespace SeniorProject
             this.rng.PageSetup.RightMargin = mp.getRight();
             this.rng.PageSetup.TopMargin = mp.getTop();
             this.rng.PageSetup.BottomMargin = mp.getBottom();*/
-                Styles s = this.loadStyles[this.dropDown1.SelectedItemIndex];
+                Styles s = this.loadStyles[this.ddn_Model.SelectedItemIndex];
                 string[] words = s.Margin.Split(',');
                 
                 float leftMargin = centimeterToPoint((float)(Convert.ToDouble(words[0])));
@@ -99,7 +99,7 @@ namespace SeniorProject
                 float bottomMargin = centimeterToPoint((float)(Convert.ToDouble(words[3])));
                 marginPage = new MarginPage(leftMargin, rightMargin, topMargin, bottomMargin);
                 paperPage = new PaperPage(s.Paper);
-                font = s.Font;
+                font = s.Fonts;
         }
 
         private float centimeterToPoint(float centimeter)

@@ -11,8 +11,9 @@ namespace SeniorProject
         private string name;
         private string margin;
         private string paper;
-        private List<string> font;
-        private List<string> dictionary;
+        private List<string> fonts;
+        private List<string> dictionarys;
+        private List<string> departments;
 
         public string Name
         {
@@ -62,23 +63,34 @@ namespace SeniorProject
             }
         }
 
-        public List<string> Font
+        public List<string> Fonts
         {
             get
             {
 
-                return this.font;
+                return this.fonts;
 
             }
             set { }
         }
 
-        public List<string> Dictionary
+        public List<string> Dictionarys
         {
             get
             {
 
-                return this.dictionary;
+                return this.dictionarys;
+
+            }
+            set { }
+        }
+
+        public List<string> Departments
+        {
+            get
+            {
+
+                return this.departments;
 
             }
             set { }
@@ -86,20 +98,25 @@ namespace SeniorProject
 
         public Styles()
         {
-            this.font = new List<string>();
-            this.dictionary = new List<string>();
+            this.fonts = new List<string>();
+            this.dictionarys = new List<string>();
+            this.departments = new List<string>();
         }
 
         public void addFont(string font)
         {
-            this.font.Add(font);
+            this.fonts.Add(font);
         }
 
         public void addDictionary(string dictionary)
         {
-            this.dictionary.Add(dictionary);
+            this.dictionarys.Add(dictionary);
         }
 
+        public void addDepartment(string department)
+        {
+            this.departments.Add(department);
+        }
 
     }
 }
