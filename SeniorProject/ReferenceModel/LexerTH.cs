@@ -53,7 +53,7 @@ namespace SeniorProject
             monthTHs[1] = @"^[ก][ุ][ม][ภ][า][พ][ั][น][ธ][์]";
             monthTHs[2] = @"^[ม][ี][น][า][ค][ม]";
             monthTHs[3] = @"^[เ][ม][ษ][า][ย][น]";
-            monthTHs[4] = @"^[พ][ฤ][ษ][พ][า][ค][ม]";
+            monthTHs[4] = @"^[พ][ฤ][ษ][ภ][า][ค][ม]";
             monthTHs[5] = @"^[ม][ิ][ถ][ุ][น][า][ย][น]";
             monthTHs[6] = @"^[ก][ร][ก][ฎ][า][ค][ม]";
             monthTHs[7] = @"^[ส][ิ][ง][ห][า][ค][ม]";
@@ -527,7 +527,7 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^(\).\s)+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^(\)\.\s)", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -540,7 +540,7 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\).\s)+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^(\)\.\s)", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -549,6 +549,34 @@ namespace SeniorProject
                     }
                 }
             }
+            return false;
+        }
+
+        public bool ForYearCreate()
+        {
+            int checkValue = -1;
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
+            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^(\()", ref checkValue));
+            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^([1-9]([0-9])*)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^(\)\.\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return true;
+                    }
+                }
+            }
+            this.sentence = sentenceCopy;
+            this.countLength = countLengthCopy;
             return false;
         }
 
@@ -609,7 +637,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([A-Za-z๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -752,6 +780,14 @@ namespace SeniorProject
                     CutString(checkValue);
                     return ForBookNameEnd();
                 }
+
+                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return ForBookNameEnd();
+                }
+
                 if (this.checkForBookName == 0)
                 {
                     CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
@@ -796,6 +832,18 @@ namespace SeniorProject
                     return true;
                 }
                 return ForBookNameEnd();
+            }
+
+            CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                this.checkForBookName = 0;
+                if (this.sentence != "")
+                {
+                    return ForBookNameEnd();
+                }
             }
             return false;
         }
@@ -1542,7 +1590,7 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    return ForBookName();
+                    return ForBookNameNF();
                 }
                 CheckStringMatch(this.sentence, @"^\.", ref checkValue);
                 if (checkValue != -1)
@@ -1657,9 +1705,11 @@ namespace SeniorProject
             {
                 CutString(checkValue);
                 string sentenceCoppy = this.sentence;
+                int countLengthCoppy = this.countLength;
                 if (!ForBookNameEC())
                 {
                     this.sentence = sentenceCoppy;
+                    this.countLength = countLengthCoppy;
                 }
                 
                 CheckStringMatch(this.sentence, @"^([ห][น][้][า]\s)", ref checkValue);
@@ -1769,7 +1819,7 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    return ForBookName();
+                    return ForBookNameEC();
                 }
                 if (this.checkForBookName == 0)
                 {
@@ -2087,7 +2137,7 @@ namespace SeniorProject
                     }
                 }
                 //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์๐-๙0-9-/])+", ref checkValue);
 
                 if (checkValue != -1)
                 {
@@ -2102,7 +2152,7 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        return ForBookName();
+                        return ForBookNameReview(1);
                     }
                     if (this.checkForBookName == 0)
                     {
@@ -2645,12 +2695,17 @@ namespace SeniorProject
                 {
                     CutString(checkValue);
                 }
+                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
 
                 CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    return ForBookName();
+                    return ForBookNameES();
                 }
                 if (this.checkForBookName == 0)
                 {
@@ -2675,6 +2730,64 @@ namespace SeniorProject
             {
                 this.checkForBookName = 0;
                 return true;
+            }
+
+            return false;
+        }
+
+        public bool ForBookNameDB(int check)
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                check = 1;
+            }
+            else if (check == 1)
+            {
+
+            }
+            else
+            {
+                return false;
+            }
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z๐-๙0-9-/])+", ref checkValue);
+
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
+                if (checkValue != -1)
+                {
+                    this.checkForBookName++;
+                    CutString(checkValue);
+                }
+
+
+                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                return ForBookNameDB(check);
+            }
+            CheckStringMatch(this.sentence, @"^\)", ref checkValue);
+
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                if (this.checkForBookName > 0)
+                {
+                    this.checkForBookName = 0;
+                    return true;
+                }
             }
 
             return false;
@@ -2887,7 +3000,7 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    return ForPlaceEnd();
+                    return ForColumnEnd();
                 }
                 if (this.checkForBookName == 0)
                 {
@@ -3395,6 +3508,7 @@ namespace SeniorProject
         public bool ForNameYear()
         {
             string sentanceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
             int checkValue = -1;
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^\(", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
@@ -3428,6 +3542,7 @@ namespace SeniorProject
                     }
                 }
             }
+            this.countLength = countLengthCopy;
             this.sentence = sentanceCopy;   
             return ForDate();
         }

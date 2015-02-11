@@ -59,6 +59,10 @@ namespace SeniorProject
                     {
                         style.Margin = nodeClass1.InnerText;
                     }
+                    else if (nodeClass1.LocalName == "Paper")
+                    {
+                        style.Paper = nodeClass1.InnerText;
+                    }
                     else
                     {
                         style.Name = nodeClass1.InnerText;

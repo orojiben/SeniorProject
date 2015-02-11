@@ -178,7 +178,8 @@
   -->
   <ItemGroup>
     <Compile Include="FontManager.cs" />
-    <Compile Include="MarginPage.cs" />
+    <Compile Include="MarginPage\MarginPage.cs" />
+    <Compile Include="PaperPage\PaperPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -8,6 +8,7 @@
     <dictionarys>
       <dictionary>thai</dictionary>
     </dictionarys>
+	<Paper>wdPaperA4</Paper>
   </style>
   <style>
     <Nameformat>Graduate</Nameformat>
@@ -18,5 +19,6 @@
     <dictionarys>
       <dictionary>thai</dictionary>
     </dictionarys>
+	<Paper>wdPaperA4</Paper>
   </style>
 </styles>

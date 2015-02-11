@@ -10,6 +10,7 @@ namespace SeniorProject
     {
         private string name;
         private string margin;
+        private string paper;
         private List<string> font;
         private List<string> dictionary;
 
@@ -41,6 +42,22 @@ namespace SeniorProject
             {
 
                 this.margin = value;
+
+            }
+        }
+
+        public string Paper
+        {
+            get
+            {
+
+                return this.paper;
+
+            }
+            set
+            {
+
+                this.paper = value;
 
             }
         }

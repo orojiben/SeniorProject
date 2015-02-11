@@ -186,6 +186,10 @@ namespace SeniorProject
                 {
                     if (l.ForBookName())
                     {
+                        if (l.ForYearCreate())
+                        {
+
+                        }
                         if (!l.ForBookTranslator())
                         {
                             return ModelBookTypeArticleTH(r, strCheck, cout);
@@ -272,7 +276,7 @@ namespace SeniorProject
             {
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    if (l.ForBookNameToIn())
                     {
                         if (l.ForBookNameIn())
                         {
@@ -1051,7 +1055,6 @@ namespace SeniorProject
             return ModelOtherTypeLetterTH(r, strCheck, cout);
         }
 
-
         //จดหมายข่าว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ
         private int ModelOtherTypeLetterTH(Word.Range r, string strCheck, int cout)
         {
@@ -1115,10 +1118,11 @@ namespace SeniorProject
                     int countLengthCopy = l.countLength;
                     if (l.ForColumnEnd())
                     {
-                        if (l.ForBookName())
+                        if (l.ForBookNameEC())
                         {
                             if (l.ForPageEnd())
                             {
+                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
                                 return l.countLength;
                             }
                         }
@@ -1126,6 +1130,7 @@ namespace SeniorProject
                         {
                             if (l.ForBookNameEnd())
                             {
+                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
                                 return l.countLength;
                             }
                         }
@@ -1209,6 +1214,7 @@ namespace SeniorProject
                 }
             }
             l.sentence = strCheck;
+            l.countLength = 0;
             check = true;
             if (check)
             {
@@ -1243,7 +1249,11 @@ namespace SeniorProject
                     {
                         if (l.ForBookNameReview(0))
                         {
-
+                            if (l.ForBookNameDB(0))
+                            {
+                                System.Windows.Forms.MessageBox.Show("ฐานข้อมูลสำเร็จรูป เอกสารประเภทวัสดุไม่ตีพิมพ์");
+                                return l.countLength;
+                            }
                         }
                     }
                 }
@@ -1406,6 +1416,10 @@ namespace SeniorProject
                 {
                     if (l.ForBookName())
                     {
+                        if (l.ForYearCreate())
+                        {
+
+                        }
                         if (l.ForPlaceEnd())
                         {
                             System.Windows.Forms.MessageBox.Show("หนังสือทั่วไป เอกสารประเภทหนังสือ");
@@ -1997,6 +2011,7 @@ namespace SeniorProject
                 }
             }
             l.sentence = strCheck;
+            l.countLength = 0;
             check = true;
             if (check)
             {
@@ -2031,7 +2046,11 @@ namespace SeniorProject
                     {
                         if (l.ForBookNameReview(0))
                         {
-
+                            if (l.ForBookNameDB(0))
+                            {
+                                System.Windows.Forms.MessageBox.Show("ฐานข้อมูลสำเร็จรูป เอกสารประเภทวัสดุไม่ตีพิมพ์");
+                                return l.countLength;
+                            }
                         }
                     }
                 }
