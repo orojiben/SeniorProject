@@ -527,6 +527,11 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮ])*", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                    }
                     CheckStringMatch(this.sentence, @"^(\)\.\s)", ref checkValue);
                     if (checkValue != -1)
                     {
@@ -582,9 +587,69 @@ namespace SeniorProject
 
         public bool ForBookName()
         {
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
             int checkValue = -1;
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                if (checkValue != -1)
+                {
+
+                    CutString(checkValue);
+
+                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                    }
+
+                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
+                    while (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+
+                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                            if (checkValue != -1)
+                            {
+                                CutString(checkValue);
+                            }
+                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
+                            if (checkValue != -1)
+                            {
+                                CutString(checkValue);
+                            }
+
+                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return ForBookName();
+                        }
+                    }
+                    return false;
+                }
+            }
+
+            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
@@ -619,13 +684,21 @@ namespace SeniorProject
                         }
                         else
                         {
+                            this.sentence = sentenceCopy;
+                            this.countLength = countLengthCopy;
                             return false;
                         }
                     }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return true;
+                        }
                         CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
                         if (checkValue != -1)
                         {
@@ -633,9 +706,12 @@ namespace SeniorProject
                             return ForBookName();
                         }
                     }
+                    this.sentence = sentenceCopy;
+                    this.countLength = countLengthCopy;
                     return false;
                 }
             }
+
             //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
             CheckStringMatch(this.sentence, @"^([A-Za-z๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
 
@@ -663,6 +739,11 @@ namespace SeniorProject
                         CutString(checkValue);
                     }
                 }
+                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
 
                 CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
                 if (checkValue != -1)
@@ -679,14 +760,7 @@ namespace SeniorProject
                 this.checkForBookName = 0;
                 return true;
             }
-            CheckStringMatch(this.sentence, @"^(\?\s)", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return true;
-            }
+            
             CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
 
             if (checkValue != -1)
@@ -1597,6 +1671,7 @@ namespace SeniorProject
                 {
                     CutString(checkValue);
                 }
+
                 if (this.checkForBookName == 0)
                 {
                     CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
@@ -1629,6 +1704,14 @@ namespace SeniorProject
                 this.checkForBookName = 0;
                 return true;
             }
+
+            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                return ForBookNameNF();
+            }
+
             return false;
         }
 
@@ -1933,6 +2016,30 @@ namespace SeniorProject
                                         CutString(checkValue);
                                         return true;
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    CheckStringMatch(this.sentence, @"^([ก-ฮ]\.)+", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            CheckStringMatch(this.sentence, @"^([1-9]([0-9]){3})", ref checkValue);
+                            if (checkValue != -1)
+                            {
+                                CutString(checkValue);
+                                CheckStringMatch(this.sentence, @"^\)\.\s", ref checkValue);
+                                if (checkValue != -1)
+                                {
+                                    CutString(checkValue);
+                                    return true;
                                 }
                             }
                         }
@@ -3608,6 +3715,11 @@ namespace SeniorProject
                 {
                     CutString(checkValue);
                     int valueForNamelistInitialsTH = ForNamelistInitialsTH();
+                    CheckStringMatch(this.sentence, @"^(\[[น][า][ม][แ][ฝ][ง]\]\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                    }
                     if (valueForNamelistInitialsTH == 0)
                     {
                         return false;
@@ -3626,6 +3738,12 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^(\[[น][า][ม][แ][ฝ][ง]\]\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return true;
+                    }
                     CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
                     if (checkValue != -1)
                     {
@@ -3639,6 +3757,12 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
+                            CheckStringMatch(this.sentence, @"^(\[[น][า][ม][แ][ฝ][ง]\]\s)", ref checkValue);
+                            if (checkValue != -1)
+                            {
+                                CutString(checkValue);
+                                return true;
+                            }
                             CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
                             if (checkValue != -1)
                             {
@@ -3652,6 +3776,12 @@ namespace SeniorProject
                                 CheckStringMatch(this.sentence, @"^\s", ref checkValue);
                                 if (checkValue != -1)
                                 {
+                                    CheckStringMatch(this.sentence, @"^(\[[น][า][ม][แ][ฝ][ง]\]\s)", ref checkValue);
+                                    if (checkValue != -1)
+                                    {
+                                        CutString(checkValue);
+                                        return true;
+                                    }
                                     return true;
                                 }
                                 return false;
@@ -3692,6 +3822,12 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^(\[[น][า][ม][แ][ฝ][ง]\]\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return true;
+                        }
                         return true;
                     }
                     return false;

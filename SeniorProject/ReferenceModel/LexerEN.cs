@@ -407,6 +407,11 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^([A-Za-z])*", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                    }
                     CheckStringMatch(this.sentence, @"^(\)\.\s)", ref checkValue);
                     if (checkValue != -1)
                     {
@@ -469,7 +474,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -479,7 +484,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -505,8 +510,55 @@ namespace SeniorProject
                     return false;
                 }
             }
+
+            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
+                if (checkValue != -1)
+                {
+
+                    CutString(checkValue);
+
+                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
+                    while (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return true;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return ForBookName();
+                        }
+                    }
+                    return false;
+                }
+            }
+
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -543,14 +595,6 @@ namespace SeniorProject
                 this.checkForBookName = 0;
                 return true;
             }
-            CheckStringMatch(this.sentence, @"^(\?\s)", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return true;
-            }
             CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
 
             if (checkValue != -1)
@@ -569,7 +613,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -579,7 +623,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -616,7 +660,7 @@ namespace SeniorProject
                 }
             }
 
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
@@ -704,7 +748,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -714,7 +758,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -740,7 +784,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -900,7 +944,7 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([E][d][s])\.", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([E][d]([s])?)\.", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -1262,7 +1306,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -1276,7 +1320,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -1308,7 +1352,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -1356,6 +1400,12 @@ namespace SeniorProject
                 CutString(checkValue - 1);
                 this.checkForBookName = 0;
                 return true;
+            }
+            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                return ForBookNameNF();
             }
             return false;
         }
@@ -1582,7 +1632,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -1592,7 +1642,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -1619,7 +1669,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -1810,6 +1860,30 @@ namespace SeniorProject
                             }
                         }
                     }
+                    else
+                    {
+                        CheckStringMatch(this.sentence, @"^([A-Za-z]\.)+", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                            if (checkValue != -1)
+                            {
+                                CutString(checkValue);
+                                CheckStringMatch(this.sentence, @"^([1-9]([0-9]){3})", ref checkValue);
+                                if (checkValue != -1)
+                                {
+                                    CutString(checkValue);
+                                    CheckStringMatch(this.sentence, @"^\)\.\s", ref checkValue);
+                                    if (checkValue != -1)
+                                    {
+                                        CutString(checkValue);
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             return false;
@@ -1961,7 +2035,7 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                     if (checkValue != -1)
                     {
 
@@ -1971,7 +2045,7 @@ namespace SeniorProject
                         while (checkValue != -1)
                         {
                             CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                             if (checkValue != -1)
                             {
                                 CutString(checkValue);
@@ -1998,7 +2072,7 @@ namespace SeniorProject
                     }
                 }
                 //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
                 if (checkValue != -1)
                 {
@@ -2440,7 +2514,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -2449,7 +2523,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -2476,7 +2550,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -2605,7 +2679,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -2614,7 +2688,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -2649,7 +2723,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -2659,7 +2733,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -2696,7 +2770,7 @@ namespace SeniorProject
             }
 
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -2746,7 +2820,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -2756,7 +2830,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -2783,7 +2857,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -3023,7 +3097,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -3032,7 +3106,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -3058,7 +3132,7 @@ namespace SeniorProject
                 }
             }
             //Match match = Regex.Match(this.sentence, @"^[A-Z]([A-Za-z])+");
-            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([0-9A-Za-z-/?])+", ref checkValue);
 
             if (checkValue != -1)
             {

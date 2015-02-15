@@ -6,32 +6,269 @@ using System.Text;
 using Word = Microsoft.Office.Interop.Word;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Word;
+using Microsoft.Office.Core;
 
 namespace SeniorProject
 {
      class ReferenceModel
     {
+        public string faculty;
+        public string department;
         public void runCheckReferenceAll()
         {
-            CeckBio();
+            CheckReference();
+          /*  try
+            {
+                System.IO.File.Delete(@"C:\Users\Nisit\Documents\bin.docx");
+                
+            }
+            catch 
+            {
+                try
+                {
+                    System.IO.File.Delete(@"C:\Users\Nisit\Documents\bin.docx");
+                }
+                catch
+                {
+                }
+            }*/
         }
 
-        
+        public void DeleteBin()
+        {
+            try
+            {
+                System.IO.File.Delete(@"C:\Users\Nisit\Documents\bin.docx");
+                return;
+            }
+            catch
+            {
+                DeleteBin();
+            }
+        }
 
+
+        private void CheckReference()
+        {
+            var wordApp = Globals.ThisAddIn.Application;
+
+            List<Word.Range> lsR = new List<Word.Range>();
+            List<string> lsS = new List<string>();
+            // wordApp.ActiveDocument.Paragraphs.IndentCharWidth(7);
+            //wordApp.ActiveDocument.Paragraphs.CharacterUnitFirstLineIndent= 0.5f;
+
+            /*1.5 cm to point
+            wordApp.ActiveDocument.Paragraphs.LeftIndent = 42.519685f;
+            wordApp.ActiveDocument.Paragraphs.FirstLineIndent = -42.519685f;
+             */
+            //0.5 inches = 36 PostScript points
+            wordApp.ActiveDocument.Paragraphs.LeftIndent = 36.0f;
+            wordApp.ActiveDocument.Paragraphs.FirstLineIndent = -36.0f;
+            //wordApp.ActiveDocument.Paragraphs.TabHangingIndent(0);
+            //wordApp.ActiveDocument.Paragraphs.ca
+            foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
+            {
+                string[] newRanges = range.Text.Split('\r');
+                List<string> listReferences = new List<string>(newRanges);
+                listReferences.RemoveAt(listReferences.Count-1);
+                if (this.faculty == "Engineering")
+                {
+                    FindReferencesEngineer(range, listReferences);
+                }
+                else if (this.faculty == "Graduate")
+                {
+                    FindReferencesGraduate(range, listReferences);
+                }
+                //Word.Range rangeNew = range.InlineShapes.Application.ActiveDocument.StoryRanges[0];
+            }
+        }
+        /*
         private void CeckBio()
         {
             var wordApp = Globals.ThisAddIn.Application;
 
             List<Word.Range> lsR = new List<Word.Range>();
             List<string> lsS = new List<string>();
-            foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
+           // wordApp.ActiveDocument.Paragraphs.IndentCharWidth(7);
+            //wordApp.ActiveDocument.Paragraphs.CharacterUnitFirstLineIndent= 0.5f;
+
+            /*1.5 cm to point
+            wordApp.ActiveDocument.Paragraphs.LeftIndent = 42.519685f;
+            wordApp.ActiveDocument.Paragraphs.FirstLineIndent = -42.519685f;
+             */
+            //0.5 inches = 36 PostScript points
+           // wordApp.ActiveDocument.Paragraphs.LeftIndent = 36.0f;
+           // wordApp.ActiveDocument.Paragraphs.FirstLineIndent = -36.0f;
+            //wordApp.ActiveDocument.Paragraphs.TabHangingIndent(0);
+            //wordApp.ActiveDocument.Paragraphs.ca
+          /*  foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
             {
-                FindReferences(range);
+                string[] newRanges = range.Text.Split('\r');
+                int countNewRanges = 0;
+                List<ReferenceCheck> listReferences = new List<ReferenceCheck>();
+                int numberForAdd = 0;
+                string referenceRange = "";
+                bool checkNull = false;
+                foreach (string newRange in newRanges)
+                {
+                    if (newRange == "")
+                    {
+                        if (!checkNull)
+                        {
+                            listReferences.Add(new ReferenceCheck(referenceRange, numberForAdd));
+                            numberForAdd = 0;
+                            checkNull = true;
+                        }
+                        continue;
+                    }
+                    checkNull = false;
+                    countNewRanges++;
+                    string newRangeCopy = newRange;
+                    if (newRanges.Length == countNewRanges)
+                    {
+                        break;
+                    }
+                    Match match = Regex.Match(newRangeCopy, @"^(\s)+");
+                    if (match.Success)
+                    {
+                        if (match.Length == 7)
+                        {
+                            referenceRange += newRangeCopy.Substring(6);
+                            numberForAdd++;
+                        }
+                        else
+                        {
+                            listReferences.Clear();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (referenceRange != "")
+                        {
+                            listReferences.Add(new ReferenceCheck(referenceRange, numberForAdd));
+                            referenceRange = newRangeCopy;
+                            numberForAdd = 0;
+                        }
+                        else
+                        {
+                            referenceRange = newRangeCopy;
+                        }
+
+                    }
+                    if (newRanges.Length - 1 == countNewRanges)
+                    {
+                        listReferences.Add(new ReferenceCheck(referenceRange, numberForAdd));
+                        break;
+                    }
+                }
+
+                
+                if (this.faculty == "Engineering")
+                {
+                    FindReferencesEngineer(range, listReferences);
+                }
+                else if (this.faculty == "Graduate")
+                {
+                    FindReferencesGraduate(range, listReferences);
+                }                
+                //Word.Range rangeNew = range.InlineShapes.Application.ActiveDocument.StoryRanges[0];
             }
+        }*/
+
+        private List<string> SortWord(List<string> listReferences)
+        {
+            var winword = new Microsoft.Office.Interop.Word.Application();
+            object missing = System.Reflection.Missing.Value;
+            Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+            document.Content.SetRange(0, 0);
+            document.Content.Text = "";
+            foreach (string listReference in listReferences)
+            {
+                document.Content.Text += listReference;
+
+            }
+            //document.Content.Text = "เอโมโตะ สิงห์น้อย. (2549). คำนามประสม: ศาสตร์และศิลป์ในการสร้างคำไทย. กรุงเทพฯ: สำนักพิมพ์แห่งจุฬาลงกรณ์มหาวิทยาลัย.";
+            //document.Content.Text += "อัญชลี สิงห์น้อย. (2549). คำนามประสม: ศาสตร์และศิลป์ในการสร้างคำไทย. กรุงเทพฯ: สำนักพิมพ์แห่งจุฬาลงกรณ์มหาวิทยาลัย.";
+            List<string> listReferencesSort = new List<string>();
+           
+            foreach (Word.Range range in document.StoryRanges)
+            {
+
+                Word.Range rangeNew = range;
+                rangeNew.Sort(false, ref missing, ref missing, WdSortOrder.wdSortOrderAscending, ref missing, ref missing,
+                    WdSortOrder.wdSortOrderAscending, ref missing, ref missing, WdSortOrder.wdSortOrderAscending,
+                    ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, WdLanguageID.wdThai);
+                string s = rangeNew.Text;
+                listReferencesSort.AddRange(s.Split('\r'));
+            }
+            listReferencesSort.RemoveAt(listReferencesSort.Count-1);
+            while (true)
+            {
+                if (listReferencesSort[0] == "")
+                {
+                    listReferencesSort.RemoveAt(0);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            int countReferenceEng = 0;
+            List<string> listReferencesSortNew = new List<string>();
+            foreach (string listReference in listReferencesSort)
+            {
+                if (listReference == "")
+                {
+                    break;
+                }
+                if (!CheckTypeLanguage(listReference))
+                {
+                    break;
+                }
+                listReferencesSortNew.Add(listReference);
+                countReferenceEng++;
+            }
+            bool checkNull = false;
+            if (countReferenceEng > 0)
+            {
+                listReferencesSort.RemoveRange(0, countReferenceEng);
+                if (!CheckNameYear(listReferencesSort, "TH"))
+                {
+                    checkNull = true;
+                }
+                listReferencesSort.AddRange(listReferencesSortNew);
+                if (!CheckNameYear(listReferencesSortNew, "EN"))
+                {
+                    checkNull = true;
+                }
+            }
+            else
+            {
+                if (!CheckNameYear(listReferencesSort, "TH"))
+                {
+                    checkNull = true;
+                }
+            }
+            object fileName = "bin.docx";
+            winword.ActiveDocument.SaveAs(ref fileName,
+    ref missing, ref missing, ref missing, ref missing, ref missing,
+    ref missing, ref missing, ref missing, ref missing, ref missing,
+    ref missing, ref missing, ref missing, ref missing, ref missing);
+            //winword.Selection.Delete();
+            winword.Quit();
+            
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(winword);
+            DeleteBin();
+            if (checkNull)
+            {
+                return null;
+            }
+            return listReferencesSort;
         }
 
-
-        private void FindReferencesTestV1(List<Word.Range> lsR, List<string> lsS, Word.Range r, Word.Application doc)
+        private void FindReferencesEngineerTestV1(List<Word.Range> lsR, List<string> lsS, Word.Range r, Word.Application doc)
         {
             string str = r.Text;
             
@@ -90,28 +327,69 @@ namespace SeniorProject
             }
         }
 
-        private void FindReferences(Word.Range r)
+        private void FindReferencesGraduate(Word.Range r, List<string> listReferences)
+        {
+            if (this.department == "")
+            {
+            }
+        }
+
+        private void FindReferencesEngineer(Word.Range r, List<string> listReferences)
+        {
+            if (this.department != "")
+            {
+                if (this.department == "วิศวกรรมไฟฟ้าและคอมพิวเตอร์")
+                {
+                    FindReferencesEngineerForECPE(r, listReferences);
+                }
+                else if (this.department == "วิศวกรรมโยธา เครื่องกล และอุตสาหการ")
+                {
+                    FindReferencesEngineerNotForECPE(r, listReferences);
+                }
+            }
+        }
+
+        private void FindReferencesEngineerNotForECPE(Word.Range r, List<string> listReferences)
         {
             //bool check = false;
            // SampleRegexUsage(r,ref check);
-            string[] strSpliteRanges = Regex.Split(r.Text, "\r");
+           // string[] listReferences = Regex.Split(r.Text, "\r");
             int cout = 0;
-
-            //System.Windows.Forms.MessageBox.Show(strSpliteRanges.Length + " ^^");
-            foreach (string strSpliteRange in strSpliteRanges)
+            List<string> listReferencesSort = SortWord(listReferences);
+            if (listReferencesSort == null)
             {
-                if (strSpliteRange.Length == 0)
+                return;
+            }
+            //System.Windows.Forms.MessageBox.Show(listReferences.Length + " ^^");
+            string strOld = "";
+            //checkCharNumberTH
+            int countCheckSort = 0;
+            foreach (string listReference in listReferences)
+            {
+                int value = 0;
+                if (listReference == "")
                 {
                     break;
                 }
-                int value = 0;
-                if (CheckTypeLanguage(strSpliteRange))
+                if (listReferencesSort[countCheckSort] != listReference)
                 {
-                    value = ModelBookTypeBookEN(r, strSpliteRange, cout);// ModelBookTypeBookTH(r, cout);
+                    System.Windows.Forms.MessageBox.Show("Not Sort");
+                    break;
+                }
+                countCheckSort++;
+                string strCheck = listReference;
+                if (strCheck == "")
+                {
+                    break;
+                }
+                if (CheckTypeLanguage(strCheck))
+                {
+                    value = ModelBookTypeBookEN(r, strCheck, cout);// ModelBookTypeBookTH(r, cout);
                 }
                 else
                 {
-                    value = ModelBookTypeBookTH(r, strSpliteRange, cout);
+                    checkCharNumberTH(ref strOld, strCheck);
+                    value = ModelBookTypeBookTH(r, strCheck, cout);
                 }
                 if (value == 0)
                 {
@@ -120,42 +398,44 @@ namespace SeniorProject
                 }
                 cout += value;
                 r = r.Application.ActiveDocument.Range(cout);
-               // l.sentence = strSpliteRange;
-                //l.ForNames();
-              //  bool v1 = l.ForNames();
-              //  bool v2 = l.ForYear();
-             //   bool v3 = l.ForBookName();
-             //   bool v4 = l.ForPlaceEnd();
-               // System.Windows.Forms.MessageBox.Show(v1 + " " + v2 + " " + (v3&&v4) + " ^^");
-               /* if (strSpliteRange.Length == 0)
+            }
+        }
+
+        private void FindReferencesEngineerForECPE(Word.Range r, List<string> listReferences)
+        {
+            //string[] listReferences = Regex.Split(r.Text, "\r");
+            int cout = 0;
+            LexerECPE lexerECPE = new LexerECPE();
+            foreach (string listReference in listReferences)
+            {
+                string strCheck = listReference;
+                int value = 0;
+
+                lexerECPE.sentence = strCheck;
+                if (lexerECPE.checkNumber() == 0)
                 {
+                    System.Windows.Forms.MessageBox.Show(value + "");
                     break;
                 }
-                int value = ModelBookTypeBookTH(r, strSpliteRange, cout);// ModelBookTypeBookTH(r, cout);
+
+                if (CheckTypeLanguage(lexerECPE.sentence))
+                {
+                    value = ModelBookTypeBookEN(r, lexerECPE.sentence, cout);// ModelBookTypeBookTH(r, cout);
+                }
+                else
+                {
+                    value = ModelBookTypeBookTH(r, lexerECPE.sentence, cout);
+                }
+                value += lexerECPE.countLength;
                 if (value == 0)
                 {
+                    System.Windows.Forms.MessageBox.Show(value + "");
                     break;
                 }
                 cout += value;
-                r = r.Application.ActiveDocument.Range(cout);*/
+                r = r.Application.ActiveDocument.Range(cout);
             }
-
-            /*int cout = 0;
-
-            while (true)
-            {//((((([\(])|([0-9a-zA-Zก-ฮะ-์])|([\)])|(\.)|(\,)|(\:)|([ \f\t\v]))*)(\n|\r)))
-                int value = ModelBookTypeBookTH(r, cout);// ModelBookTypeBookTH(r, cout);
-               if (value == 0)
-               {
-                   break;
-               }
-               cout += value;
-               r = r.Application.ActiveDocument.Range(cout);
-               //System.Windows.Forms.MessageBox.Show(rr.Text + " ^^");
-               
-            }*/
         }
-
         //ตรวจสอบภาษา
         private bool CheckTypeLanguage(string strCheck)
         {
@@ -175,7 +455,214 @@ namespace SeniorProject
             }
             return false;
         }
-           //หนังสือทั่วไป เอกสารประเภทหนังสือ
+
+        private bool CheckNameYear(List<string> listReferencesSort,string language)
+        {
+            ReferenceNameYear referenceNameYear = null;
+            foreach (string listReference in listReferencesSort)
+            {
+                if (language == "TH")
+                {
+                    if (referenceNameYear == null)
+                    {
+                        referenceNameYear = CheckNameYearTH(listReference);
+                    }
+                    else
+                    {
+                        ReferenceNameYear referenceNameYearNew = CheckNameYearTH(listReference);
+                        if (!referenceNameYear.Check(referenceNameYearNew))
+                        {
+                            return false;
+                        }
+                        referenceNameYear = referenceNameYearNew;
+                    }
+                }
+                else if (language == "EN")
+                {
+                    referenceNameYear = CheckNameYearEN(listReference);
+                }
+            }
+            return true;
+        }
+
+        private bool CutNameYearTH(ref string year, ref char character)
+        {
+            
+            Match match = Regex.Match(year[year.Length - 1] + "", "[0-9]");
+            if (match.Success)
+            {
+                return true;
+            }
+            else
+            {
+                match = Regex.Match(year[year.Length - 1] + "", "[ก-ฮ]");
+                if (match.Success)
+                {
+                    character = year.Substring(year.Length - 1)[0];
+                    year = year.Substring(0, year.Length - 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool CutNameYearEN(ref string year, ref char character)
+        {
+
+            Match match = Regex.Match(year[year.Length - 1] + "", "[0-9]");
+            if (match.Success)
+            {
+                return true;
+            }
+            else
+            {
+                match = Regex.Match(year[year.Length - 1] + "", "[a-z]");
+                if (match.Success)
+                {
+                    character = year.Substring(year.Length - 1)[0];
+                    year = year.Substring(0, year.Length - 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private ReferenceNameYear CheckNameYearTH(string strCheck)
+        {
+            LexerTH l = new LexerTH();
+            l.sentence = strCheck;
+            l.countLength = 0;
+            int memNum = 0;
+            if (l.ForNames())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearTH(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+
+            }
+            l.sentence = strCheck;
+            l.countLength = 0;
+            if (l.ForBookNameToBracket())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearTH(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+            }
+
+             l.sentence = strCheck;
+             l.countLength = 0;
+             if (l.ForNameOnePrevious())
+             {
+                 memNum = l.countLength;
+                 string name = strCheck.Substring(0, memNum);
+                 if (l.ForNameYear())
+                 {
+                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                     char character = ' ';
+                     bool forCheck = CutNameYearTH(ref year, ref character);
+                     return new ReferenceNameYear(name, year, character, forCheck);
+                 }
+
+             }
+
+            l.sentence = strCheck;
+            l.countLength = 0;
+            if (l.ForNames())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForNameYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearTH(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+            }
+
+            return null;
+        }
+
+        private ReferenceNameYear CheckNameYearEN(string strCheck)
+        {
+            LexerEN l = new LexerEN();
+            l.sentence = strCheck;
+            l.countLength = 0;
+            int memNum = 0;
+            if (l.ForNames())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearEN(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+
+            }
+            l.sentence = strCheck;
+            l.countLength = 0;
+            if (l.ForBookNameToBracket())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearEN(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+            }
+
+            l.sentence = strCheck;
+            l.countLength = 0;
+            if (l.ForNameOnePrevious())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForNameYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearEN(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+
+            }
+
+            l.sentence = strCheck;
+            l.countLength = 0;
+            if (l.ForNames())
+            {
+                memNum = l.countLength;
+                string name = strCheck.Substring(0, memNum);
+                if (l.ForNameYear())
+                {
+                    string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
+                    char character = ' ';
+                    bool forCheck = CutNameYearEN(ref year, ref character);
+                    return new ReferenceNameYear(name, year, character, forCheck);
+                }
+            }
+            return null;
+        }
+
+
         private int ModelBookTypeBookTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
@@ -874,13 +1361,14 @@ namespace SeniorProject
                 {
                     if (l.ForColumnEnd())
                     {
-                    }
-                    if (l.ForBookNameEC())
-                    {
-                        if (l.ForPageEnd())
+
+                        if (l.ForBookNameEC())
                         {
-                            System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
-                            return l.countLength;
+                            if (l.ForPageEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
+                                return l.countLength;
+                            }
                         }
                     }
 
@@ -894,13 +1382,14 @@ namespace SeniorProject
                 {
                     if (l.ForColumnEnd())
                     {
-                    }
-                    if (l.ForBookNameEC())
-                    {
-                        if (l.ForPageEnd())
+
+                        if (l.ForBookNameEC())
                         {
-                            System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
-                            return l.countLength;
+                            if (l.ForPageEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
+                                return l.countLength;
+                            }
                         }
                     }
 
@@ -1126,16 +1615,16 @@ namespace SeniorProject
                                 return l.countLength;
                             }
                         }
-                        else
+                        /*else
                         {
                             if (l.ForBookNameEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
                                 return l.countLength;
                             }
-                        }
+                        }*/
                     }
-                    else
+                    /*else
                     {
                         l.sentence = sentenceCopy;
                         l.countLength = countLengthCopy;
@@ -1157,7 +1646,7 @@ namespace SeniorProject
                                 return l.countLength;
                             }
                         }
-                    }
+                    }*/
 
                 }
             }
@@ -1195,7 +1684,7 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
-            bool check = false;
+           // bool check = false;
             if (l.ForNameOnePrevious())
             {
                 if (l.ForNameYear())
@@ -1213,7 +1702,7 @@ namespace SeniorProject
                     }
                 }
             }
-            l.sentence = strCheck;
+            /*l.sentence = strCheck;
             l.countLength = 0;
             check = true;
             if (check)
@@ -1232,7 +1721,7 @@ namespace SeniorProject
                         }
                     }
                 }
-            }
+            }*/
             return ModelMaterialNotPublishedTypeImageTH(r, strCheck, cout);
         }
 
@@ -1921,18 +2410,19 @@ namespace SeniorProject
                         {
                             if (l.ForPageEnd())
                             {
+                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
                                 return l.countLength;
                             }
                         }
-                        else
+                        /*else
                         {
                             if (l.ForBookNameEnd())
                             {
                                 return l.countLength;
                             }
-                        }
+                        }*/
                     }
-                    else
+                    /*else
                     {
                         l.sentence = sentenceCopy;
                         l.countLength = countLengthCopy;
@@ -1954,7 +2444,7 @@ namespace SeniorProject
                                 return l.countLength;
                             }
                         }
-                    }
+                    }*/
 
                 }
             }
@@ -1992,7 +2482,7 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
-            bool check = false;
+            //bool check = false;
             if (l.ForNameOnePrevious())
             {
                 if (l.ForNameYear())
@@ -2010,7 +2500,7 @@ namespace SeniorProject
                     }
                 }
             }
-            l.sentence = strCheck;
+           /* l.sentence = strCheck;
             l.countLength = 0;
             check = true;
             if (check)
@@ -2029,7 +2519,7 @@ namespace SeniorProject
                         }
                     }
                 }
-            }
+            }*/
             return ModelMaterialNotPublishedTypeImageEN(r, strCheck, cout);
         }
 
@@ -2609,6 +3099,20 @@ namespace SeniorProject
 
             }
             return 0;
+        }
+
+        //ตรวจสอบลำดับตัวอักษร
+        private void checkCharNumberTH(ref string strOld, string strNew)
+        {
+            if (strOld=="")
+            for (char i = 'ก'; i < 'ฮ'; i++)
+            {
+
+            }
+            for (char i = 'ะ'; i < 'ไ'; i++)
+            {
+
+            }
         }
     }
 }

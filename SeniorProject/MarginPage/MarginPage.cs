@@ -10,7 +10,6 @@ namespace SeniorProject
 {
     class MarginPage
     {
-        private string title;
         private float leftOld;
         private float rightOld;
         private float topOld;

@@ -183,7 +183,10 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReferenceModel\LexerECPE.cs" />
     <Compile Include="ReferenceModel\LexerEN.cs" />
+    <Compile Include="ReferenceModel\NumberToThai.cs" />
+    <Compile Include="ReferenceModel\ReferenceNameYear.cs" />
     <Compile Include="ReferenceModel\ReferenceModel.cs" />
     <Compile Include="ReferenceModel\LexerTH.cs" />
     <Compile Include="Sign_Containner.cs">

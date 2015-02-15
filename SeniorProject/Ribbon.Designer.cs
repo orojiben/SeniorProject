@@ -37,21 +37,21 @@
             this.tab1 = this.Factory.CreateRibbonTab();
             this.grp_model = this.Factory.CreateRibbonGroup();
             this.ddn_Model = this.Factory.CreateRibbonDropDown();
-            this.btn_checkPaper = this.Factory.CreateRibbonButton();
-            this.btn_checkMargin = this.Factory.CreateRibbonButton();
-            this.btn_checkPunctuationMark = this.Factory.CreateRibbonButton();
+            this.ddn_Department = this.Factory.CreateRibbonDropDown();
             this.btn_SaveNewFile = this.Factory.CreateRibbonButton();
-            this.btn_checkReference = this.Factory.CreateRibbonButton();
             this.button3 = this.Factory.CreateRibbonButton();
-            this.grp_checking = this.Factory.CreateRibbonGroup();
-            this.btn_checkRoyalWord = this.Factory.CreateRibbonButton();
             this.btn_checkSing = this.Factory.CreateRibbonButton();
+            this.grp_checking = this.Factory.CreateRibbonGroup();
+            this.btn_checkMargin = this.Factory.CreateRibbonButton();
+            this.btn_checkPaper = this.Factory.CreateRibbonButton();
             this.btn_checkFontType = this.Factory.CreateRibbonButton();
             this.btn_checkFontSize = this.Factory.CreateRibbonButton();
-            this.btn_correctFont = this.Factory.CreateRibbonButton();
-            this.grp_edit = this.Factory.CreateRibbonGroup();
+            this.btn_checkRoyalWord = this.Factory.CreateRibbonButton();
+            this.btn_checkPunctuationMark = this.Factory.CreateRibbonButton();
+            this.btn_checkReference = this.Factory.CreateRibbonButton();
             this.btn_checkAll = this.Factory.CreateRibbonButton();
-            this.ddn_Department = this.Factory.CreateRibbonDropDown();
+            this.grp_edit = this.Factory.CreateRibbonGroup();
+            this.btn_correctFont = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.grp_model.SuspendLayout();
             this.grp_checking.SuspendLayout();
@@ -82,23 +82,11 @@
             this.ddn_Model.Name = "ddn_Model";
             this.ddn_Model.SelectionChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.dropDown1_SelectionChanged);
             // 
-            // btn_checkPaper
+            // ddn_Department
             // 
-            this.btn_checkPaper.Label = "ตรวจสอบกระดาษที่ใช้";
-            this.btn_checkPaper.Name = "btn_checkPaper";
-            this.btn_checkPaper.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button4_Click);
-            // 
-            // btn_checkMargin
-            // 
-            this.btn_checkMargin.Label = "ตรวจสอบระยะขอบกระดาษ";
-            this.btn_checkMargin.Name = "btn_checkMargin";
-            this.btn_checkMargin.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button5_Click);
-            // 
-            // btn_checkPunctuationMark
-            // 
-            this.btn_checkPunctuationMark.Label = "ตรวจสอบเครื่องหมายวรรคตอน";
-            this.btn_checkPunctuationMark.Name = "btn_checkPunctuationMark";
-            this.btn_checkPunctuationMark.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button6_Click);
+            this.ddn_Department.Label = "ภาควิชา";
+            this.ddn_Department.Name = "ddn_Department";
+            this.ddn_Department.SelectionChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ddn_Department_SelectionChanged);
             // 
             // btn_SaveNewFile
             // 
@@ -106,17 +94,17 @@
             this.btn_SaveNewFile.Name = "btn_SaveNewFile";
             this.btn_SaveNewFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
-            // btn_checkReference
-            // 
-            this.btn_checkReference.Label = "ตรวจสอบรูปแบบอ้างอิง";
-            this.btn_checkReference.Name = "btn_checkReference";
-            this.btn_checkReference.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button2_Click);
-            // 
             // button3
             // 
             this.button3.Label = "button3";
             this.button3.Name = "button3";
             this.button3.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button3_Click);
+            // 
+            // btn_checkSing
+            // 
+            this.btn_checkSing.Label = "Check Sing";
+            this.btn_checkSing.Name = "btn_checkSing";
+            this.btn_checkSing.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkSing_Click);
             // 
             // grp_checking
             // 
@@ -131,17 +119,17 @@
             this.grp_checking.Label = "การตรวจสอบ";
             this.grp_checking.Name = "grp_checking";
             // 
-            // btn_checkRoyalWord
+            // btn_checkMargin
             // 
-            this.btn_checkRoyalWord.Label = "ตรวจสอบคำตามศัพท์บรรญัติ";
-            this.btn_checkRoyalWord.Name = "btn_checkRoyalWord";
-            this.btn_checkRoyalWord.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkRoyalWord_Click);
+            this.btn_checkMargin.Label = "ตรวจสอบระยะขอบกระดาษ";
+            this.btn_checkMargin.Name = "btn_checkMargin";
+            this.btn_checkMargin.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button5_Click);
             // 
-            // btn_checkSing
+            // btn_checkPaper
             // 
-            this.btn_checkSing.Label = "Check Sing";
-            this.btn_checkSing.Name = "btn_checkSing";
-            this.btn_checkSing.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkSing_Click);
+            this.btn_checkPaper.Label = "ตรวจสอบกระดาษที่ใช้";
+            this.btn_checkPaper.Name = "btn_checkPaper";
+            this.btn_checkPaper.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button4_Click);
             // 
             // btn_checkFontType
             // 
@@ -155,17 +143,23 @@
             this.btn_checkFontSize.Name = "btn_checkFontSize";
             this.btn_checkFontSize.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click_1);
             // 
-            // btn_correctFont
+            // btn_checkRoyalWord
             // 
-            this.btn_correctFont.Label = "แก้ไข Font";
-            this.btn_correctFont.Name = "btn_correctFont";
-            this.btn_correctFont.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_correctFont_Click);
+            this.btn_checkRoyalWord.Label = "ตรวจสอบคำตามศัพท์บรรญัติ";
+            this.btn_checkRoyalWord.Name = "btn_checkRoyalWord";
+            this.btn_checkRoyalWord.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkRoyalWord_Click);
             // 
-            // grp_edit
+            // btn_checkPunctuationMark
             // 
-            this.grp_edit.Items.Add(this.btn_correctFont);
-            this.grp_edit.Label = "การแก้ไข";
-            this.grp_edit.Name = "grp_edit";
+            this.btn_checkPunctuationMark.Label = "ตรวจสอบเครื่องหมายวรรคตอน";
+            this.btn_checkPunctuationMark.Name = "btn_checkPunctuationMark";
+            this.btn_checkPunctuationMark.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button6_Click);
+            // 
+            // btn_checkReference
+            // 
+            this.btn_checkReference.Label = "ตรวจสอบรูปแบบอ้างอิง";
+            this.btn_checkReference.Name = "btn_checkReference";
+            this.btn_checkReference.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button2_Click);
             // 
             // btn_checkAll
             // 
@@ -173,10 +167,17 @@
             this.btn_checkAll.Name = "btn_checkAll";
             this.btn_checkAll.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkAll_Click);
             // 
-            // ddn_Department
+            // grp_edit
             // 
-            this.ddn_Department.Label = "ภาควิชา";
-            this.ddn_Department.Name = "ddn_Department";
+            this.grp_edit.Items.Add(this.btn_correctFont);
+            this.grp_edit.Label = "การแก้ไข";
+            this.grp_edit.Name = "grp_edit";
+            // 
+            // btn_correctFont
+            // 
+            this.btn_correctFont.Label = "แก้ไข Font";
+            this.btn_correctFont.Name = "btn_correctFont";
+            this.btn_correctFont.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_correctFont_Click);
             // 
             // Ribbon1
             // 

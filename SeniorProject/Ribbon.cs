@@ -12,70 +12,31 @@ namespace SeniorProject
 {
     public partial class Ribbon1
     {
-        Word.Range rng;
-        float leftDf;
-        float rightDf;
-        float topDf;
-        float bottomDf;
-        List<MarginPage> list;
         MarginPage marginPage;
         PaperPage paperPage;
         List<Styles> loadStyles;
         private List<string> font;
-        ReferenceModel rm;
-        string facultyType = "1,1";
+        ReferenceModel referenceModel;
 
         private void Ribbon1_Load(object sender, RibbonUIEventArgs e)
         {
-            rm = new ReferenceModel();
+            referenceModel = new ReferenceModel();
             loadStyles = StyleFile.LoadStyle();
-            //this.rng = Globals.ThisAddIn.Application.ActiveDocument.PageSetup;
-            //this.leftDf = this.rng.PageSetup.LeftMargin;
-            //this.rightDf = this.rng.PageSetup.RightMargin;
-            //this.topDf = this.rng.PageSetup.TopMargin;
-           // this.bottomDf = this.rng.PageSetup.BottomMargin;
-           // list = new List<MarginPage>();
-
-
-            readFileToList();
-            // Word.Document save = Globals.ThisAddIn.Application.ActiveDocument;
-
-            //  save.Application.ActiveDocument.SaveAs2()
+            readFileStyleToList();
         }
 
-        private void comboBox1_TextChanged(object sender, RibbonControlEventArgs e)
+        private void readFileStyleToList()
         {
-            // Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl = (RibbonDropDownItem)this.comboBox1.Items.GetEnumerator();
-            // MessageBox.Show(ribbonDropDownItemImpl.Label);
-            //string[] words = buff.Split(',');
-        }
-
-        private void readFileToList()
-        {
-            // list.Add(new MarginPage("Defalf", this.leftDf, this.rightDf, this.topDf, this.bottomDf));
-
-
-
             try
             {
                 this.ddn_Model.Items.Clear();
-                foreach (Styles s in this.loadStyles)
+                foreach (Styles style in this.loadStyles)
                 {
                     Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
-                    ribbonDropDownItemImpl1.Label = s.Name;
+                    ribbonDropDownItemImpl1.Label = style.Name;
                     this.ddn_Model.Items.Add(ribbonDropDownItemImpl1);
                 }
-                Styles styles = this.loadStyles[0];
-                string[] words = styles.Margin.Split(',');
-
-                float leftMargin = centimeterToPoint((float)(Convert.ToDouble(words[0])));
-                float rightMargin = centimeterToPoint((float)(Convert.ToDouble(words[1])));
-                float topMargin = centimeterToPoint((float)(Convert.ToDouble(words[2])));
-                float bottomMargin = centimeterToPoint((float)(Convert.ToDouble(words[3])));
-                marginPage = new MarginPage(leftMargin, rightMargin, topMargin, bottomMargin);
-                paperPage = new PaperPage(styles.Paper);
-                font = styles.Fonts;
-
+                loadDataStyles(0);
             }
             catch { };
 
@@ -83,29 +44,9 @@ namespace SeniorProject
 
         private void dropDown1_SelectionChanged(object sender, RibbonControlEventArgs e)
         {
-            //this.dropDown1.SelectedItem.Label;
-            /*MarginPage mp = list[this.dropDown1.SelectedItemIndex];
-            float s = mp.getLeft();
-            this.rng.PageSetup.LeftMargin = mp.getLeft();
-            this.rng.PageSetup.RightMargin = mp.getRight();
-            this.rng.PageSetup.TopMargin = mp.getTop();
-            this.rng.PageSetup.BottomMargin = mp.getBottom();*/
-                Styles s = this.loadStyles[this.ddn_Model.SelectedItemIndex];
-                string[] words = s.Margin.Split(',');
-                
-                float leftMargin = centimeterToPoint((float)(Convert.ToDouble(words[0])));
-                float rightMargin = centimeterToPoint((float)(Convert.ToDouble(words[1])));
-                float topMargin = centimeterToPoint((float)(Convert.ToDouble(words[2])));
-                float bottomMargin = centimeterToPoint((float)(Convert.ToDouble(words[3])));
-                marginPage = new MarginPage(leftMargin, rightMargin, topMargin, bottomMargin);
-                paperPage = new PaperPage(s.Paper);
-                font = s.Fonts;
+            loadDataStyles(this.ddn_Model.SelectedItemIndex);
         }
 
-        private float centimeterToPoint(float centimeter)
-        {
-            return 28.34645669291f * centimeter;
-        }
         int i = 0;
         private void button1_Click(object sender, RibbonControlEventArgs e)
         {
@@ -124,7 +65,7 @@ namespace SeniorProject
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
             //FindAndReplace("ben","orojiben");
-            rm.runCheckReferenceAll();
+            referenceModel.runCheckReferenceAll();
         }
 
         
@@ -173,7 +114,7 @@ namespace SeniorProject
         {
 
             this.ShowFont();
-            rm.runCheckReferenceAll();
+            referenceModel.runCheckReferenceAll();
             Verify_Royal_Word_TH verify_th = new Verify_Royal_Word_TH();
         }
 
@@ -198,12 +139,44 @@ namespace SeniorProject
             this.paperPage.changing();
         }
 
-        /*Match match = Regex.Match(this.code, @"^[\(\)\{};]");
-            if (match.Success)
-            {
-                this.code = this.code.Remove(0, 1); 
-                this.Position += 1;
-                return new Token(match.Value);*/
+        private void loadDataStyles(int index)
+        {
+            Styles styles = this.loadStyles[index];
+            string[] words = styles.Margin.Split(',');
 
+            float leftMargin = centimeterToPoint((float)(Convert.ToDouble(words[0])));
+            float rightMargin = centimeterToPoint((float)(Convert.ToDouble(words[1])));
+            float topMargin = centimeterToPoint((float)(Convert.ToDouble(words[2])));
+            float bottomMargin = centimeterToPoint((float)(Convert.ToDouble(words[3])));
+            marginPage = new MarginPage(leftMargin, rightMargin, topMargin, bottomMargin);
+            paperPage = new PaperPage(styles.Paper);
+            font = styles.Fonts;
+            this.ddn_Department.Items.Clear();
+            this.ddn_Department.Visible = false;
+            this.referenceModel.faculty = "";
+            this.referenceModel.department = "";
+            if (styles.Departments.Count > 0)
+            {
+                this.ddn_Department.Visible = true;
+                foreach (string departments in styles.Departments)
+                {
+                    Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
+                    ribbonDropDownItemImpl1.Label = departments;
+                    this.ddn_Department.Items.Add(ribbonDropDownItemImpl1);
+                }
+                this.referenceModel.department = styles.Departments[0];
+            }
+            this.referenceModel.faculty = styles.Name;
+        }
+
+        private float centimeterToPoint(float centimeter)
+        {
+            return 28.34645669291f * centimeter;
+        }
+
+        private void ddn_Department_SelectionChanged(object sender, RibbonControlEventArgs e)
+        {
+            this.referenceModel.department = this.ddn_Department.Items[this.ddn_Department.SelectedItemIndex].Label;
+        }
     }
 }
