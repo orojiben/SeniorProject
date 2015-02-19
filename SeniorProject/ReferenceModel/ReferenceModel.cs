@@ -6,8 +6,6 @@ using System.Text;
 using Word = Microsoft.Office.Interop.Word;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Office.Interop.Word;
-using Microsoft.Office.Core;
 
 namespace SeniorProject
 {
@@ -48,13 +46,12 @@ namespace SeniorProject
             }
         }
 
-
         private void CheckReference()
         {
             var wordApp = Globals.ThisAddIn.Application;
 
-            List<Word.Range> lsR = new List<Word.Range>();
-            List<string> lsS = new List<string>();
+            //List<Word.Range> lsR = new List<Word.Range>();
+           // List<string> lsS = new List<string>();
             // wordApp.ActiveDocument.Paragraphs.IndentCharWidth(7);
             //wordApp.ActiveDocument.Paragraphs.CharacterUnitFirstLineIndent= 0.5f;
 
@@ -70,123 +67,39 @@ namespace SeniorProject
             foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
             {
                 string[] newRanges = range.Text.Split('\r');
+
                 List<string> listReferences = new List<string>(newRanges);
-                listReferences.RemoveAt(listReferences.Count-1);
+                
+                while (listReferences[listReferences.Count - 1] == "")
+                {
+                    listReferences.RemoveAt(listReferences.Count - 1);
+                }
+
+                List<Word.Range> listReferencesRange = SubRange(range,listReferences);
+
                 if (this.faculty == "Engineering")
                 {
-                    FindReferencesEngineer(range, listReferences);
+                    FindReferencesEngineer(listReferencesRange);
                 }
                 else if (this.faculty == "Graduate")
                 {
-                    FindReferencesGraduate(range, listReferences);
+                    FindReferencesGraduate(listReferencesRange);
                 }
                 //Word.Range rangeNew = range.InlineShapes.Application.ActiveDocument.StoryRanges[0];
             }
         }
-        /*
-        private void CeckBio()
+
+        private List<string> SortWord(List<Word.Range> litsRange)
         {
-            var wordApp = Globals.ThisAddIn.Application;
-
-            List<Word.Range> lsR = new List<Word.Range>();
-            List<string> lsS = new List<string>();
-           // wordApp.ActiveDocument.Paragraphs.IndentCharWidth(7);
-            //wordApp.ActiveDocument.Paragraphs.CharacterUnitFirstLineIndent= 0.5f;
-
-            /*1.5 cm to point
-            wordApp.ActiveDocument.Paragraphs.LeftIndent = 42.519685f;
-            wordApp.ActiveDocument.Paragraphs.FirstLineIndent = -42.519685f;
-             */
-            //0.5 inches = 36 PostScript points
-           // wordApp.ActiveDocument.Paragraphs.LeftIndent = 36.0f;
-           // wordApp.ActiveDocument.Paragraphs.FirstLineIndent = -36.0f;
-            //wordApp.ActiveDocument.Paragraphs.TabHangingIndent(0);
-            //wordApp.ActiveDocument.Paragraphs.ca
-          /*  foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
-            {
-                string[] newRanges = range.Text.Split('\r');
-                int countNewRanges = 0;
-                List<ReferenceCheck> listReferences = new List<ReferenceCheck>();
-                int numberForAdd = 0;
-                string referenceRange = "";
-                bool checkNull = false;
-                foreach (string newRange in newRanges)
-                {
-                    if (newRange == "")
-                    {
-                        if (!checkNull)
-                        {
-                            listReferences.Add(new ReferenceCheck(referenceRange, numberForAdd));
-                            numberForAdd = 0;
-                            checkNull = true;
-                        }
-                        continue;
-                    }
-                    checkNull = false;
-                    countNewRanges++;
-                    string newRangeCopy = newRange;
-                    if (newRanges.Length == countNewRanges)
-                    {
-                        break;
-                    }
-                    Match match = Regex.Match(newRangeCopy, @"^(\s)+");
-                    if (match.Success)
-                    {
-                        if (match.Length == 7)
-                        {
-                            referenceRange += newRangeCopy.Substring(6);
-                            numberForAdd++;
-                        }
-                        else
-                        {
-                            listReferences.Clear();
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (referenceRange != "")
-                        {
-                            listReferences.Add(new ReferenceCheck(referenceRange, numberForAdd));
-                            referenceRange = newRangeCopy;
-                            numberForAdd = 0;
-                        }
-                        else
-                        {
-                            referenceRange = newRangeCopy;
-                        }
-
-                    }
-                    if (newRanges.Length - 1 == countNewRanges)
-                    {
-                        listReferences.Add(new ReferenceCheck(referenceRange, numberForAdd));
-                        break;
-                    }
-                }
-
-                
-                if (this.faculty == "Engineering")
-                {
-                    FindReferencesEngineer(range, listReferences);
-                }
-                else if (this.faculty == "Graduate")
-                {
-                    FindReferencesGraduate(range, listReferences);
-                }                
-                //Word.Range rangeNew = range.InlineShapes.Application.ActiveDocument.StoryRanges[0];
-            }
-        }*/
-
-        private List<string> SortWord(List<string> listReferences)
-        {
+            //ช้าเพราะเปิด App
             var winword = new Microsoft.Office.Interop.Word.Application();
             object missing = System.Reflection.Missing.Value;
             Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
             document.Content.SetRange(0, 0);
             document.Content.Text = "";
-            foreach (string listReference in listReferences)
+            foreach (Word.Range Range in litsRange)
             {
-                document.Content.Text += listReference;
+                document.Content.Text += Range.Text;
 
             }
             //document.Content.Text = "เอโมโตะ สิงห์น้อย. (2549). คำนามประสม: ศาสตร์และศิลป์ในการสร้างคำไทย. กรุงเทพฯ: สำนักพิมพ์แห่งจุฬาลงกรณ์มหาวิทยาลัย.";
@@ -197,9 +110,9 @@ namespace SeniorProject
             {
 
                 Word.Range rangeNew = range;
-                rangeNew.Sort(false, ref missing, ref missing, WdSortOrder.wdSortOrderAscending, ref missing, ref missing,
-                    WdSortOrder.wdSortOrderAscending, ref missing, ref missing, WdSortOrder.wdSortOrderAscending,
-                    ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, WdLanguageID.wdThai);
+                rangeNew.Sort(false, ref missing, ref missing, Word.WdSortOrder.wdSortOrderAscending, ref missing, ref missing,
+                    Word.WdSortOrder.wdSortOrderAscending, ref missing, ref missing, Word.WdSortOrder.wdSortOrderAscending,
+                    ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, Word.WdLanguageID.wdThai);
                 string s = rangeNew.Text;
                 listReferencesSort.AddRange(s.Split('\r'));
             }
@@ -268,40 +181,6 @@ namespace SeniorProject
             return listReferencesSort;
         }
 
-        private void FindReferencesEngineerTestV1(List<Word.Range> lsR, List<string> lsS, Word.Range r, Word.Application doc)
-        {
-            string str = r.Text;
-            
-            lsR.Clear();
-
-            Match match;
-            int cout = 0;
-            // System.Windows.Forms.MessageBox.Show(str);
-            
-            while (true)
-            {//((((([\(])|([0-9a-zA-Zก-ฮะ-์])|([\)])|(\.)|(\,)|(\:)|([ \f\t\v]))*)(\n|\r)))
-                match = Regex.Match(str, @"^(([a-zA-Z])*((\,)(\s)(([a-zA-Z])+(\.)(\s)?)*)?((\s)[a][n][d](\s)([a-zA-Z])*((\,)((\s)([a-zA-Z])+(\.))*)?)?((\s)(\()([0-9]{4})(\)(\.)))((\s)([a-zA-Z])([a-zA-Z]|(\s))*(\.))((\s)(([a-zA-Z]|(\s))*(\,)(\s))*([a-zA-Z]|(\s))*(\:)(\s)([a-zA-Z]|(\s))*(\.))(\n|\r))");
-                if (match.Success)
-                {
-                    //Word.Range newr = r;
-                    //r.
-                    str = str.Remove(0, match.Value.Length);
-                    lsS.Add(match.Value);
-                    //lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                    //newr.SetRange(cout, cout + match.Value.Length);
-                    //Word.Range buff = newr;
-                    lsR.Add(r.Application.ActiveDocument.Range(cout, cout + match.Value.Length));
-                    //System.Windows.Forms.MessageBox.Show(match.Value);
-                    //System.Windows.Forms.MessageBox.Show(buff.Text + " _");
-                    cout = +match.Value.Length;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
         public void SampleRegexUsage(Word.Range r,ref bool check)
         {
             string regex = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([บ][ร][ร][ณ][า][ธ][ิ][ก][า][ร]\)\,\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\r";
@@ -327,69 +206,70 @@ namespace SeniorProject
             }
         }
 
-        private void FindReferencesGraduate(Word.Range r, List<string> listReferences)
+        private void FindReferencesGraduate(List<Word.Range> litsRange)
         {
             if (this.department == "")
             {
             }
         }
 
-        private void FindReferencesEngineer(Word.Range r, List<string> listReferences)
+        private void FindReferencesEngineer(List<Word.Range> litsRange)
         {
             if (this.department != "")
             {
                 if (this.department == "วิศวกรรมไฟฟ้าและคอมพิวเตอร์")
                 {
-                    FindReferencesEngineerForECPE(r, listReferences);
+                    FindReferencesEngineerForECPE(litsRange);
                 }
                 else if (this.department == "วิศวกรรมโยธา เครื่องกล และอุตสาหการ")
                 {
-                    FindReferencesEngineerNotForECPE(r, listReferences);
+                    FindReferencesEngineerNotForECPE(litsRange);
                 }
             }
         }
 
-        private void FindReferencesEngineerNotForECPE(Word.Range r, List<string> listReferences)
+        private void FindReferencesEngineerNotForECPE(List<Word.Range> litsRange)
         {
             //bool check = false;
            // SampleRegexUsage(r,ref check);
            // string[] listReferences = Regex.Split(r.Text, "\r");
             int cout = 0;
-            List<string> listReferencesSort = SortWord(listReferences);
+            List<string> listReferencesSort = SortWord(litsRange);
             if (listReferencesSort == null)
             {
                 return;
             }
             //System.Windows.Forms.MessageBox.Show(listReferences.Length + " ^^");
-            string strOld = "";
+            //string strOld = "";
             //checkCharNumberTH
             int countCheckSort = 0;
-            foreach (string listReference in listReferences)
+            int countRange = 0;
+            foreach (Word.Range range in litsRange)
             {
                 int value = 0;
-                if (listReference == "")
+                if (range.Text == "" || range.Text == "\r" || range.Text == null)
                 {
                     break;
                 }
-                if (listReferencesSort[countCheckSort] != listReference)
+                if (listReferencesSort[countCheckSort] != range.Text)
                 {
                     System.Windows.Forms.MessageBox.Show("Not Sort");
                     break;
                 }
                 countCheckSort++;
-                string strCheck = listReference;
+                string strCheck = range.Text;
                 if (strCheck == "")
                 {
                     break;
                 }
                 if (CheckTypeLanguage(strCheck))
                 {
-                    value = ModelBookTypeBookEN(r, strCheck, cout);// ModelBookTypeBookTH(r, cout);
+                    value = ModelBookTypeBookEN(litsRange[countRange], strCheck, cout);// ModelBookTypeBookTH(r, cout);
                 }
                 else
                 {
-                    checkCharNumberTH(ref strOld, strCheck);
-                    value = ModelBookTypeBookTH(r, strCheck, cout);
+                    //checkCharNumberTH(ref strOld, strCheck);
+                    value = ModelBookTypeBookTH(litsRange[countRange], strCheck, cout);
                 }
                 if (value == 0)
                 {
@@ -397,18 +277,23 @@ namespace SeniorProject
                     break;
                 }
                 cout += value;
-                r = r.Application.ActiveDocument.Range(cout);
+                //r = r.Application.ActiveDocument.Range(cout);
+                countRange++;
             }
         }
 
-        private void FindReferencesEngineerForECPE(Word.Range r, List<string> listReferences)
+        private void FindReferencesEngineerForECPE(List<Word.Range> litsRange)
         {
             //string[] listReferences = Regex.Split(r.Text, "\r");
             int cout = 0;
             LexerECPE lexerECPE = new LexerECPE();
-            foreach (string listReference in listReferences)
+            foreach (Word.Range range in litsRange)
             {
-                string strCheck = listReference;
+                if (range.Text == "" || range.Text == "\r" || range.Text == null)
+                {
+                    break;
+                }
+                string strCheck = range.Text;
                 int value = 0;
 
                 lexerECPE.sentence = strCheck;
@@ -420,11 +305,11 @@ namespace SeniorProject
 
                 if (CheckTypeLanguage(lexerECPE.sentence))
                 {
-                    value = ModelBookTypeBookEN(r, lexerECPE.sentence, cout);// ModelBookTypeBookTH(r, cout);
+                    value = ModelBookTypeBookEN(range.Application.ActiveDocument.Range(lexerECPE.countLength, strCheck.Length), lexerECPE.sentence, cout);// ModelBookTypeBookTH(r, cout);
                 }
                 else
                 {
-                    value = ModelBookTypeBookTH(r, lexerECPE.sentence, cout);
+                    value = ModelBookTypeBookTH(range.Application.ActiveDocument.Range(lexerECPE.countLength, strCheck.Length), lexerECPE.sentence, cout);
                 }
                 value += lexerECPE.countLength;
                 if (value == 0)
@@ -432,26 +317,17 @@ namespace SeniorProject
                     System.Windows.Forms.MessageBox.Show(value + "");
                     break;
                 }
-                cout += value;
-                r = r.Application.ActiveDocument.Range(cout);
+                //cout += value;
+                //r = r.Application.ActiveDocument.Range(cout);
             }
         }
         //ตรวจสอบภาษา
         private bool CheckTypeLanguage(string strCheck)
         {
-            for (char chars = 'A'; chars <= 'Z'; chars++)
+            Match match = Regex.Match(strCheck, @"^[0-9]*(\s)?[A-Za-z]");
+            if (match.Success)
             {
-                if (strCheck[0] == chars)
-                {
-                    return true;
-                }
-            }
-            for (char chars = 'a'; chars <= 'b'; chars++)
-            {
-                if (strCheck[0] == chars)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
@@ -466,10 +342,18 @@ namespace SeniorProject
                     if (referenceNameYear == null)
                     {
                         referenceNameYear = CheckNameYearTH(listReference);
+                        if (referenceNameYear == null)
+                        {
+                            continue;
+                        }
                     }
                     else
                     {
                         ReferenceNameYear referenceNameYearNew = CheckNameYearTH(listReference);
+                        if (referenceNameYearNew == null)
+                        {
+                            continue;
+                        }
                         if (!referenceNameYear.Check(referenceNameYearNew))
                         {
                             return false;
@@ -533,11 +417,11 @@ namespace SeniorProject
             l.sentence = strCheck;
             l.countLength = 0;
             int memNum = 0;
-            if (l.ForNames())
+            if (l.ForNamesForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForYear())
+                if (l.ForYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -548,11 +432,11 @@ namespace SeniorProject
             }
             l.sentence = strCheck;
             l.countLength = 0;
-            if (l.ForBookNameToBracket())
+            if (l.ForBookNameToBracketForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForYear())
+                if (l.ForYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -563,11 +447,11 @@ namespace SeniorProject
 
              l.sentence = strCheck;
              l.countLength = 0;
-             if (l.ForNameOnePrevious())
+             if (l.ForNameOnePreviousForCheck())
              {
                  memNum = l.countLength;
                  string name = strCheck.Substring(0, memNum);
-                 if (l.ForNameYear())
+                 if (l.ForNameYearForCheck())
                  {
                      string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                      char character = ' ';
@@ -579,11 +463,11 @@ namespace SeniorProject
 
             l.sentence = strCheck;
             l.countLength = 0;
-            if (l.ForNames())
+            if (l.ForNamesForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForNameYear())
+                if (l.ForNameYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -601,11 +485,11 @@ namespace SeniorProject
             l.sentence = strCheck;
             l.countLength = 0;
             int memNum = 0;
-            if (l.ForNames())
+            if (l.ForNamesForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForYear())
+                if (l.ForYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -616,11 +500,11 @@ namespace SeniorProject
             }
             l.sentence = strCheck;
             l.countLength = 0;
-            if (l.ForBookNameToBracket())
+            if (l.ForBookNameToBracketForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForYear())
+                if (l.ForYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -631,11 +515,11 @@ namespace SeniorProject
 
             l.sentence = strCheck;
             l.countLength = 0;
-            if (l.ForNameOnePrevious())
+            if (l.ForNameOnePreviousForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForNameYear())
+                if (l.ForNameYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -647,11 +531,11 @@ namespace SeniorProject
 
             l.sentence = strCheck;
             l.countLength = 0;
-            if (l.ForNames())
+            if (l.ForNamesForCheck())
             {
                 memNum = l.countLength;
                 string name = strCheck.Substring(0, memNum);
-                if (l.ForNameYear())
+                if (l.ForNameYearForCheck())
                 {
                     string year = strCheck.Substring(memNum, l.countLength - memNum - 3).Substring(1);
                     char character = ' ';
@@ -662,21 +546,26 @@ namespace SeniorProject
             return null;
         }
 
-
+        //หนังสือทั่วไป เอกสารประเภทหนังสือ
         private int ModelBookTypeBookTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForYearCreate())
                         {
 
                         }
+                        l.countCutNotBold = l.countLength;
                         if (!l.ForBookTranslator())
                         {
                             return ModelBookTypeArticleTH(r, strCheck, cout);
@@ -684,6 +573,7 @@ namespace SeniorProject
 
                         if (l.ForPlaceEnd())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (!l.ForBookAddEnd())
                             {
                                 return ModelBookTypeArticleTH(r, strCheck, cout);
@@ -697,78 +587,27 @@ namespace SeniorProject
             }
             return ModelBookTypeArticleTH(r, strCheck, cout);
         }
-          //หนังสือทั่วไป เอกสารประเภทหนังสือ
-        /*private int ModelBookTypeBookTH(Word.Range r,string strCheck ,int cout)
-        {
-            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s(\((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+[ผ][ู][้][แ][ป][ล]\)\.\s)?(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.(\s)?(\((([0-9ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\))?)";
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-           
-            
-            if (checkValue!=-1)
-            {
-                System.Windows.Forms.MessageBox.Show("หนังสือทั่วไป เอกสารประเภทหนังสือ");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "). ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 1 || countCheck == 2)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            if (countCheck == 2)
-                            {
-                                countCheck = 1;
-                            }
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-                            if (rngWord.Text[rngWord.Text.Length - 2] == '.')
-                            {
-                                countCheck++;
-                            }
-
-                        }
-                        else if (countCheck == 2)
-                        {
-                            System.Windows.Forms.MessageBox.Show("หนังสือทั่วไป เอกสารประเภทหนังสือ จบ");
-                            cout = +checkValue;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-            }
-
-            return ModelBookTypeArticleTH( r, strCheck, cout);
-            
-        }*/
-        
         //บทความในหนังสือ เอกสารประเภทหนังสือ
         private int ModelBookTypeArticleTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookNameToIn())
                     {
+                        
                         if (l.ForBookNameIn())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPage())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPlaceEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทความในหนังสือ เอกสารประเภทหนังสือ");
@@ -782,152 +621,27 @@ namespace SeniorProject
             return ModelBookTypeEncyclopediaTH(r, strCheck, cout);
         }
 
-        //บทความในหนังสือ เอกสารประเภทหนังสือ
-        /*private int ModelBookTypeArticleTH(Word.Range r,string strCheck, int cout)
-        {
-            
-            int checkValue = -1;
-            int checkValue2 = -1;
-            string []strCheckSplites = Regex.Split(strCheck,". ใน ");
-            if (strCheckSplites.Length == 2)
-            {
-                string strFirst = strCheckSplites[0]+". ใน ";
-                string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s[ใ][น]\s)";
-                var task = Task.Factory.StartNew(() => CheckStringMatch(strFirst, regex, ref checkValue) );
-                var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-                string strSecond = strCheckSplites[1];
-                string regex2 = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([บ][ร][ร][ณ][า][ธ][ิ][ก][า][ร]\)\,\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
-                var task2 = Task.Factory.StartNew(() => CheckStringMatch(strSecond, regex2, ref checkValue2));
-                var completedWithinAllotedTime2 = task2.Wait(TimeSpan.FromMilliseconds(1000));
-            }
-
-            if (checkValue != -1 && checkValue2 != -1)
-            {
-                checkValue += checkValue2;
-                System.Windows.Forms.MessageBox.Show("บทความในหนังสือ เอกสารประเภทหนังสือ");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "). " || rngWord.Text == "), ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else
-                        {
-                            if (rngWord.Text == "(" || rngWord.Text == "หน้า" || rngWord.Text == "หน้า ")
-                            {
-                                countCheck++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                    }
-                    else if (countCheck == 4)
-                    {
-                        System.Windows.Forms.MessageBox.Show("บทความในหนังสือ เอกสารประเภทหนังสือ จบ");
-                        cout = +checkValue;
-                        return cout;
-                    }
-                }
-            }
-            return ModelBookTypeEncyclopediaTH(r, strCheck, cout);
-        }*/
-
-        //หนังสือสารานุกรม เอกสารประเภทหนังสือ
-        /*private int ModelBookTypeEncyclopediaTH(Word.Range r, string strCheck, int cout)
-        {
-            int checkValue = -1;
-            int checkValue2 = -1;
-            string []strCheckSplites = Regex.Split(strCheck,". ใน ");
-            if (strCheckSplites.Length == 2)
-            {
-                string strFirst = strCheckSplites[0]+". ใน ";
-                string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s[ใ][น]\s)";
-                var task = Task.Factory.StartNew(() => CheckStringMatch(strFirst, regex, ref checkValue) );
-                var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-                string strSecond = strCheckSplites[1];
-                string regex2 = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
-                var task2 = Task.Factory.StartNew(() => CheckStringMatch(strSecond, regex2, ref checkValue2));
-                var completedWithinAllotedTime2 = task2.Wait(TimeSpan.FromMilliseconds(1000));
-            }
-
-
-            if (checkValue != -1 && checkValue2 != -1)
-            {
-                checkValue += checkValue2;
-                System.Windows.Forms.MessageBox.Show("หนังสือสารานุกรม เอกสารประเภทหนังสือ");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    
-                    if (rngWord.Text == "). " || rngWord.Text == "ใน ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else
-                        {
-                            if (rngWord.Text == "(" || rngWord.Text == "หน้า" || rngWord.Text == "หน้า ")
-                            {
-                                countCheck++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                    }
-                    else if (countCheck == 4)
-                    {
-                        System.Windows.Forms.MessageBox.Show("หนังสือสารานุกรม เอกสารประเภทหนังสือ จบ");
-                        cout = +checkValue;
-                        return cout;
-                    }
-                }
-            }
-            return ModelBookTypeHandoutLibraryTH(r, strCheck,cout);
-
-        }*/
          //หนังสือสารานุกรม เอกสารประเภทหนังสือ
         private int ModelBookTypeEncyclopediaTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameInDotEditor())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageAndBook())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPlaceEnd())
                                 {
 
@@ -943,91 +657,30 @@ namespace SeniorProject
             return ModelBookTypeHandoutLibraryTH( r,  strCheck,  cout);
         }
 
-
-        //เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ
-        /*private int ModelBookTypeHandoutLibraryTH(Word.Range r, string strCheck, int cout)
-        {
-
-            int checkValue = -1;
-            int checkValue2 = -1;
-            string[] strCheckSplites = Regex.Split(strCheck, ". ใน ");
-            if (strCheckSplites.Length == 2)
-            {
-                string strFirst = strCheckSplites[0] + ". ใน ";
-                string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([ผ][ู][้][บ][ร][ร][ย][า][ย]\)\.\s\((([1-9])|([1-3][0-9]))((\s)?\-(\s)?([1-9])|([1-3][0-9]))?\s(([ม][ก][ร][า][ค][ม])|([ก][ุ][ภ][า][พ][ั][น][ธ][์])|([ม][ี][น][า][ค][ม])|([เ][ม][ษ][า][ย][น])|([พ][ฤ][ษ][พ][า][ค][ม])|([ม][ิ][ถ][ุ][น][า][ย][น])|([ก][ร][ก][ฎ][า][ค][ม])|([ส][ิ][ง][ห][า][ค][ม])|([ก][ั][น][ย][า][ย][น])|([ต][ุ][ล][า][ค][ม])|([พ][ฤ][ศ][จ][ิ][ก][า][ย][น])|([ธ][ั][น][ว][า][ค][ม]))\s[1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s[ใ][น]\s)";
-                var task = Task.Factory.StartNew(() => CheckStringMatch(strFirst, regex, ref checkValue));
-                var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-                string strSecond = strCheckSplites[1];
-                string regex2 = @"(([0-9ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+";
-                var task2 = Task.Factory.StartNew(() => CheckStringMatch(strSecond, regex2, ref checkValue2));
-                var completedWithinAllotedTime2 = task2.Wait(TimeSpan.FromMilliseconds(1000));
-            }
-
-
-            if (checkValue != -1 && checkValue2 != -1)
-            {
-                checkValue += checkValue2;
-                System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-
-                    if (rngWord.Text == "). " || rngWord.Text == "ใน ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 3)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else
-                        {
-                            if (rngWord.Text == "(" || rngWord.Text == "หน้า" || rngWord.Text == "หน้า ")
-                            {
-                                countCheck++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                    }
-                    else if (countCheck == 5)
-                    {
-                        System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ จบ");
-                        cout = +checkValue;
-                        return cout;
-                    }
-                }
-            }
-            return ModelBookTypeHandoutLibraryTH2(r, strCheck, cout);
-        }*/
-
          //เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ
         private int ModelBookTypeHandoutLibraryTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNamesNF())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNarrator())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForDate())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookName())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameInDotEditor())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPageAndBook())
                                 {
+                                    l.countCutNotBold = l.countLength;
                                     if (l.ForPlaceEnd())
                                     {
                                         System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ");
@@ -1042,76 +695,24 @@ namespace SeniorProject
             return ModelBookTypeHandoutLibraryTH2(r, strCheck, cout);
         }
 
-        //เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ
-        /*private int ModelBookTypeHandoutLibraryTH2(Word.Range r, string strCheck, int cout)
-        {
-
-            int checkValue = -1;
-            string regex = @"(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\s\((([ผ][ู][้][บ][ร][ร][ย][า][ย])|([ผ][ู][้][ป][า][ฐ][ก][ถ][า]))\)\.\s\((([1-9])|([1-3][0-9]))((\s)?\-(\s)?([1-9])|([1-3][0-9]))?\s(([ม][ก][ร][า][ค][ม])|([ก][ุ][ภ][า][พ][ั][น][ธ][์])|([ม][ี][น][า][ค][ม])|([เ][ม][ษ][า][ย][น])|([พ][ฤ][ษ][พ][า][ค][ม])|([ม][ิ][ถ][ุ][น][า][ย][น])|([ก][ร][ก][ฎ][า][ค][ม])|([ส][ิ][ง][ห][า][ค][ม])|([ก][ั][น][ย][า][ย][น])|([ต][ุ][ล][า][ค][ม])|([พ][ฤ][ศ][จ][ิ][ก][า][ย][น])|([ธ][ั][น][ว][า][ค][ม]))\s[1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\:\s(([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s))?)+\.";
-            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-            if (checkValue != -1)
-            {
-                System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-
-                    if (rngWord.Text == "). ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2 || countCheck == 3)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            if (countCheck == 3)
-                            {
-                                countCheck = 2;
-                            }
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-                            if (rngWord.Text[rngWord.Text.Length - 2] == '.')
-                            {
-                                countCheck++;
-                            }
-
-                        }
-                        else if (countCheck == 3)
-                        {
-                            System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ จบ");
-                            cout = +checkValue;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-            }
-            return ModelJournalTypeArticlesTH( r,  strCheck,  cout);
-        }*/
-
          //เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ
         private int ModelBookTypeHandoutLibraryTH2(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNamesNF())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNarrator())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForDate())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookName())
                         {
-
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPlaceEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ");
@@ -1125,76 +726,23 @@ namespace SeniorProject
         }
 
         //บทความทั่วไป เอกสารประเภทวารสาร
-        /*private int ModelJournalTypeArticlesTH(Word.Range r, string strCheck, int cout)
-        {
-
-            int checkValue = -1;
-            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+((\?\s)|(\.\s))((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+\,\s[1-9]([0-9])*\([1-9]([0-9])*\)\,\s([1-9]([0-9])*)((\s)?\-(\s)?([1-9]([0-9])*))?\.)";
-            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-            if (checkValue != -1)
-            {
-                System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                int countCheck2 = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-
-                    if (countCheck2 == 0 && (rngWord.Text == "). " || rngWord.Text == ". " || rngWord.Text == "? "))
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2 || countCheck == 3)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            countCheck2 = 1;
-                            if (countCheck == 3)
-                            {
-                                countCheck = 2;
-                            }
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-                            if (rngWord.Text == ", ")
-                            {
-                                countCheck++;
-                            }
-
-                        }
-                        else if (countCheck == 3)
-                        {
-                            System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร จบ");
-                            cout = +checkValue;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-            }
-            return 0;
-        }*/
-
-        //บทความทั่วไป เอกสารประเภทวารสาร
         private int ModelJournalTypeArticlesTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForYearAndNumber())
                             {
                                 System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
@@ -1208,79 +756,27 @@ namespace SeniorProject
             return ModelJournalTypeReviewTH(r, strCheck, cout);
         }
 
-        //บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร
-        /*private int ModelJournalTypeReviewTH(Word.Range r, string strCheck, int cout)
-        {
-
-            int checkValue = -1;
-            string regex = @"^((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)+\.\s\([1-9][0-9]{3}\)\.\s((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+((\?\s)|(\.\s))((([ก-ฮะ-์])+(ฯ)?(((\.)?\,\s)|((\.)(\s)?)|(\s)|((\:)(\s)))?)|(\“([ก-ฮะ-์])+(ฯ)?\”\s))+\,\s[1-9]([0-9])*\([1-9]([0-9])*\)\,\s([1-9]([0-9])*)((\s)?\-(\s)?([1-9]([0-9])*))?\.)";
-            var task = Task.Factory.StartNew(() => CheckStringMatch(strCheck, regex, ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-            if (checkValue != -1)
-            {
-                System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + checkValue);
-                int countCheck = 0;
-                int countCheck2 = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-
-                    if (countCheck2 == 0 && (rngWord.Text == "). " || rngWord.Text == ". " || rngWord.Text == "? "))
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2 || countCheck == 3)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            countCheck2 = 1;
-                            if (countCheck == 3)
-                            {
-                                countCheck = 2;
-                            }
-                            //System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-                            if (rngWord.Text == ", ")
-                            {
-                                countCheck++;
-                            }
-
-                        }
-                        else if (countCheck == 3)
-                        {
-                            System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร จบ");
-                            cout = +checkValue;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-            }
-            return 0;
-        }*/
-
          //บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร
         private int ModelJournalTypeReviewTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutNotBold = l.countLength;
+                    if (l.ForBookNameES())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameReview(0))
                         {
-                            if (l.ForBookNameEC())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForYearAndNumber())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร");
@@ -1300,16 +796,22 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookNameES())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForNamesInterviewer(0))
                         {
-                            if (l.ForBookNameEC())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForYearAndNumber())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทสัมภาษณ์ เอกสารประเภทวารสาร");
@@ -1329,14 +831,19 @@ namespace SeniorProject
         {
              LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("หนังสือพิมพ์ทั่วไป เอกสารประเภทหนังสือพิมพ์");
@@ -1355,15 +862,19 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForColumnEnd())
                     {
-
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
@@ -1376,15 +887,19 @@ namespace SeniorProject
             }
             l.sentence = strCheck;
             l.countLength = 0;
+            l.countCutNotBold = 0;
             if (l.ForBookName())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForColumnEnd())
                     {
-
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
@@ -1403,16 +918,22 @@ namespace SeniorProject
         {
              LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForNamesInterviewer(0))
                         {
-                            if (l.ForBookNameEC())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPageEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("กรณีอ้างบทสัมภาษณ์จากหนังสือพิมพ์ เอกสารประเภทหนังสือพิมพ์");
@@ -1432,16 +953,22 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameEC())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameEC())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForBookNameEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง");
@@ -1461,16 +988,22 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookNameToIn())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameInDotEditor())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPage())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPlaceEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง หนังสือรวมบทคัดย่อ");
@@ -1490,14 +1023,19 @@ namespace SeniorProject
         {
              LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForYearAndNumber())
                             {
                                 System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง สิ่งพิมพ์ประเภทวารสาร");
@@ -1511,24 +1049,33 @@ namespace SeniorProject
         }
 
         //ฐานข้อมูลวิทยานิพนธ์ออนไลน์ เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง
+         // Enter URL มันจะตัดทิ้ง
         private int ModelThesisTypeThesisOnlineTH(Word.Range r, string strCheck, int cout)
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameEC())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameEC())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForBookName())
                                 {
+                                    l.countCutNotBold = l.countLength;
                                     if (l.ForSearch())
                                     {
+                                        l.countCutNotBold = l.countLength;
                                         if (l.ForURL())
                                         {
                                             System.Windows.Forms.MessageBox.Show("ฐานข้อมูลวิทยานิพนธ์ออนไลน์ เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง");
@@ -1549,15 +1096,19 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
-
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForMonthYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if(l.ForYearAndNumber())
                             {
                                 System.Windows.Forms.MessageBox.Show("จดหมายข่าว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
@@ -1575,13 +1126,16 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
-
-            if (l.ForBookNameToBracket())
+            l.range = r;
+            if (l.ForBookNameToBracketBold())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBrochuresAndLeaflets())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForPlaceEnd())
                         {
                             System.Windows.Forms.MessageBox.Show("จุลสารและแผ่นพับ เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
@@ -1598,56 +1152,24 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
-
-            if (l.ForNames())
+            l.range = r;
+            if (l.ForBookNameToBracket())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
-                    string sentenceCopy = l.sentence;
-                    int countLengthCopy = l.countLength;
-                    if (l.ForColumnEnd())
+                    l.countCutNotBold = l.countLength;
+                    if (l.ForBookNumber())
                     {
-                        if (l.ForBookNameEC())
-                        {
-                            if (l.ForPageEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }
-                        /*else
-                        {
-                            if (l.ForBookNameEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }*/
                     }
-                    /*else
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameEndBold())
                     {
-                        l.sentence = sentenceCopy;
-                        l.countLength = countLengthCopy;
-                        if (l.ForBookNameEC())
-                        {
-                            if (l.ForPageEnd2())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }
-                        else
-                        {
-                            l.sentence = sentenceCopy;
-                            l.countLength = countLengthCopy;
-                            if (l.ForBookNameEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }
-                    }*/
 
+                        System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                        return l.countLength;
+
+                    }
                 }
             }
             return ModelOtherTypeGovernmentGazetteTH(r, strCheck, cout);
@@ -1658,15 +1180,19 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
-
+            l.range = r;
             if (l.ForBookNameToBracket())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForAt())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageEnd2())
                             {
                                 System.Windows.Forms.MessageBox.Show("สารสนเทศในราชกิจจานุเบกษา เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
@@ -1684,15 +1210,19 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
-           // bool check = false;
+            l.range = r;
             if (l.ForNameOnePrevious())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNameYear())
                 {
-                    if (l.ForBookNameES())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameESBold())
                     {
-                        if (l.ForBookNameReview(0))
+                        l.countCutNotBold = l.countLength;
+                        if (l.ForBookNameNotPublished(0))
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("สื่อประเภทบันทึกเสียง เอกสารประเภทวัสดุไม่ตีพิมพ์");
@@ -1702,26 +1232,6 @@ namespace SeniorProject
                     }
                 }
             }
-            /*l.sentence = strCheck;
-            l.countLength = 0;
-            check = true;
-            if (check)
-            {
-                if (l.ForBookNameES())
-                {
-                    if (l.ForBookNameReview(0))
-                    {
-                        if (l.ForNameYear())
-                        {
-                            if (l.ForBookNameEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("สื่อประเภทบันทึกเสียง เอกสารประเภทวัสดุไม่ตีพิมพ์");
-                                return l.countLength;
-                            }
-                        }
-                    }
-                }
-            }*/
             return ModelMaterialNotPublishedTypeImageTH(r, strCheck, cout);
         }
 
@@ -1730,14 +1240,19 @@ namespace SeniorProject
         {
              LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookNameES())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameESBold())
                     {
-                        if (l.ForBookNameReview(0))
+                        l.countCutNotBold = l.countLength;
+                        if (l.ForBookNameNotPublished(0))
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameDB(0))
                             {
                                 System.Windows.Forms.MessageBox.Show("ฐานข้อมูลสำเร็จรูป เอกสารประเภทวัสดุไม่ตีพิมพ์");
@@ -1756,15 +1271,35 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
+            bool check = false;
             if (l.ForNames())
             {
+                check = true;
+            }
+            else
+            {
+                l.sentence = strCheck;
+                l.range = r;
+                l.countCutNotBold = 0;
+                l.countLength = 0;
+                if (l.ForBookName())
+                {
+                    check = true;
+                }
+            }
+            if (check)
+            {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
-
+                        l.countCutNotBold = l.countLength;
                         if (l.ForSearch())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForURL())
                             {
                                 System.Windows.Forms.MessageBox.Show("บทความออนไลน์ เอกสารประเภทสื่อออนไลน์");
@@ -1783,11 +1318,29 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
+            bool checkName = false;
             if (l.ForNames())
+            {
+                checkName = true;
+            }
+            else
+            {
+                l.sentence = strCheck;
+                l.range = r;
+                l.countCutNotBold = 0;
+                l.countLength = 0;
+                if (l.ForBookName())
+                {
+                    checkName = true;
+                }
+            }
+            if (checkName)
             {
                 bool check = false;
                 string sentenceCopy = l.sentence;
                 int countLengthCopy = l.countLength;
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
                     check = true;
@@ -1796,6 +1349,7 @@ namespace SeniorProject
                 {
                     l.sentence = sentenceCopy;
                     l.countLength = countLengthCopy;
+                    l.countCutNotBold = l.countLength;
                     if (l.ForMonthYear())
                     {
                         check = true;
@@ -1803,63 +1357,29 @@ namespace SeniorProject
                 }
                 if (check)
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookName())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameBold())
                         {
-                        }
-                        if (l.ForSearch())
-                        {
-                            if (l.ForURL())
+
+                            l.countCutNotBold = l.countLength;
+                            if (l.ForSearch())
                             {
-                                System.Windows.Forms.MessageBox.Show("บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์");
-                                return l.countLength;
+                                l.countCutNotBold = l.countLength;
+                                if (l.ForURL())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์");
+                                    return l.countLength;
+                                }
                             }
                         }
 
                     }
                 }
             }
-            else
-            {
-                if (l.ForBookName())
-                {
-                    bool check = false;
-                    string sentenceCopy = l.sentence;
-                    int countLengthCopy = l.countLength;
-                    if (l.ForDate())
-                    {
-                        check = true;
-                    }
-                    else
-                    {
-                        l.sentence = sentenceCopy;
-                        l.countLength = countLengthCopy;
-                        if (l.ForMonthYear())
-                        {
-                            check = true;
-                        }
-                    }
-                    if (check)
-                    {
-                        if (l.ForBookName())
-                        {
-                            if (l.ForBookName())
-                            {
-                            }
-                                if (l.ForSearch())
-                                {
-                                    if (l.ForURL())
-                                    {
-                                        System.Windows.Forms.MessageBox.Show("บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์");
-                                        return l.countLength;
-                                    }
-                                }
-                            
-                        }
-                    }
-                }
-            }
+           
             return ModelOnlineTypeElectronicTH(r, strCheck, cout);
         }
 
@@ -1868,16 +1388,38 @@ namespace SeniorProject
         {
             LexerTH l = new LexerTH();
             l.sentence = strCheck;
+            l.range = r;
+            bool check = false;
             if (l.ForNames())
             {
+                check = true;
+            }
+            else
+            {
+                l.sentence = strCheck;
+                l.range = r;
+                l.countCutNotBold = 0;
+                l.countLength = 0;
+                if (l.ForBookName())
+                {
+                    check = true;
+                }
+            }
+            if (check)
+            {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNameYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookName())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForSearch())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForURL())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทเรียนอิเล็กทรอนิกส์ เอกสารประเภทสื่อออนไลน์");
@@ -1899,16 +1441,21 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    //l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForYearCreate())
                         {
 
                         }
+                        l.countCutNotBold = l.countLength;
                         if (l.ForPlaceEnd())
                         {
                             System.Windows.Forms.MessageBox.Show("หนังสือทั่วไป เอกสารประเภทหนังสือ");
@@ -1926,16 +1473,21 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutNotBold = l.countLength;
+                    if (l.ForBookNameToIn())
                     {
                         if (l.ForBookNameIn())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPage())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPlaceEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทความในหนังสือ เอกสารประเภทหนังสือ");
@@ -1954,16 +1506,22 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameInDotEditor())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPage())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPlaceEnd())
                                 {
 
@@ -1984,18 +1542,25 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNamesNF())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNarrator())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForDate())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookName())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameInDotEditor())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPage())
                                 {
+                                    l.countCutNotBold = l.countLength;
                                     if (l.ForPlaceEnd())
                                     {
                                         System.Windows.Forms.MessageBox.Show("เอกสารประกอบการบรรยาย เอกสารที่จัดพิมพ์รวมเล่มและอ้างเฉพาะเรื่อง เอกสารประเภทหนังสือ");
@@ -2015,15 +1580,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNamesNF())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNarrator())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForDate())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookName())
                         {
-
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPlaceEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("เอกสารที่จัดพิมพ์เฉพาะเรื่อง เอกสารประเภทหนังสือ");
@@ -2041,14 +1610,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForYearAndNumber())
                             {
                                 System.Windows.Forms.MessageBox.Show("บทความทั่วไป เอกสารประเภทวารสาร");
@@ -2068,16 +1642,22 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutNotBold = l.countLength;
+                    if (l.ForBookNameES())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameReview(0))
                         {
-                            if (l.ForBookNameEC())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForYearAndNumber())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทวิจารณ์และบทความปริทัศน์หนังสือ เอกสารประเภทวารสาร");
@@ -2097,16 +1677,22 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookNameES())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForNamesInterviewer(0))
                         {
-                            if (l.ForBookNameEC())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForYearAndNumber())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทสัมภาษณ์ เอกสารประเภทวารสาร");
@@ -2126,14 +1712,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("หนังสือพิมพ์ทั่วไป เอกสารประเภทหนังสือพิมพ์");
@@ -2152,19 +1743,24 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForColumnEnd())
                     {
-                    }
-                    if (l.ForBookNameEC())
-                    {
-                        if (l.ForPageEnd())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
-                            System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
-                            return l.countLength;
+                            l.countCutNotBold = l.countLength;
+                            if (l.ForPageEnd())
+                            {
+                                System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
+                                return l.countLength;
+                            }
                         }
                     }
 
@@ -2174,22 +1770,26 @@ namespace SeniorProject
             {
                 l.sentence = strCheck;
                 l.countLength = 0;
+                l.countCutNotBold = 0;
                 if (l.ForBookName())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForDate())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForColumnEnd())
                         {
-                        }
-                        if (l.ForBookNameEC())
-                        {
-                            if (l.ForPageEnd())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
-                                System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
-                                return l.countLength;
+                                l.countCutNotBold = l.countLength;
+                                if (l.ForPageEnd())
+                                {
+                                    System.Windows.Forms.MessageBox.Show("กรณีบทความมีชื่อคอลัมน์ เอกสารประเภทหนังสือพิมพ์");
+                                    return l.countLength;
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -2201,16 +1801,22 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForNamesInterviewer(0))
                         {
-                            if (l.ForBookNameEC())
+                            l.countCutBold = l.countLength;
+                            if (l.ForBookNameECBold())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPageEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("กรณีอ้างบทสัมภาษณ์จากหนังสือพิมพ์ เอกสารประเภทหนังสือพิมพ์");
@@ -2230,16 +1836,22 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameInitials())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameEC())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForBookNameEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง");
@@ -2259,16 +1871,22 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookNameToIn())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameInDotEditor())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPage())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForPlaceEnd())
                                 {
                                     System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง หนังสือรวมบทคัดย่อ");
@@ -2288,14 +1906,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForYearAndNumber())
                             {
                                 System.Windows.Forms.MessageBox.Show("วิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง สิ่งพิมพ์ประเภทวารสาร");
@@ -2313,20 +1936,28 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForBookNameEC())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameEC())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForBookName())
                                 {
+                                    l.countCutNotBold = l.countLength;
                                     if (l.ForSearch())
                                     {
+                                        l.countCutNotBold = l.countLength;
                                         if (l.ForURL())
                                         {
                                             System.Windows.Forms.MessageBox.Show("ฐานข้อมูลวิทยานิพนธ์ออนไลน์ เอกสารประเภทวิทยานิพนธ์และการศึกษาค้นคว้าด้วยตนเอง");
@@ -2348,15 +1979,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
-
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForMonthYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameECBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForYearAndNumber())
                             {
                                 System.Windows.Forms.MessageBox.Show("จดหมายข่าว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
@@ -2374,13 +2009,16 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
-
-            if (l.ForBookNameToBracket())
+            l.range = r;
+            if (l.ForBookNameToBracketBold())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBrochuresAndLeaflets())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForPlaceEnd())
                         {
                             System.Windows.Forms.MessageBox.Show("จุลสารและแผ่นพับ เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
@@ -2397,55 +2035,24 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
-
-            if (l.ForNames())
+            l.range = r;
+            if (l.ForBookNameToBracket())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
-                    string sentenceCopy = l.sentence;
-                    int countLengthCopy = l.countLength;
-                    if (l.ForColumnEnd())
+                    l.countCutNotBold = l.countLength;
+                    if (l.ForBookNumber())
                     {
-                        if (l.ForBookName())
-                        {
-                            if (l.ForPageEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }
-                        /*else
-                        {
-                            if (l.ForBookNameEnd())
-                            {
-                                return l.countLength;
-                            }
-                        }*/
                     }
-                    /*else
-                    {
-                        l.sentence = sentenceCopy;
-                        l.countLength = countLengthCopy;
-                        if (l.ForBookNameEC())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameEndBold())
                         {
-                            if (l.ForPageEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }
-                        else
-                        {
-                            l.sentence = sentenceCopy;
-                            l.countLength = countLengthCopy;
-                            if (l.ForBookNameEnd())
-                            {
-                                System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
-                                return l.countLength;
-                            }
-                        }
-                    }*/
 
+                            System.Windows.Forms.MessageBox.Show("จดหมายเหตุ คำสั่ง ประกาศ แผ่นปลิว เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
+                            return l.countLength;
+
+                        }
                 }
             }
             return ModelOtherTypeGovernmentGazetteEN(r, strCheck, cout);
@@ -2456,15 +2063,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
-
+            l.range = r;
             if (l.ForBookNameToBracket())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
+                        l.countCutNotBold = l.countLength;
                         if (l.ForAt())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForPageEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("สารสนเทศในราชกิจจานุเบกษา เอกสารประเภทสื่อสิ่งพืมพ์อื่นๆ");
@@ -2482,15 +2093,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
-            //bool check = false;
+            l.range = r;
             if (l.ForNameOnePrevious())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNameYear())
                 {
-                    if (l.ForBookNameES())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameESBold())
                     {
-                        if (l.ForBookNameReview(0))
+                        l.countCutNotBold = l.countLength;
+                        if (l.ForBookNameNotPublished(0))
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameEnd())
                             {
                                 System.Windows.Forms.MessageBox.Show("สื่อประเภทบันทึกเสียง เอกสารประเภทวัสดุไม่ตีพิมพ์");
@@ -2528,14 +2143,19 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
             if (l.ForNames())
             {
+                l.countCutNotBold = l.countLength;
                 if (l.ForYear())
                 {
-                    if (l.ForBookNameES())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameESBold())
                     {
-                        if (l.ForBookNameReview(0))
+                        l.countCutNotBold = l.countLength;
+                        if (l.ForBookNameNotPublished(0))
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForBookNameDB(0))
                             {
                                 System.Windows.Forms.MessageBox.Show("ฐานข้อมูลสำเร็จรูป เอกสารประเภทวัสดุไม่ตีพิมพ์");
@@ -2554,15 +2174,35 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
+            bool check = false;
             if (l.ForNames())
             {
+                check = true;
+            }
+            else
+            {
+                l.sentence = strCheck;
+                l.range = r;
+                l.countCutNotBold = 0;
+                l.countLength = 0;
+                if (l.ForBookName())
+                {
+                    check = true;
+                }
+            }
+            if (check)
+            {
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
-                    if (l.ForBookName())
+                    l.countCutBold = l.countLength;
+                    if (l.ForBookNameBold())
                     {
-
+                        l.countCutNotBold = l.countLength;
                         if (l.ForSearch())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForURL())
                             {
                                 System.Windows.Forms.MessageBox.Show("บทความออนไลน์ เอกสารประเภทสื่อออนไลน์");
@@ -2575,15 +2215,19 @@ namespace SeniorProject
             }
             else
             {
+                l.countCutNotBold = 0;
                 if (l.ForBookName())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForDate())
                     {
-                        if (l.ForBookName())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameBold())
                         {
-
+                            l.countCutNotBold = l.countLength;
                             if (l.ForSearch())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForURL())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทความออนไลน์ เอกสารประเภทสื่อออนไลน์");
@@ -2603,11 +2247,29 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
+            bool checkName = false;
             if (l.ForNames())
+            {
+                checkName = true;
+            }
+            else
+            {
+                l.sentence = strCheck;
+                l.range = r;
+                l.countCutNotBold = 0;
+                l.countLength = 0;
+                if (l.ForBookName())
+                {
+                    checkName = true;
+                }
+            }
+            if (checkName)
             {
                 bool check = false;
                 string sentenceCopy = l.sentence;
                 int countLengthCopy = l.countLength;
+                l.countCutNotBold = l.countLength;
                 if (l.ForDate())
                 {
                     check = true;
@@ -2616,6 +2278,7 @@ namespace SeniorProject
                 {
                     l.sentence = sentenceCopy;
                     l.countLength = countLengthCopy;
+                    l.countCutNotBold = l.countLength;
                     if (l.ForMonthYear())
                     {
                         check = true;
@@ -2623,60 +2286,24 @@ namespace SeniorProject
                 }
                 if (check)
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookName())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameBold())
                         {
-                        }
-                        if (l.ForSearch())
-                        {
-                            if (l.ForURL())
-                            {
-                                System.Windows.Forms.MessageBox.Show("บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์");
-                                return l.countLength;
-                            }
-                        }
-
-                    }
-                }
-            }
-            else
-            {
-                if (l.ForBookName())
-                {
-                    bool check = false;
-                    string sentenceCopy = l.sentence;
-                    int countLengthCopy = l.countLength;
-                    if (l.ForDate())
-                    {
-                        check = true;
-                    }
-                    else
-                    {
-                        l.sentence = sentenceCopy;
-                        l.countLength = countLengthCopy;
-                        if (l.ForMonthYear())
-                        {
-                            check = true;
-                        }
-                    }
-                    if (check)
-                    {
-                        if (l.ForBookName())
-                        {
-                            if (l.ForBookName())
-                            {
-                            }
+                            l.countCutNotBold = l.countLength;
                             if (l.ForSearch())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForURL())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทความในสื่อออนไลน์ประเภทต่างๆ เอกสารประเภทสื่อออนไลน์");
                                     return l.countLength;
                                 }
                             }
-
                         }
+
                     }
                 }
             }
@@ -2688,16 +2315,38 @@ namespace SeniorProject
         {
             LexerEN l = new LexerEN();
             l.sentence = strCheck;
+            l.range = r;
+            bool check = false;
             if (l.ForNames())
             {
+                check = true;
+            }
+            else
+            {
+                l.sentence = strCheck;
+                l.range = r;
+                l.countCutNotBold = 0;
+                l.countLength = 0;
+                if (l.ForBookName())
+                {
+                    check = true;
+                }
+            }
+            if (check)
+            {
+                l.countCutNotBold = l.countLength;
                 if (l.ForNameYear())
                 {
+                    l.countCutNotBold = l.countLength;
                     if (l.ForBookName())
                     {
-                        if (l.ForBookName())
+                        l.countCutBold = l.countLength;
+                        if (l.ForBookNameBold())
                         {
+                            l.countCutNotBold = l.countLength;
                             if (l.ForSearch())
                             {
+                                l.countCutNotBold = l.countLength;
                                 if (l.ForURL())
                                 {
                                     System.Windows.Forms.MessageBox.Show("บทเรียนอิเล็กทรอนิกส์ เอกสารประเภทสื่อออนไลน์");
@@ -2709,36 +2358,10 @@ namespace SeniorProject
                     }
                 }
             }
-            else
-            {
-                l.sentence = strCheck;
-                l.countLength = 0;
-                if (l.ForBookName())
-                {
-                    if (l.ForNameYear())
-                    {
-                        if (l.ForBookName())
-                        {
-                            if (l.ForBookName())
-                            {
-                                if (l.ForSearch())
-                                {
-                                    if (l.ForURL())
-                                    {
-                                        System.Windows.Forms.MessageBox.Show("บทเรียนอิเล็กทรอนิกส์ เอกสารประเภทสื่อออนไลน์");
-                                        return l.countLength;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
             return 0;
         }
 
-        //บทความในหนังสือ เอกสารประเภทหนังสือ
+
         private void CheckStringMatch(string strFromRange, string regex, ref int checkValue)
         {
             Match match = Regex.Match(strFromRange, regex);
@@ -2750,369 +2373,24 @@ namespace SeniorProject
                 checkValue= -1;
         }
 
+
 //===========================================================================================================================//
 //===========================================================================================================================//
-
-        //หนังสือทั่วไป เอกสารประเภทหนังสือ
-        private int Model_1(Word.Range r, int cout, RegexOptions options)
+        private List<Word.Range> SubRange(Word.Range range, List<string> listReferences)
         {
-            Match match;
-            string str = r.Text;
-            match = Regex.Match(r.Text, @"^(([a-zA-Z])*((\,)(\s)(([a-zA-Z])+(\.)(\s)?)*)?((\s)[a][n][d](\s)([a-zA-Z])*((\,)((\s)([a-zA-Z])+(\.))*)?)?((\s)(\()([0-9]{4})(\)(\.)))((\s)([a-zA-Z])([a-zA-Z]|(\s))*(\.))((\s)(([a-zA-Z]|(\s))*(\,)(\s))*([a-zA-Z]|(\s))*(\:)(\s)([a-zA-Z]|(\s))*(\.))(\n|\r))", options);
-            if (match.Success)
+            //foreach (Word.Range range 
+            List<Word.Range> listReferencesRange = new List<Word.Range>();
+            int countForCut = 0;
+            foreach (string listReference in listReferences)
             {
-                str = str.Remove(0, match.Value.Length);
-                 Word.Range rCheck =  r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                 int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "(" || rngWord.Text == "). " || rngWord.Text == ")")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 1)
-                    {
-                        Match matchBC = Regex.Match(rngWord.Text, @"^([0-9]{4})");
-                        if (matchBC.Success)
-                        {
-                            countCheck++;
-                            //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                        }
-
-                    }
-                    else if (countCheck == 3)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text+"_");
-                            
-                        }
-                        else if (rngWord.Text == ". ")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-               // lsS.Add(match.Value);
-               // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-                
+                Word.Range rangeNew = range.Application.ActiveDocument.Range(countForCut, countForCut + listReference.Length);
+               // range.
+                listReferencesRange.Add(rangeNew);
+               // int a = rangeNew.Text.Length;
+                countForCut += listReference.Length+1;
             }
-            return Model_2(r, cout, options);
+            return listReferencesRange;
         }
 
-        //บทความในหนังสือ เอกสารประเภทหนังสือ
-        private int Model_2(Word.Range r, int cout, RegexOptions options)
-        {
-            Match match;
-            string str = r.Text;
-            match = Regex.Match(r.Text, @"^([A-Z]([a-zA-Z])*(\,\s([A-Z]\.(\s)?)*)?((([a-zA-Z])*(\,\s([A-Z]\.\s)*)?)*[a][n][d]\s([a-zA-Z])*(\,\s([A-Z]\.\s)*)?)?\([0-9]{4}\)\.((\s)[A-Z]([a-zA-Z])*)((\s)([a-zA-Z])*)*\.\s[I][n](\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*(\,((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)*\s[a][n][d](\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)?\s\([E][d][s]\.\)\,\s([A-Z]([a-zA-Z])*)((\s)([a-zA-Z])*)*\s\((([0-9a-zA-Z]|(\s))*\.\,(\s))?(([p]\.\s[1-9]([0-9])*)|([p][p]\.\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*))\)\.(((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)|(((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*))(\,(((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)|(((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)))*:(((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)|(((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*))\.(\n|\r))", options);
-            if (match.Success)
-            {
-                str = str.Remove(0, match.Value.Length);
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == ".), ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 1)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else if (rngWord.Text == " (" || rngWord.Text == "(")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-                // lsS.Add(match.Value);
-                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-
-            }
-            return Model_3(r, cout, options);
-        }
-
-        //หนังสือสารานุกรม เอกสารประเภทหนังสือ
-        private int Model_3(Word.Range r, int cout, RegexOptions options)
-        {
-            Match match;
-            string str = r.Text;
-            match = Regex.Match(r.Text, @"^([A-Z]([a-zA-Z])*(\,\s([A-Z]\.(\s)?)*)?((([a-zA-Z])*(\,\s([A-Z]\.\s)*)?)*[a][n][d]\s([a-zA-Z])*(\,\s([A-Z]\.\s)*)?)?\([0-9]{4}\)\.((\s)[A-Z]([a-zA-Z])*)((\s)([a-zA-Z])*)*\.\s[I][n](\s([A-Z]\.(\s)?)*)?((\s)[A-Z]([a-zA-Z])*)((\s)([a-zA-Z])*)*(\,((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)([a-zA-Z])*)*)*\s[a][n][d](\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)([a-zA-Z])*)*)?\s\(([V][o][l]\.([1-9](0-9)*)\,(\s))?(([p]\.\s[1-9]([0-9])*)|([p][p]\.\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*))\)\.(((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)|(((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*))(\,(((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)|(((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)))*:(((\s([A-Z]\.(\s)?)*)((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*)|(((\s)[A-Z]([a-zA-Z])*)((\s)[A-Z]([a-zA-Z])*)*))\.(\n|\r))", options);
-            if (match.Success)
-            {
-                str = str.Remove(0, match.Value.Length);
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "In ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 1)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else if (rngWord.Text == " (" || rngWord.Text == "(")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-                // lsS.Add(match.Value);
-                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-
-            }
-            return Model_4(r, cout, options);
-        }
-
-        //เอกสารประกอบการบรรยาย เอกสารประเภทหนังสือ v1
-        private int Model_4(Word.Range r, int cout, RegexOptions options)
-        {
-            Match match;
-            string str = r.Text;
-            match = Regex.Match(r.Text, @"^((([ก-ฮะ-์])*\s)+\([ผ][ู][้][บ][ร][ร][ย][า][ย]\)\.\s\((([1-9])|([1-3][0-9]))((\s)?\-(\s)?([1-9])|([1-3][0-9]))?\s(([ม][ก][ร][า][ค][ม])|([ก][ุ][ภ][า][พ][ั][น][ธ][์])|([ม][ี][น][า][ค][ม])|([เ][ม][ษ][า][ย][น])|([พ][ฤ][ษ][พ][า][ค][ม])|([ม][ิ][ถ][ุ][น][า][ย][น])|([ก][ร][ก][ฎ][า][ค][ม])|([ส][ิ][ง][ห][า][ค][ม])|([ก][ั][น][ย][า][ย][น])|([ต][ุ][ล][า][ค][ม])|([พ][ฤ][ศ][จ][ิ][ก][า][ย][น])|([ธ][ั][น][ว][า][ค][ม]))\s[1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])*(\s)?)+\.\s[ใ][น]\s((([0-9])|([ก-ฮะ-์])|([:]))*(\s)?)+\([ห][น][้][า]\s[1-9]([0-9])*(\s)?\-(\s)?[1-9]([0-9])*\)\.\s(([ก-ฮะ-์])*(\s)?)+\:\s(([ก-ฮะ-์])*(\s)?)+\.(\n|\r))", options);
-            if (match.Success)
-            {
-                str = str.Remove(0, match.Value.Length);
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "ใน ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 1)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else if (rngWord.Text == " (" || rngWord.Text == "(")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-                // lsS.Add(match.Value);
-                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-
-            }
-            return Model_4_2(r, cout, options);
-        }
-
-        //เอกสารประกอบการบรรยาย เอกสารประเภทหนังสือ v2
-        private int Model_4_2(Word.Range r, int cout, RegexOptions options)
-        {
-            Match match;
-            string str = r.Text;
-            match = Regex.Match(r.Text, @"^((([ก-ฮะ-์])*\s)+\((([ผ][ู][้][บ][ร][ร][ย][า][ย])|([ผ][ู][้][ป][า][ฐ][ก][ถ][า]))\)\.\s\((([1-9])|([1-3][0-9]))((\s)?\-(\s)?([1-9])|([1-3][0-9]))?\s(([ม][ก][ร][า][ค][ม])|([ก][ุ][ภ][า][พ][ั][น][ธ][์])|([ม][ี][น][า][ค][ม])|([เ][ม][ษ][า][ย][น])|([พ][ฤ][ษ][พ][า][ค][ม])|([ม][ิ][ถ][ุ][น][า][ย][น])|([ก][ร][ก][ฎ][า][ค][ม])|([ส][ิ][ง][ห][า][ค][ม])|([ก][ั][น][ย][า][ย][น])|([ต][ุ][ล][า][ค][ม])|([พ][ฤ][ศ][จ][ิ][ก][า][ย][น])|([ธ][ั][น][ว][า][ค][ม]))\s[1-9][0-9]{3}\)\.\s(([ก-ฮะ-์])*(\s)?)+\.\s(([ก-ฮะ-์])*(\s)?)+\:\s(([ก-ฮะ-์])*(\s)?)+\.(\n|\r))", options);
-            if (match.Success)
-            {
-                str = str.Remove(0, match.Value.Length);
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "). ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else if (rngWord.Text == "." || rngWord.Text == ". ")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-                // lsS.Add(match.Value);
-                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-
-            }
-            return Model_5(r, cout, options);
-        }
-
-        //เอกสารประเภทวารสาร บทความทั่วไป
-        private int Model_5(Word.Range r, int cout, RegexOptions options)
-        {
-            Match match;
-            string str = r.Text;
-
-            match = Regex.Match(r.Text, @"^((([ก-ฮะ-์])*(\s)?)+\.\s\([1-9][0-9]{3}\)\.\s((((\“([ก-ฮะ-์])*\”)|([ก-ฮะ-์])*(\?)?)(\s)?)+\.\s){2})", options);
-            
-            if (match.Success)
-            {
-                str = str.Remove(0, match.Value.Length);
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "). " | rngWord.Text == ". " | rngWord.Text == "?. ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else if (rngWord.Text == "." || rngWord.Text == ". ")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-                // lsS.Add(match.Value);
-                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-
-            }
-            return Model_6(r, cout, options);
-        }
-
-        //เอกสารประเภทวารสาร บทวิจารณ์และบทความปริทัศน์หนังสือ
-        private int Model_6(Word.Range r, int cout, RegexOptions options)
-        {
-            Match match;
-            string str = r.Text;
-            match = Regex.Match(r.Text, @"^((([ก-ฮะ-์])*(\s)?)+\.\s\([1-9][0-9]{3}\)\.\s(((\“([ก-ฮะ-์])*\”)|([ก-ฮะ-์])*(\?)?)(\s)?)+\.\s\[(((\“([ก-ฮะ-์])*\”)|([ก-ฮะ-์])*(\?)?)(\s)?)+\]\.\s(((\“([ก-ฮะ-์])*\”)|([ก-ฮะ-์])*(\?)?)(\s)?)+\.\s[1-9]([0-9])*\([1-9]([0-9])*\)\,\s[1-9]([0-9])*((\s)?\-[1-9]([0-9])*(\s)?)?\.)", options);
-            if (match.Success)
-            {
-                str = str.Remove(0, match.Value.Length);
-                Word.Range rCheck = r.Application.ActiveDocument.Range(cout, cout + match.Value.Length);
-                int countCheck = 0;
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in rCheck.Words)
-                {
-                    if (rngWord.Text == "). " | rngWord.Text == ". " | rngWord.Text == "?. ")
-                    {
-                        countCheck++;
-                        //   System.Windows.Forms.MessageBox.Show(range2.Text);
-                    }
-                    else if (countCheck == 2)
-                    {
-
-                        if (rngWord.Bold != 0)
-                        {
-                            System.Windows.Forms.MessageBox.Show(rngWord.Text + "_");
-
-                        }
-                        else if (rngWord.Text == "." || rngWord.Text == ". ")
-                        {
-                            cout = +match.Value.Length;
-                            return cout;
-                        }
-                        else
-                        {
-
-                            break;
-                        }
-
-                    }
-                }
-                // lsS.Add(match.Value);
-                // lsR.Add(doc.ActiveDocument.Range(cout, cout + match.Value.Length));
-                //System.Windows.Forms.MessageBox.Show(match.Value);
-                //System.Windows.Forms.MessageBox.Show(str);
-
-            }
-            return 0;
-        }
-
-        //ตรวจสอบลำดับตัวอักษร
-        private void checkCharNumberTH(ref string strOld, string strNew)
-        {
-            if (strOld=="")
-            for (char i = 'ก'; i < 'ฮ'; i++)
-            {
-
-            }
-            for (char i = 'ะ'; i < 'ไ'; i++)
-            {
-
-            }
-        }
     }
 }
