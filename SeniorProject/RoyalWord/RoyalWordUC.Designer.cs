@@ -37,7 +37,7 @@
             this.btn_fullStopEdit = new System.Windows.Forms.Button();
             this.lbl_header = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lbl_numberValueError = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.lbl_waitCheck = new System.Windows.Forms.Label();
@@ -137,14 +137,14 @@
             this.label1.TabIndex = 37;
             this.label1.Text = "All";
             // 
-            // label9
+            // lbl_numberValueError
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(31, 72);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(10, 13);
-            this.label9.TabIndex = 38;
-            this.label9.Text = "-";
+            this.lbl_numberValueError.AutoSize = true;
+            this.lbl_numberValueError.Location = new System.Drawing.Point(31, 72);
+            this.lbl_numberValueError.Name = "lbl_numberValueError";
+            this.lbl_numberValueError.Size = new System.Drawing.Size(10, 13);
+            this.lbl_numberValueError.TabIndex = 38;
+            this.lbl_numberValueError.Text = "-";
             // 
             // label10
             // 
@@ -192,7 +192,7 @@
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.label9);
+            this.Controls.Add(this.lbl_numberValueError);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.btn_clearHighlightALL);
             this.Controls.Add(this.btn_highlightALL);
@@ -218,7 +218,7 @@
         private System.Windows.Forms.Button btn_highlightALL;
         private System.Windows.Forms.Label lbl_header;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lbl_numberValueError;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label lbl_waitCheck;

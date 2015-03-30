@@ -44,7 +44,7 @@ namespace SeniorProject
             if (!Ribbon1.marginPageUC.checkSetClick)
             {
                 Ribbon1.marginPageUC.btn_Edit.Click += new System.EventHandler(this.btn_Edit_Click);
-                Ribbon1.marginPageUC.button1.Click += new System.EventHandler(this.btn_Edit_Click);
+                //Ribbon1.marginPageUC.button1.Click += new System.EventHandler(this.btn_Edit_Click);
                 Ribbon1.marginPageUC.checkSetClick = true;
             }
             //NextPange();
@@ -95,15 +95,23 @@ namespace SeniorProject
                 pageSetup.BottomMargin = Ribbon1.styles.BottomMargin;
             }
             catch {
+                for (int i = 1; i <= Globals.ThisAddIn.Application.ActiveDocument.Sections.Count; i++)
+                {
+                    Word.PageSetup pageSetup = Globals.ThisAddIn.Application.ActiveDocument.Sections[i].PageSetup;
+                    pageSetup.LeftMargin = Ribbon1.styles.LeftMargin;
+                    pageSetup.RightMargin = Ribbon1.styles.RightMargin;
+                    pageSetup.TopMargin = Ribbon1.styles.TopMargin;
+                    pageSetup.BottomMargin = Ribbon1.styles.BottomMargin;
+                }
           //      System.Windows.Forms.MessageBox.Show("ไม่สามารตแก้ไขได้");
-                Word.PageSetup pageSetup = Globals.ThisAddIn.Application.ActiveDocument.PageSetup;
+               /* Word.PageSetup pageSetup = Globals.ThisAddIn.Application.ActiveDocument.PageSetup;
                 this.documentError = new Word.Document();
-                this.documentError.PageSetup.PaperSize = pageSetup.PaperSize;
+                
                 this.documentError.PageSetup.LeftMargin = Ribbon1.styles.LeftMargin;
                 this.documentError.PageSetup.RightMargin = Ribbon1.styles.RightMargin;
                 this.documentError.PageSetup.TopMargin = Ribbon1.styles.TopMargin;
                 this.documentError.PageSetup.BottomMargin = Ribbon1.styles.BottomMargin;
-                
+                //this.documentError.PageSetup.PaperSize = pageSetup.PaperSize;
                 pageSetup = this.documentError.PageSetup;
                 object missing = System.Reflection.Missing.Value;
                 object fileName = "bin.docx";
@@ -113,17 +121,17 @@ namespace SeniorProject
         ref missing, ref missing, ref missing, ref missing, ref missing);
 
                 Thread threadDeleteFile = new Thread(this.deleteFileClose);
-                threadDeleteFile.Start();
+                threadDeleteFile.Start();*/
 
             };
         }
 
-        public void deleteFileClose()
+       /* public void deleteFileClose()
         {
             Thread.Sleep(1000);
             this.documentError.Close();
             deleteFile();
-        }
+        }*/
 
         public void deleteFile()
         {
@@ -196,58 +204,8 @@ namespace SeniorProject
         }
 
 
-        private void NextPange()
-        {
-            Word.Application wordApp = Globals.ThisAddIn.Application;
-            object missing = System.Reflection.Missing.Value;
-            Word.Document document = Globals.ThisAddIn.Application.ActiveDocument;
-            Word.WdStatistic stat = Word.WdStatistic.wdStatisticPages;
-            int numberPang = document.ComputeStatistics(stat, missing);
-            for (int i = 1; i <= numberPang; i++)
-            {
-                object what = Word.WdGoToItem.wdGoToPage;
-                object which = null;
-                object counts = i;
-                object name = null;
-                object Page = "\\Page";
-
-                wordApp.Selection.GoTo(ref what, ref which, ref counts, ref name);
-                Word.Range range = wordApp.ActiveDocument.Bookmarks.get_Item(ref Page).Range;
-                Word.PageSetup pageSetup = range.Document.PageSetup;
-                    this.leftCheck = pageSetup.LeftMargin == Ribbon1.styles.LeftMargin;
-                    this.rightCheck = pageSetup.RightMargin == Ribbon1.styles.RightMargin;
-                        this.topCheck = pageSetup.TopMargin == Ribbon1.styles.TopMargin;
-                    this.bottomCheck = pageSetup.BottomMargin == Ribbon1.styles.BottomMargin;
-                    Ribbon1.marginPageUC.setMarginPageUC(this.cheked(), this.leftCheck, this.rightCheck,
-         this.topCheck, this.bottomCheck
-        , pageSetup.LeftMargin, pageSetup.RightMargin, pageSetup.TopMargin, pageSetup.BottomMargin);
-            }
-        }
-        private void NextPangeChenging()
-        {
-            Word.Application wordApp = Globals.ThisAddIn.Application;
-            object missing = System.Reflection.Missing.Value;
-            Word.Document document = Globals.ThisAddIn.Application.ActiveDocument;
-            Word.WdStatistic stat = Word.WdStatistic.wdStatisticPages;
-            int numberPang = document.ComputeStatistics(stat, missing);
-            for (int i = 1; i <= numberPang; i++)
-            {
-                object what = Word.WdGoToItem.wdGoToPage;
-                object which = null;
-                object counts = i;
-                object name = null;
-                object Page = "\\Page";
-
-                wordApp.Selection.GoTo(ref what, ref which, ref counts, ref name);
-                Word.Range range = wordApp.ActiveDocument.Bookmarks.get_Item(ref Page).Range;
-                Word.PageSetup pageSetup = range.Document.PageSetup;
-                pageSetup.LeftMargin = Ribbon1.styles.LeftMargin;
-                System.Windows.Forms.MessageBox.Show("ไม่ตรง2" + Ribbon1.styles.LeftMargin);
-                pageSetup.RightMargin = Ribbon1.styles.RightMargin;
-                pageSetup.TopMargin = Ribbon1.styles.TopMargin;
-                pageSetup.BottomMargin = Ribbon1.styles.BottomMargin;
-            }
-        }
+        
+        
 
 
     }

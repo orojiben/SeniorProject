@@ -34,6 +34,7 @@ namespace SeniorProject
         static public RoyalWordUC royalWordUC;
         static public PunctuationUC punctuationUC;
         static public ReferenceModelUC referenceModelUC;
+        static public FontUC fontUC;
         static public Styles styles;
         static public string nameFile = "";
         int i = 0;
@@ -91,23 +92,9 @@ namespace SeniorProject
             royalWord.show();
         }
 
-        private void btn_checkFont_Click(object sender, RibbonControlEventArgs e)
-        {
-            saveFileAuto();
-            Ribbon1.addCustomTaskPaneALL();
-            this.ShowFont();
-
-        }
-
-        private void ShowFont()
-        {
-            //FontManager.CheckFontName("abc","def",Globals.ThisAddIn.Application.ActiveDocument);
-            FontManager.CheckFontName("Angsana New");
-        }
-
         private void btn_correctFont_Click(object sender, RibbonControlEventArgs e)
         {
-            FontManager.CorrectFont(styles.StyleFont[0].FontName);
+
         }
 
         private void btn_checkAll_Click(object sender, RibbonControlEventArgs e)
@@ -116,7 +103,7 @@ namespace SeniorProject
             saveFileAuto();
 
             addCustomTaskPaneALL();
-
+            
             Ribbon1.showCustomTaskPane(0);
             Ribbon1.showCheckAllUC.visibleAllClose();
             Ribbon1.showCheckAllUC.resetAll();
@@ -199,11 +186,12 @@ namespace SeniorProject
             //}
         }
 
-        private void btn_checkFontSize_Click(object sender, RibbonControlEventArgs e)
+        private void btn_checkFont_Click(object sender, RibbonControlEventArgs e)
         {
             saveFileAuto();
             Ribbon1.addCustomTaskPaneALL();
-            FontManager.CheckFontSize(16, 18, 20);
+            Ribbon1.fontUC.enableAll();
+            Ribbon1.showCustomTaskPane(4);
         }
 
         public void show()
@@ -235,6 +223,7 @@ namespace SeniorProject
             Ribbon1.royalWordUC = new RoyalWordUC();
             Ribbon1.punctuationUC = new PunctuationUC();
             Ribbon1.referenceModelUC = new ReferenceModelUC();
+            Ribbon1.fontUC = new FontUC();
             Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.showCheckAllUC, "ตรวจสอบทั้งหมด");
             Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
             Ribbon1.myCustomTaskPane.Width = 300;
@@ -251,7 +240,7 @@ namespace SeniorProject
             Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
             Ribbon1.myCustomTaskPane.Width = 300;
             Ribbon1.myCustomTaskPane.Visible = false;
-            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(new UserControl(), "ตรวจสอบขนาดกับชนิดตัวอักษร");
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.fontUC, "ตรวจสอบขนาดกับชนิดตัวอักษร");
             Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
             Ribbon1.myCustomTaskPane.Width = 300;
             Ribbon1.myCustomTaskPane.Visible = false;

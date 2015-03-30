@@ -18,6 +18,7 @@ namespace SeniorProject
         private List<int> listParagraphEror;
 
         public bool showUC;
+        private bool messageError = false;
         public ReferenceModel()
         {
             showUC = true;
@@ -188,12 +189,14 @@ namespace SeniorProject
         public void runCheckReferenceAll()
         {
             //System.Windows.Forms.MessageBox.Show("Paragraph ที่ผิด:");
+            this.messageError = true;
             try
             {
                 this.CheckReference();
             }
             catch
             {
+                this.messageError = false;
                 Ribbon1.referenceModelUC.setErrorNull();
                 Ribbon1.referenceModelUC.btn_edit.Enabled = true;
                 if (this.showUC)
@@ -205,12 +208,17 @@ namespace SeniorProject
 
         public void runEditReferenceAll()
         {
+            if (!this.messageError)
+            {
+                return;
+            }
             try
             {
                 this.EditReference();
             }
             catch
             {
+                
                 Ribbon1.referenceModelUC.setErrorNull();
                 Ribbon1.referenceModelUC.btn_edit.Enabled = true;
                 if (this.showUC)
@@ -228,7 +236,7 @@ namespace SeniorProject
             this.rangeReferece = this.getRangeHaderReferece();
             if (rangeReferece != null)
             {
-                if (this.faculty == "Engineering")
+                if (this.faculty == "วิศวกรรมศาสตร์")
                 {
 
                     //0.5 inches = 36 PostScript points
@@ -244,7 +252,7 @@ namespace SeniorProject
                     //System.Windows.Forms.MessageBox.Show(rangeReferece.Paragraphs[1].LeftIndent + "_" + rangeReferece.Paragraphs[1].FirstLineIndent);
                     this.FindReferencesEngineer();
                 }
-                else if (this.faculty == "Graduate")
+                else if (this.faculty == "บัณฑิตวิทยาลัย มน")
                 {
                     //1.5 cm to point
                     //this.rangeReferece.Paragraphs.LeftIndent = 42.519685f;
@@ -562,14 +570,14 @@ namespace SeniorProject
             this.rangeReferece = this.getRangeHaderReferece();
             if (this.rangeReferece != null)
             {
-                if (this.faculty == "Engineering")
+                if (this.faculty == "วิศวกรรมศาสตร์")
                 {
                     //0.5 inches = 36 PostScript points
                     //this.rangeReferece.Paragraphs.LeftIndent = 36.0f;
                     //this.rangeReferece.Paragraphs.FirstLineIndent = -36.0f;
                     this.FindEditReferencesEngineer();
                 }
-                else if (this.faculty == "Graduate")
+                else if (this.faculty == "บัณฑิตวิทยาลัย มน")
                 {
                     //1.5 cm to point
                     // this.rangeReferece.Paragraphs.LeftIndent = 42.519685f;

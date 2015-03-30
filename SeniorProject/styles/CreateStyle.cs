@@ -14,7 +14,7 @@ namespace SeniorProject
         {
             this.style = "<styles>" +
                           "<style>" +
-                            "<Nameformat>Engineering</Nameformat>" +
+                            "<Nameformat>วิศวกรรมศาสตร์</Nameformat>" +
                             "<Margin>3.81,2.54,2.54,2.54</Margin>" +
                             "<fonts>" +
                               "<font>" +
@@ -68,7 +68,7 @@ namespace SeniorProject
                             "<Indent>36.0</Indent>" +
                           "</style>" +
                           "<style>" +
-                            "<Nameformat>Graduate</Nameformat>" +
+                            "<Nameformat>บัณฑิตวิทยาลัย มน</Nameformat>" +
                             "<Margin>3.75,2.5,3.75,2.5</Margin>" +
                             "<fonts>" +
                               "<font>" +

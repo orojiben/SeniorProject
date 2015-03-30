@@ -46,12 +46,12 @@
             this.btn_edit = new System.Windows.Forms.Button();
             this.btn_margin = new System.Windows.Forms.Button();
             this.btn_paperPage = new System.Windows.Forms.Button();
-            this.btn_fontType = new System.Windows.Forms.Button();
             this.btn_fontSize = new System.Windows.Forms.Button();
             this.btn_checkRoyalWord = new System.Windows.Forms.Button();
             this.btn_checkPunctuationMark = new System.Windows.Forms.Button();
             this.btn_checkReference = new System.Windows.Forms.Button();
             this.pnl_main = new System.Windows.Forms.Panel();
+            this.btn_fontType = new System.Windows.Forms.Button();
             this.lbl_waitCheck = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.btn_check = new System.Windows.Forms.Button();
@@ -245,16 +245,6 @@
             this.btn_paperPage.UseVisualStyleBackColor = true;
             this.btn_paperPage.Click += new System.EventHandler(this.btn_paperPage_Click);
             // 
-            // btn_fontType
-            // 
-            this.btn_fontType.Location = new System.Drawing.Point(236, 77);
-            this.btn_fontType.Name = "btn_fontType";
-            this.btn_fontType.Size = new System.Drawing.Size(25, 23);
-            this.btn_fontType.TabIndex = 28;
-            this.btn_fontType.Text = "ดู";
-            this.btn_fontType.UseVisualStyleBackColor = true;
-            this.btn_fontType.Click += new System.EventHandler(this.btn_fontType_Click);
-            // 
             // btn_fontSize
             // 
             this.btn_fontSize.Location = new System.Drawing.Point(236, 106);
@@ -297,6 +287,7 @@
             // 
             // pnl_main
             // 
+            this.pnl_main.Controls.Add(this.btn_fontType);
             this.pnl_main.Controls.Add(this.lbl_margin);
             this.pnl_main.Controls.Add(this.btn_checkReference);
             this.pnl_main.Controls.Add(this.lbl_marginCheck);
@@ -306,7 +297,6 @@
             this.pnl_main.Controls.Add(this.lbl_paperPageCheck);
             this.pnl_main.Controls.Add(this.btn_fontSize);
             this.pnl_main.Controls.Add(this.lbl_fontType);
-            this.pnl_main.Controls.Add(this.btn_fontType);
             this.pnl_main.Controls.Add(this.lbl_fontTypeCheck);
             this.pnl_main.Controls.Add(this.lbl_fontSize);
             this.pnl_main.Controls.Add(this.btn_margin);
@@ -323,6 +313,16 @@
             this.pnl_main.Name = "pnl_main";
             this.pnl_main.Size = new System.Drawing.Size(265, 273);
             this.pnl_main.TabIndex = 33;
+            // 
+            // btn_fontType
+            // 
+            this.btn_fontType.Location = new System.Drawing.Point(237, 78);
+            this.btn_fontType.Name = "btn_fontType";
+            this.btn_fontType.Size = new System.Drawing.Size(23, 23);
+            this.btn_fontType.TabIndex = 33;
+            this.btn_fontType.Text = "ดู";
+            this.btn_fontType.UseVisualStyleBackColor = true;
+            this.btn_fontType.Click += new System.EventHandler(this.btn_fontType_Click);
             // 
             // lbl_waitCheck
             // 
@@ -389,7 +389,6 @@
         public System.Windows.Forms.Button btn_edit;
         public System.Windows.Forms.Button btn_margin;
         public System.Windows.Forms.Button btn_paperPage;
-        public System.Windows.Forms.Button btn_fontType;
         public System.Windows.Forms.Button btn_fontSize;
         public System.Windows.Forms.Button btn_checkRoyalWord;
         public System.Windows.Forms.Button btn_checkPunctuationMark;
@@ -398,5 +397,6 @@
         private System.Windows.Forms.Label lbl_waitCheck;
         public System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button btn_check;
+        public System.Windows.Forms.Button btn_fontType;
     }
 }

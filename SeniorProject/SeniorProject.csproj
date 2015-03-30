@@ -182,7 +182,13 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="FontManager.cs" />
+    <Compile Include="Font\FontUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Font\FontUC.Designer.cs">
+      <DependentUpon>FontUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Font\FontManager.cs" />
     <Compile Include="MarginPage\MarginPage.cs" />
     <Compile Include="MarginPage\MarginPageUC.cs">
       <SubType>UserControl</SubType>
@@ -239,6 +245,9 @@
     </Compile>
     <Compile Include="styles\CreateStyle.cs" />
     <Compile Include="styles\StyleFont.cs" />
+    <EmbeddedResource Include="Font\FontUC.resx">
+      <DependentUpon>FontUC.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MarginPage\MarginPageUC.resx">
       <DependentUpon>MarginPageUC.cs</DependentUpon>
     </EmbeddedResource>
@@ -296,9 +305,6 @@
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
     </Compile>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="styles\word_style.xml" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

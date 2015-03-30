@@ -113,7 +113,7 @@
             // 
             this.btn_checkFontSize.Label = "ตรวจสอบขนาดกับชนิดตัวอักษร";
             this.btn_checkFontSize.Name = "btn_checkFontSize";
-            this.btn_checkFontSize.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkFontSize_Click);
+            this.btn_checkFontSize.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn_checkFont_Click);
             // 
             // btn_checkRoyalWord
             // 

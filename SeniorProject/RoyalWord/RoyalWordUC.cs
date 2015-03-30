@@ -57,7 +57,7 @@ namespace SeniorProject
 
         public void enableAll()
         {
-
+            clear();
             btn_fullStopEdit.Enabled = false;
             btn_check.Enabled = true;
             listBox1.Enabled = false;
@@ -66,6 +66,7 @@ namespace SeniorProject
 
             btn_clearHighlightALL.Enabled = false;
             progressBar.Value = 0;
+            lbl_numberValueError.Text = "-";
             progressBar.Enabled = false;
             lbl_waitCheck.Enabled = false;
 
@@ -360,7 +361,7 @@ namespace SeniorProject
                 }
 
             }
-            label9.Text = cont.ToString();
+            lbl_numberValueError.Text = cont.ToString();
         }
 
         public int contselect(int index)

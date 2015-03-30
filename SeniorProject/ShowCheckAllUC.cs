@@ -101,8 +101,8 @@ namespace SeniorProject
                 this.lbl_paperPageCheck.Text = "✔";
                 this.lbl_paperPageCheck.ForeColor = System.Drawing.Color.Green;
             }
-            this.btn_fontType.Enabled = true;
-            if (true)
+            this.btn_fontType.Enabled = Ribbon1.fontUC.btnEdit.Visible;
+            if (Ribbon1.fontUC.btnEdit.Visible)
             {
                 this.lbl_fontTypeCheck.Text = "✘";
                 this.lbl_fontTypeCheck.ForeColor = System.Drawing.Color.Red;
@@ -112,8 +112,8 @@ namespace SeniorProject
                 this.lbl_fontTypeCheck.Text = "✔";
                 this.lbl_fontTypeCheck.ForeColor = System.Drawing.Color.Green;
             }
-            this.btn_fontSize.Enabled = true;
-            if (true)
+            this.btn_fontSize.Enabled = Ribbon1.fontUC.btn_lookError.Visible;
+            if (Ribbon1.fontUC.btn_lookError.Visible)
             {
                 this.lbl_fontSizeCheck.Text = "✘";
                 this.lbl_fontSizeCheck.ForeColor = System.Drawing.Color.Red;
@@ -124,7 +124,7 @@ namespace SeniorProject
                 this.lbl_fontSizeCheck.ForeColor = System.Drawing.Color.Green;
             }
             this.btn_checkRoyalWord.Enabled = Ribbon1.royalWordUC.btn_fullStopEdit.Enabled;
-            if (this.btn_checkRoyalWord.Enabled)
+            if (Ribbon1.royalWordUC.btn_fullStopEdit.Enabled)
             {
                 this.lbl_checkRoyalWordCheck.Text = "✘";
                 this.lbl_checkRoyalWordCheck.ForeColor = System.Drawing.Color.Red;
@@ -170,12 +170,12 @@ namespace SeniorProject
 
         private void btn_fontType_Click(object sender, EventArgs e)
         {
-
+            Ribbon1.showCustomTaskPane(4, true);
         }
 
         private void btn_fontSize_Click(object sender, EventArgs e)
         {
-
+            Ribbon1.showCustomTaskPane(4, true);
         }
 
         private void btn_checkRoyalWord_Click(object sender, EventArgs e)
@@ -217,8 +217,11 @@ namespace SeniorProject
                 paperPage.chekingNotShow();
                 progressBar.Increment(1);
                 Thread.Sleep(500);
+                Ribbon1.fontUC.enableAll();
+                Ribbon1.fontUC.checkFontName();
                 progressBar.Increment(1);
                 Thread.Sleep(500);
+                Ribbon1.fontUC.FontSizeCheck();
                 progressBar.Increment(1);
                 Thread.Sleep(500);
                 Ribbon1.royalWordUC.checkWordAll();
@@ -252,6 +255,7 @@ namespace SeniorProject
             this.paperPage.changing();
             progressBar.Increment(1);
             Thread.Sleep(500);
+            Ribbon1.fontUC.correctFont();
             progressBar.Increment(1);
             Thread.Sleep(500);
             Ribbon1.royalWordUC.editWordAllForAll();
