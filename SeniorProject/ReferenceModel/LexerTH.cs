@@ -17,10 +17,8 @@ namespace SeniorProject
         string []listInitialsTHs;
         string[] monthTHs;
         int checkForBookName;
-        bool checkC;//วงเล็บห
         public LexerTH()
         {
-            checkC = false;
             checkForBookName = 0;
             countLength = 0;
             listInitialsTHs = new string[26];
@@ -85,7 +83,7 @@ namespace SeniorProject
                 return valueName2;
             }
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
@@ -129,11 +127,11 @@ namespace SeniorProject
                 }
             }
 
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+",ref checkValue);
+            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+",ref checkValue);
             if (checkValue!=-1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -160,7 +158,7 @@ namespace SeniorProject
                     {
                         return -1;
                     }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -174,7 +172,7 @@ namespace SeniorProject
                                 CutString(checkValue);
                                 return 4;
                             }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                             if (checkValue != -1)
                             {
                                 CutString(checkValue);
@@ -213,7 +211,7 @@ namespace SeniorProject
              }
              else
              { 
-                 CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+",ref checkValue);
+                 CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+",ref checkValue);
                  if (checkValue != -1)
                  {
                       CutString(checkValue);
@@ -245,7 +243,7 @@ namespace SeniorProject
             }
 
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
@@ -290,11 +288,11 @@ namespace SeniorProject
             }
 
 
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -322,7 +320,7 @@ namespace SeniorProject
                     {
                         return -1;
                     }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -336,7 +334,7 @@ namespace SeniorProject
                                 CutString(checkValue);
                                 return -1;
                             }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                             if (checkValue != -1)
                             {
                                 CheckStringMatch(this.sentence, @"^\s", ref checkValue);
@@ -374,7 +372,7 @@ namespace SeniorProject
             }
             else
             {
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -414,12 +412,12 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
                 else if (checkValueFormate == 8888)
                 {
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
                 return false;
             }
@@ -440,7 +438,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                         }
                     }
                     return false;
@@ -448,7 +446,7 @@ namespace SeniorProject
             }
 
             //Match match = Regex.Match(this.sentence, @"^\,\s");
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+            CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
             if (checkValue!=-1)
             {
                 CutString(checkValue);
@@ -461,7 +459,7 @@ namespace SeniorProject
             {
                 CutString(checkValue);
 
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
 
            /* CheckStringMatch(this.sentence, @"^\(", ref checkValue);
@@ -479,7 +477,7 @@ namespace SeniorProject
 
             if (checkValueFormate == 3)
             {
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
 
             
@@ -508,7 +506,7 @@ namespace SeniorProject
                 }
                 else if (checkValueFormate == 8888)
                 {
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
                 return false;
             }
@@ -537,7 +535,7 @@ namespace SeniorProject
             }
 
             //Match match = Regex.Match(this.sentence, @"^\,\s");
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+            CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
@@ -607,13 +605,33 @@ namespace SeniorProject
         public bool ForYear()
         {
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^(\()", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
+            CheckStringMatch(this.sentence, @"^(\()", ref checkValue);
 
             if (checkValue != -1)
             {
                 CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^([พ]\.[ศ]\.\s)", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                else
+                {
+                    CheckStringMatch(this.sentence, @"^([ค]\.[ศ]\.\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                    }
+                    else
+                    {
+                        CheckStringMatch(this.sentence, @"^([ร]\.[ศ]\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                        }
+                    }
+                }
                 CheckStringMatch(this.sentence, @"^([1-9][0-9]{3})+", ref checkValue);
                 if (checkValue != -1)
                 {
@@ -627,12 +645,12 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));;
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));;
                     }
                 }
                 else
                 {
-                    CheckStringMatch(this.sentence, @"^([ก-ฮ].)+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ม]\.[ป]\.[ป]\.)", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -640,7 +658,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                         }
                     }
                 }
@@ -651,7 +669,7 @@ namespace SeniorProject
         public bool ForYearForCheck()
         {
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^(\()", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
@@ -676,7 +694,7 @@ namespace SeniorProject
                 }
                 else
                 {
-                    CheckStringMatch(this.sentence, @"^([ก-ฮ].)+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ม]\.[ป]\.[ป]\.)", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -711,13 +729,1119 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
             }
             this.sentence = sentenceCopy;
             this.countLength = countLengthCopy;
             return false;
+        }
+
+        //1 = Pass 0=fail
+        private int CheckString()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return CheckString();
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)?\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+                    if (checkValue == -1)
+                    {
+                        return 0;
+                    }
+                    return CheckString();
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return CheckString();
+                }
+
+                
+
+            }
+            return 1;
+        }
+
+        //0 = Pass 1=fail 2=next
+        private int CheckStringNotColon()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)?\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+                    if (checkValue == -1)
+                    {
+                        return 0;
+                    }
+                    return CheckString();
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return CheckString();
+                }
+
+
+            }
+            return 1;
+        }
+
+        //สัญประกาศ 0 = ไม่มี 1=มี 2=ผิด 3=fullstop 4=colon
+        private int CheckStringQuotationMarks()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                if (CheckString() == 1)
+                {
+                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 7;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 1;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 3;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\:\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 4;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\,\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 5;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\]\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 6;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return -2;
+                        }
+                        
+                    }
+                    return 2;
+                }
+                else
+                {
+                    if (CheckStringSingleQuotationMarks() == 1)
+                    {
+                        return CheckStringQuotationMarksEnd();
+                    }
+                    return 2;
+                }
+            }
+            return 0;
+        }
+
+        //สัญประกาศ 0 = ไม่มี 1=มี 2=ผิด
+        private int CheckStringQuotationMarksEnd()
+        {
+            int checkValue = -1;
+
+            if (CheckString() == 1)
+            {
+                CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 7;
+                    }
+                    CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 1;
+                    }
+                    CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 3;
+                    }
+                    CheckStringMatch(this.sentence, @"^(\:\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 4;
+                    }
+                    CheckStringMatch(this.sentence, @"^(\,\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 5;
+                    }
+                    CheckStringMatch(this.sentence, @"^(\]\.\s)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 6;
+                    }
+                    CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return -2;
+                    }
+                }
+                return 2;
+            }
+            else
+            {
+                if (CheckStringSingleQuotationMarks() == 1)
+                {
+                    return CheckStringQuotationMarksEnd();
+                }
+                return 2;
+            }
+        }
+
+        //สัญประกาศ 0 = ไม่มี 1=มี 2=ผิด 3=fullstop 4=colon
+        private int CheckStringParenthesis()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^(\()", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                if (CheckString() == 1)
+                {
+                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        if (this.sentence=="")
+                        {
+                             return -2;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 7;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 1;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 3;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\:\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 4;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\,\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 5;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\]\.\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 6;
+                        }
+                        CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return -2;
+                        }
+                    }
+                }
+                return 2;
+            }
+            return 0;
+        }
+
+        private int CheckStringParenthesisEnd()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^(\()", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                if (CheckString() == 1)
+                {
+                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        return 2;
+                    }
+                }
+                
+            }
+            return 0;
+        }
+
+        //สัญประกาศ 0 = ไม่มี 1=มี 2=ผิด
+        private int CheckStringSingleQuotationMarks()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^((\‘)|(\’))", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                if (CheckString() == 1)
+                {
+                    CheckStringMatch(this.sentence, @"^(\’)", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        CutString(checkValue);
+                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                        if (checkValue != -1)
+                        {
+                            CutString(checkValue);
+                            return 1;
+                        }
+                    }
+                    return 2;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+            return 0;
+        }
+
+        private int CheckStringBoldPublicFullStop()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                    {
+                        return 2;
+                    }
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringBoldPublicFullStopEnd()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+             
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    if (this.sentence == "")
+                    {
+                        return 2;
+                    }
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicFullStopToBold()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    if (CheckBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                    {
+                        return 2;
+                    }
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicFullStopToSquareBrackets()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^\[", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        return 2;
+                    }
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicFullStopToBracketDate()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^\(", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        return 2;
+                    }
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicSpace()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 2;
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringBoldPublicComma()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                    {
+                        return 2;
+                    }
+                    return 0;
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicComma()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 2;
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicCommaAndFullStop()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 2;
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 3;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringBoldPublicSquareBracketsClose()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\].\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 2;
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        //สัญประกาศ 0 = ไม่มี 1=มี 2=จบ
+        private int CheckStringPublicFullStopEnd()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+
+                CheckStringMatch(this.sentence, @"^\.", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    if (this.sentence == "")
+                    {
+                        return 2;
+                    }
+                    this.sentence = "." + this.sentence;
+                }
+
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicBracketsCloseEnd()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+
+                CheckStringMatch(this.sentence, @"^\)", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    if (this.sentence == "")
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        int checkStringParenthesisEnd = CheckStringParenthesisEnd();
+                        if (checkStringParenthesisEnd == 2)
+                        {
+                            if (this.sentence == "")
+                            {
+                                return 2;
+                            }
+                        }
+                    }
+                    this.sentence = ")" + this.sentence;
+                }
+
+                CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
+
+        private int CheckStringPublicColon()
+        {
+            int checkValue = -1;
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
+            if (checkValue != -1)
+            {
+                CutString(checkValue);
+                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[?]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^\,", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                }
+                CheckStringMatch(this.sentence, @"^[:]\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 2;
+                }
+
+                CheckStringMatch(this.sentence, @"^(\.)+", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    return 0;
+                }
+
+            }
+            return 1;
         }
 
         public bool ForBookName()
@@ -730,7 +1854,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -746,7 +1870,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -788,7 +1912,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -804,7 +1928,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -832,7 +1956,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                         }
                         CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
                         if (checkValue != -1)
@@ -847,8 +1971,8 @@ namespace SeniorProject
                 }
             }
 
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([A-Za-z๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -893,7 +2017,7 @@ namespace SeniorProject
             {
                 CutString(checkValue);
                 this.checkForBookName = 0;
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
             
             CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
@@ -906,111 +2030,62 @@ namespace SeniorProject
             return false;
         }
 
-        public bool ForBookNameBold()
+        public bool ForBookNameBoldFullStop()
         {
             string sentenceCopy = this.sentence;
             int countLengthCopy = this.countLength;
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 3)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameBold();
-                        }
-                    }
-                    return false;
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
                 }
+                return ForBookNameBoldFullStop();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+                
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldFullStop();
             }
 
-            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 3)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameBoldFullStop();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldFullStop();
+            }
+
+            /*CheckStringMatch(this.sentence, @"^\(", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
+                if (CheckString() == 1)
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            this.sentence = sentenceCopy;
-                            this.countLength = countLengthCopy;
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^\)", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -1018,480 +2093,376 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength - 2));
+                            if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                            {
+                                return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                            }
+                            return ForBookNameBold();
                         }
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^\s", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
                             return ForBookNameBold();
                         }
                     }
-                    this.sentence = sentenceCopy;
-                    this.countLength = countLengthCopy;
-                    return false;
                 }
-            }
-
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([A-Za-z๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
+                return false;
+            }*/
+            int valueCheck = CheckStringBoldPublicFullStop();
+            if (valueCheck == 0)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameBold();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameBold();
+                return ForBookNameBoldFullStop();
             }
-            CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
-
-            if (checkValue != -1)
+            else if (valueCheck == 2)
             {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return  CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold,this.countLength-2));
-            }
-
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameBold();
+                return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
             }
             return false;
         }
 
-        public bool ForBookNameEnd()
+        public bool ForBookNameBoldFullStopEnd()
         {
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
+
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 3)
+            {
+                if (this.sentence=="")
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameBoldFullStopEnd();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+                
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldFullStopEnd();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 3)
+            {
+                if (this.sentence=="")
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameBoldFullStopEnd();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldFullStopEnd();
+            }
+            int valueCheck = CheckStringBoldPublicFullStopEnd();
+            if (valueCheck == 0)
+            {
+                return ForBookNameBoldFullStopEnd();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+            }
+            return false;
+        }
+
+        public bool ForBookNameFullStopToBold()
+        {
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
+
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 3)
+            {
+                if (CheckBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameFullStopToBold();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameFullStopToBold();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 3)
+            {
+                if (CheckBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameFullStopToBold();
+            }
+            int valueCheck = CheckStringPublicFullStopToBold();
+            if (valueCheck == 0)
+            {
+                return ForBookNameFullStopToBold();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            return false;
+        }
+
+        public bool ForBookNameFullStopToSquareBrackets()
+        {
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 3)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^\[", ref checkValue);
                 if (checkValue != -1)
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameEnd();
-                        }
-                    }
-                    return false;
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
+                return ForBookNameFullStopToSquareBrackets();
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            if (!checkC)
+            else if (checkStringQuotationMarks == 0)
             {
-                CheckStringMatch(this.sentence, @"^\(", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    checkC = true;
-                }
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameFullStopToSquareBrackets();
             }
 
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-            if (checkValue != -1)
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 3)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                CheckStringMatch(this.sentence, @"^\[", ref checkValue);
                 if (checkValue != -1)
                 {
-                    CutString(checkValue);
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
+            }
+            else if (checkStringParenthesis == 0)
+            {
 
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameEnd();
-                }
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameFullStopToSquareBrackets();
+            }
+            int valueCheck = CheckStringPublicFullStopToSquareBrackets();
+            if (valueCheck == 0)
+            {
+                return ForBookNameFullStopToSquareBrackets();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            return false;
+        }
 
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameEnd();
-                }
+        public bool ForPlaceEndColon()
+        {
 
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameEnd();
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 4)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+                
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForPlaceEndColon();
             }
 
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 4)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            else if (checkStringParenthesis == 0)
+            {
+                
+            }
+            else if (checkStringParenthesis == 2 ||checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForPlaceEndColon();
+            }
+
+            int valueCheck = CheckStringPublicColon();
+            if (valueCheck == 0)
+            {
+                return ForPlaceEndColon();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            return false;
             
-            if (checkC)
+        }
+
+        public bool ForPublishersEnd()
+        {
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == -2)
             {
-                CheckStringMatch(this.sentence, @"^\)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                this.checkForBookName = 0;
                 if (this.sentence == "")
                 {
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
-                return ForBookNameEnd();
+                return false;
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForPublishersEnd();
             }
 
-            CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-
-            if (checkValue != -1)
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == -2)
             {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                if (this.sentence != "")
+                if (this.sentence=="")
                 {
-                    return ForBookNameEnd();
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
+                return false;
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForPublishersEnd();
+            }
+            int valueCheck = CheckStringPublicFullStopEnd();
+            if (valueCheck == 0)
+            {
+                return ForPublishersEnd();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
             return false;
         }
 
-        public bool ForBookNameEndBold()
+        public bool ForPublishersEndBrackets()
         {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 7)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameEndBold();
-                        }
-                    }
-                    return false;
-                }
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            if (!checkC)
-            {
-                CheckStringMatch(this.sentence, @"^\(", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    checkC = true;
-                }
-            }
-
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameEndBold();
-                }
-
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameEndBold();
-                }
-
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameEndBold();
-            }
-
-
-            if (checkC)
-            {
-                CheckStringMatch(this.sentence, @"^\)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                this.checkForBookName = 0;
                 if (this.sentence == "")
                 {
-                    return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength-1));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
-                return ForBookNameEndBold();
+                return false;
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForPublishersEndBrackets();
             }
 
-            CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-
-            if (checkValue != -1)
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 7)
             {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                if (this.sentence != "")
+                if (this.sentence == "")
                 {
-                    return ForBookNameEndBold();
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
+                return false;
             }
-            return false;
-        }
-
-        public bool ForPlaceEnd()
-        {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            else if (checkStringParenthesis == 0)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
 
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForPlaceEnd();
-                        }
-                    }
-                    return false;
-                }
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-
-            if (checkValue != -1)
+            else if (checkStringParenthesis == 2 || checkStringQuotationMarks == -2)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForPlaceEnd();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForPlaceEnd();
+                return false;
             }
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
-
-            if (checkValue != -1 && this.checkForBookName > 0)
+            else
             {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return ForPublishersEndBrackets();
+            }
+            int valueCheck = CheckStringPublicBracketsCloseEnd();
+            if (valueCheck == 0)
+            {
+                return ForPublishersEndBrackets();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
             return false;
         }
@@ -1507,7 +2478,7 @@ namespace SeniorProject
                 while (checkValue != -1)
                 {
                     CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -1526,7 +2497,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                         }
 
                         CheckStringMatch(this.sentence, @"^(\,\s)+", ref checkValue);
@@ -1545,67 +2516,11 @@ namespace SeniorProject
             return true;
         }
 
-        public bool ForBookAddEnd()
-        {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^\s", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\(", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^\)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\,\s)+", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                continue;
-                            }
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
         public bool ForBookNameIn()
         {
             int countCutNotBoldIn = this.countLength;
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^([ใ][น]\s)", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+            CheckStringMatch(this.sentence, @"^([ใ][น]\s)", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
@@ -1614,7 +2529,7 @@ namespace SeniorProject
                 this.countCutNotBold = this.countLength;
                 if (this.ForNamesNF())
                 {
-                    CheckStringMatch(this.sentence, @"^(\()+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^(\()", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -1622,7 +2537,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^(\)\,\s)+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^\)\,\s", ref checkValue);
                             if (checkValue != -1)
                             {
                                 CutString(checkValue);
@@ -1646,12 +2561,12 @@ namespace SeniorProject
                     }
                 }
 
-                if (!CheckNotBold(this.range.Application.ActiveDocument.Range(countCutNotBoldIn, this.countLength)))
+                if (!CheckNotBold(this.range.Document.Range(countCutNotBoldIn + range.Start, this.countLength + range.Start)))
                 {
                     return false;
                 }
                 this.countCutBold = this.countLength;
-                if (ForBookNameNFBold())
+                if (ForBookNameSpaceBold())
                 {
                         return true;
                 }
@@ -1669,7 +2584,7 @@ namespace SeniorProject
                 return valueName2;
             }
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
@@ -1713,11 +2628,11 @@ namespace SeniorProject
                 }
             }
 
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -1745,7 +2660,7 @@ namespace SeniorProject
                     {
                         return -1;
                     }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -1759,12 +2674,14 @@ namespace SeniorProject
                                 CutString(checkValue);
                                 return 4;
                             }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                             if (checkValue != -1)
                             {
+                                CutString(checkValue);
                                 CheckStringMatch(this.sentence, @"^\s", ref checkValue);
                                 if (checkValue != -1)
                                 {
+                                    CutString(checkValue);
                                     return 1;
                                 }
                                 return 1;
@@ -1797,7 +2714,7 @@ namespace SeniorProject
             }
             else
             {
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -1829,7 +2746,7 @@ namespace SeniorProject
             }
 
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
@@ -1874,11 +2791,11 @@ namespace SeniorProject
             }
 
 
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -1906,7 +2823,7 @@ namespace SeniorProject
                     {
                         return -1;
                     }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -1920,12 +2837,14 @@ namespace SeniorProject
                                 CutString(checkValue);
                                 return -1;
                             }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                             if (checkValue != -1)
                             {
+                                CutString(checkValue);
                                 CheckStringMatch(this.sentence, @"^\s", ref checkValue);
                                 if (checkValue != -1)
                                 {
+                                    CutString(checkValue);
                                     return 1;
                                 }
                                 return 1;
@@ -1958,7 +2877,7 @@ namespace SeniorProject
             }
             else
             {
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -1997,12 +2916,12 @@ namespace SeniorProject
                     CheckStringMatch(this.sentence, @"^\(", ref checkValue);
                     if (checkValue != -1)
                     {
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
                 else if (checkValueFormate == 8888)
                 {
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
                 return false;
             }
@@ -2022,7 +2941,7 @@ namespace SeniorProject
                         CheckStringMatch(this.sentence, @"^\(", ref checkValue);
                         if (checkValue != -1)
                         {
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                         }
                     }
                     return false;
@@ -2030,7 +2949,7 @@ namespace SeniorProject
             }
 
             //Match match = Regex.Match(this.sentence, @"^\,\s");
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+            CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
@@ -2042,7 +2961,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
 
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
 
             CheckStringMatch(this.sentence, @"^[แ][ล][ะ]", ref checkValue);
@@ -2054,292 +2973,203 @@ namespace SeniorProject
 
             if (checkValueFormate == 3)
             {
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
 
 
             return false;
         }
 
-        public bool ForBookNameNF()
+        public bool ForBookNameSpaceBold()
         {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 1)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameNF();
-                        }
-                    }
-                    return false;
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
                 }
+                return ForBookNameSpaceBold();
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
+            else if (checkStringQuotationMarks == 0)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
 
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameNF();
-                }
-                CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameNF();
             }
-            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
-
-            if (checkValue != -1)
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
             {
-                this.checkForBookName = 0;
-                return true;
+                return false;
             }
-            CheckStringMatch(this.sentence, @"^\,\s\(", ref checkValue);
-
-            if (checkValue != -1)
+            else
             {
-                CutString(checkValue-1);
-                this.checkForBookName = 0;
-                return true;
+                return ForBookNameSpaceBold();
             }
 
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-            if (checkValue != -1)
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 1)
             {
-                CutString(checkValue);
-                return ForBookNameNF();
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameSpaceBold();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSpaceBold();
             }
 
+            int valueCheck = CheckStringPublicSpace();
+            if (valueCheck == 0)
+            {
+                return ForBookNameSpaceBold();
+            }
+            else if (valueCheck == 2)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameSpaceBold();
+            }
             return false;
         }
 
-        public bool ForBookNameNFBold()
+        public bool ForBookNameSpace()
+        {
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 1)
+            {
+                if (CheckBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameSpace();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSpace();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 1)
+            {
+                if (CheckBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameSpace();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSpace();
+            }
+
+            int valueCheck = CheckStringPublicSpace();
+            if (valueCheck == 0)
+            {
+                return ForBookNameSpace();
+            }
+            else if (valueCheck == 2)
+            {
+                if (CheckBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameSpace();
+            }
+            return false;
+        }
+
+        public bool ForBookNameSpaceToSquareBrackets()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 1)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^\[", ref checkValue);
                 if (checkValue != -1)
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameNFBold();
-                        }
-                    }
-                    return false;
+                    //CutString(checkValue);
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
+                return ForBookNameSpaceToSquareBrackets();
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
+            else if (checkStringQuotationMarks == 0)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSpaceToSquareBrackets();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 1)
+            {
+                CheckStringMatch(this.sentence, @"^\[", ref checkValue);
                 if (checkValue != -1)
                 {
-                    CutString(checkValue);
+                    //CutString(checkValue);
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
+                return ForBookNameSpaceToSquareBrackets();
+            }
+            else if (checkStringParenthesis == 0)
+            {
 
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSpaceToSquareBrackets();
+            }
+
+            int valueCheck = CheckStringPublicSpace();
+            if (valueCheck == 0)
+            {
+                return ForBookNameSpaceToSquareBrackets();
+            }
+            else if (valueCheck == 2)
+            {
+                CheckStringMatch(this.sentence, @"^\[", ref checkValue);
                 if (checkValue != -1)
                 {
-                    CutString(checkValue);
-                    return ForBookNameNFBold();
+                    //CutString(checkValue);
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
-                CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameNFBold();
+                return ForBookNameSpaceToSquareBrackets();
             }
-            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                this.checkForBookName = 0;
-                return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength - 1));
-            }
-            CheckStringMatch(this.sentence, @"^\,\s\(", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue - 1);
-                this.checkForBookName = 0;
-                return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength-1));
-            }
-
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameNFBold();
-            }
-
             return false;
         }
 
@@ -2379,7 +3209,7 @@ namespace SeniorProject
                     {
 
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
 
@@ -2387,20 +3217,19 @@ namespace SeniorProject
             return false;
         }
  
-        public bool ForBookNameInDotEditor()
+        public bool ForBookNameInSpace()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^([ใ][น]\s)", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+            CheckStringMatch(this.sentence, @"^([ใ][น]\s)", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                if (!CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength)))
+                if (!CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
                 {
                     return false;
                 }
                 this.countCutBold = this.countLength;
-                if (ForBookNameNFBold())
+                if (ForBookNameSpaceBold())
                 {
                     return true;
                 }
@@ -2413,15 +3242,14 @@ namespace SeniorProject
         public bool ForPageAndBook()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^\(", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
+            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
 
             if (checkValue != -1)
             {
                 CutString(checkValue);
                 string sentenceCoppy = this.sentence;
                 int countLengthCoppy = this.countLength;
-                if (!ForBookNameEC())
+                if (!ForBookNameComma())
                 {
                     this.sentence = sentenceCoppy;
                     this.countLength = countLengthCoppy;
@@ -2454,7 +3282,7 @@ namespace SeniorProject
                     {
 
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
 
@@ -2462,275 +3290,389 @@ namespace SeniorProject
             return false;
         }
 
-        public bool ForBookNameEC()
+        public bool ForBookNameComma()
         {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 5)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameEC();
-                        }
-                    }
-                    return false;
-                }
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
+            else if (checkStringQuotationMarks == 0)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
 
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameEC();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameEC();
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameComma();
             }
 
-            CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
-
-            if (checkValue != -1)
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 5)
             {
-                CutString(checkValue);
-                return ForBookNameEC(); 
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameComma();
             }
 
-
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-
-            if (checkValue != -1)
+            int valueCheck = CheckStringPublicComma();
+            if (valueCheck == 0)
             {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                return ForBookNameComma();
             }
-
-            CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-
-            if (checkValue != -1)
+            else if (valueCheck == 2)
             {
-                CutString(checkValue);
-                return ForBookNameEC();
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
             }
-
             return false;
         }
 
-        public bool ForBookNameECBold()
+        public bool ForBookNameBoldComma()
+        {
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 5)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameBoldComma();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldComma();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 5)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength + range.Start, this.countLength + 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+                }
+                return ForBookNameBoldComma();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldComma();
+            }
+
+            int valueCheck = CheckStringBoldPublicComma();
+            if (valueCheck == 0)
+            {
+                return ForBookNameBoldComma();
+            }
+            else if (valueCheck == 2)
+            {
+                return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 2 + range.Start));
+            }
+            return false;
+        }
+
+        public bool ForBookNameCommas2AndFullstopEnd(int checkLoop)
+        {
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 5)
+            {
+                return ForBookNameCommas2AndFullstopEnd(++checkLoop);
+            }
+            else if (checkStringQuotationMarks == -2)
+            {
+                if (checkLoop >=2)
+                {
+                    if (this.sentence == "")
+                    {
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                    }
+                }
+                return ForBookNameCommas2AndFullstopEnd(checkLoop);
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameCommas2AndFullstopEnd(checkLoop);
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 5)
+            {
+                return ForBookNameCommas2AndFullstopEnd(++checkLoop);
+            }
+            else if (checkStringQuotationMarks == -2)
+            {
+                if (checkLoop >= 2)
+                {
+                    if (this.sentence == "")
+                    {
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                    }
+                }
+                return ForBookNameCommas2AndFullstopEnd(checkLoop);
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameCommas2AndFullstopEnd(checkLoop);
+            }
+
+            int valueCheck = CheckStringPublicCommaAndFullStop();
+            if (valueCheck == 0)
+            {
+                return ForBookNameCommas2AndFullstopEnd(checkLoop);
+            }
+            else if (valueCheck == 2)
+            {
+                return ForBookNameCommas2AndFullstopEnd(++checkLoop);
+            }
+            else if (valueCheck == 3)
+            {
+                if (checkLoop >= 2)
+                {
+                    if (this.sentence == "")
+                    {
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                    }
+                }
+                return ForBookNameCommas2AndFullstopEnd(checkLoop);
+            }
+            return false;
+        }
+
+        public bool ForBookNameBoldSquareBracketsClose()
+        {
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 6)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength - 3 + range.Start, this.countLength - 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 3 + range.Start));
+                }
+                return ForBookNameBoldSquareBracketsClose();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldSquareBracketsClose();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 6)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength - 3 + range.Start, this.countLength - 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 3 + range.Start));
+                }
+                return ForBookNameBoldSquareBracketsClose();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameBoldSquareBracketsClose();
+            }
+
+            int valueCheck = CheckStringBoldPublicSquareBracketsClose();
+            if (valueCheck == 0)
+            {
+                return ForBookNameBoldSquareBracketsClose();
+            }
+            else if (valueCheck == 2)
+            {
+                if (CheckNotBold(this.range.Document.Range(this.countLength -3 + range.Start, this.countLength - 1 + range.Start)))
+                {
+                    return CheckBold(this.range.Document.Range(this.countCutBold + range.Start, this.countLength - 3 + range.Start));
+                }
+            }
+            return false;
+        }
+
+        public bool ForBookNameSquareBracketsClose()
+        {
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 6)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSquareBracketsClose();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 6)
+            {
+                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSquareBracketsClose();
+            }
+
+            int valueCheck = CheckStringBoldPublicSquareBracketsClose();
+            if (valueCheck == 0)
+            {
+                return ForBookNameSquareBracketsClose();
+            }
+            else if (valueCheck == 2)
+            {
+                 return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+            }
+            return false;
+        }
+
+        public bool ForBookNameSquareBracketsCloseAndName()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 5)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
                 if (checkValue != -1)
                 {
-
                     CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
+                }
+                //return ForBookNameSquareBracketsClose();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSquareBracketsCloseAndName();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 5)
+            {
+                CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
+                }
+                //return ForBookNameSquareBracketsClose();
+            }
+            else if (checkStringParenthesis == 0)
+            {
 
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameSquareBracketsCloseAndName();
+            }
 
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
+            int valueCheck = CheckStringPublicComma();
+            if (valueCheck == 0)
+            {
+                return ForBookNameSquareBracketsCloseAndName();
+            }
+            else if (valueCheck == 2)
+            {
+                CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
+                if (checkValue != -1)
+                {
+                    CutString(checkValue);
+                    CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameECBold();
-                        }
-                    }
-                    return false;
-                }
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameECBold();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameECBold();
+                return ForBookNameSquareBracketsCloseAndName();
             }
-
-            CheckStringMatch(this.sentence, @"^\.\s", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameECBold();
-            }
-
-
-            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength - 2));
-            }
-
-            CheckStringMatch(this.sentence, @"^\.", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameECBold();
-            }
-
             return false;
         }
 
@@ -2750,7 +3692,7 @@ namespace SeniorProject
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
 
@@ -2760,6 +3702,8 @@ namespace SeniorProject
 
         public bool ForDate()
         {
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
             int checkValue = -1;
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^(\()", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
@@ -2797,7 +3741,7 @@ namespace SeniorProject
                                     if (checkValue != -1)
                                     {
                                         CutString(checkValue);
-                                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                                     }
                                 }
                             }
@@ -2822,13 +3766,32 @@ namespace SeniorProject
                                 if (checkValue != -1)
                                 {
                                     CutString(checkValue);
-                                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                                }
+                                CheckStringMatch(this.sentence, @"^\)\s", ref checkValue);
+                                if (checkValue != -1)
+                                {
+                                    CutString(checkValue);
+                                     CheckStringMatch(this.sentence, @"^[เ][ล][ข][ท][ี][่]\s", ref checkValue);
+                                     if (checkValue != -1)
+                                     {
+                                         CutString(checkValue);
+                                         CheckStringMatch(this.sentence, @"^([1-9][0-9]*)\.\s", ref checkValue);
+                                         
+                                         if (checkValue != -1)
+                                         {
+                                             CutString(checkValue);
+                                             return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                                         }
+                                     }
                                 }
                             }
                         }
                     }
                 }
             }
+            this.sentence = sentenceCopy;
+            this.countLength = countLengthCopy;
             return false;
         }
 
@@ -2978,7 +3941,7 @@ namespace SeniorProject
                                 {
 
                                     CutString(checkValue);
-                                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                                 }
                             }
                         }
@@ -3028,7 +3991,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
 
                         }
                     }
@@ -3037,1028 +4000,104 @@ namespace SeniorProject
             return false;
         }
 
-        bool checkForBookNameReview = false;
-        public bool ForBookNameReview(int checkSame)
+        public bool ForBookNameFistSquareBracketsOnBold()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^\[", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1 || checkSame > 0)
+            CheckStringMatch(this.sentence, @"^\[", ref checkValue);
+           
+            if (checkValue != -1)
             {
-                if (checkSame == 0)
+                CutString(checkValue);
+                if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
                 {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                    if (checkValue != -1)
+                    this.countCutNotBold = this.countLength;
+                    if (this.ForBookNameSpace())
                     {
-
-                        CutString(checkValue);
-
-                        CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                        if (checkValue != -1)
+                        this.countCutBold = this.countLength;
+                        if (this.ForBookNameBoldSquareBracketsClose())
                         {
-                            CutString(checkValue);
-                        }
-                        CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                        }
-
-                        CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        while (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-
-                                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    CutString(checkValue);
-                                }
-                                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    CutString(checkValue);
-                                }
-
-                                CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                        CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                return ForBookNameReview(1);
-                            }
-                        }
-                        return false;
-                    }
-                }
-                //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-                string sentenceCopyForSubject = this.sentence;
-                int countForSubject = 0;
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์๐-๙0-9-/])+", ref checkValue);
-
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    countForSubject += checkValue;
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        countForSubject += checkValue;
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        countForSubject += checkValue;
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        return ForBookNameReview(1);
-                    }
-                    if (this.checkForBookName == 0)
-                    {
-                        CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            this.checkForBookName++;
-                            CutString(checkValue);
-                            countForSubject += checkValue;
+                            return true;
                         }
                     }
-
-                    
-                    CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        if (!checkForBookNameReview)
-                        {
-                            countForSubject += checkValue;
-                            string subject = sentenceCopyForSubject.Substring(0, countForSubject);
-                            subject = subject.Substring(subject.Length - 7);
-                            if (subject == "เรื่อง ")
-                            {
-                                if (!CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength)))
-                                {
-                                    return false;
-                                }
-                                this.countCutBold = this.countLength;
-                                checkForBookNameReview = true;
-                            }
-                        }
-                    }
-                    return ForBookNameReview(1);
-                }
-                CheckStringMatch(this.sentence, @"^(\]\.\s)", ref checkValue);
-
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    if (!CheckNotBold(this.range.Application.ActiveDocument.Range(this.countLength-3, this.countLength)))
-                    {
-                        return false;
-                    }
-                    this.checkForBookName = 0;
-                    return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength-3));
                 }
             }
             return false;
         }
 
-        public bool ForBookNameNotPublished(int checkSame)
+        public bool ForBookNameFistSquareBrackets()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^\[", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1 || checkSame > 0)
-            {
-                if (checkSame == 0)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                    if (checkValue != -1)
-                    {
-
-                        CutString(checkValue);
-
-                        CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                        }
-                        CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                        }
-
-                        CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        while (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-
-                                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    CutString(checkValue);
-                                }
-                                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    CutString(checkValue);
-                                }
-
-                                CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                        CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                return ForBookNameNotPublished(1);
-                            }
-                        }
-                        return false;
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์๐-๙0-9-/])+", ref checkValue);
-
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        return ForBookNameNotPublished(1);
-                    }
-                    if (this.checkForBookName == 0)
-                    {
-                        CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            this.checkForBookName++;
-                            CutString(checkValue);
-
-                        }
-                    }
-
-
-                    CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    return ForBookNameNotPublished(1);
-                }
-                CheckStringMatch(this.sentence, @"^(\]\.\s)", ref checkValue);
-
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    this.checkForBookName = 0;
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                }
-            }
-            return false;
-        }
-
-        public int ForNameInterviewer()
-        {
-            int valueName2 = ForNameInterviewer2();
-            if (valueName2 != -1)
-            {
-                return valueName2;
-            }
-            int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^ฯ", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-            }
-            else
-            {
-                string sentenceCopy = this.sentence;
-                int countLengthCopy = this.countLength;
-                CheckStringMatch(this.sentence, @"^(([ก-ฮ]))+", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^ฯ", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                        }
-                    }
-                    else
-                    {
-                        this.sentence = sentenceCopy;
-                        this.countLength = countLengthCopy;
-                    }
-                }
-            }
-
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    int valueForNamelistInitialsTH = ForNamelistInitialsTH();
-                    if (valueForNamelistInitialsTH == 0)
-                    {
-                        return 0;
-                    }
-                    else if (valueForNamelistInitialsTH >= 9999)
-                    {
-                        return 9999;
-                    }
-                    else
-                    {
-                        return 3;
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        return -1;
-                    }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                return 4;
-                            }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    return 2;
-                                }
-                                return 1;
-                            }
-                            return 2;
-                        }
-                        return 1;
-                    }
-                    return -1;
-                }
-                return 1;
-            }
-            return -1;
-        }
-
-        public int ForNameInterviewer2()
-        {
-            string sentenceCoppy = this.sentence;
-            int checkValue = -1;
-
-            int valueForNamelistInitialsTH = ForNamelistInitialsTH();
-            if (valueForNamelistInitialsTH == 0)
-            {
-                return -1;
-            }
-            else if (valueForNamelistInitialsTH >= 9999)
-            {
-                this.sentence = sentenceCoppy;
-                return -1;
-            }
-            else
-            {
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return 4;
-                        }
-                        return 2;
-                    }
-                    return 1;
-                }
-                return -1;
-            }
-
-        }
-
-        public int ForNameInterviewerDontAnd()
-        {
-            int valueName2 = ForNameInterviewer2DontAnd();
-            if (valueName2 != -1)
-            {
-                return valueName2;
-            }
-
-            int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^ฯ", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-            }
-            else
-            {
-                string sentenceCopy = this.sentence;
-                int countLengthCopy = this.countLength;
-                CheckStringMatch(this.sentence, @"^(([ก-ฮ]))+", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^ฯ", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                        }
-                    }
-                    else
-                    {
-                        this.sentence = sentenceCopy;
-                        this.countLength = countLengthCopy;
-                    }
-                }
-            }
-
-
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    int valueForNamelistInitialsTH = ForNamelistInitialsTH();
-                    if (valueForNamelistInitialsTH == 0)
-                    {
-                        return 0;
-                    }
-                    else if (valueForNamelistInitialsTH >= 9999)
-                    {
-                        return 9999;
-                    }
-                    else
-                    {
-                        return 8888;
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        return -1;
-                    }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                return -1;
-                            }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    return -1;
-                                }
-                                return 1;
-                            }
-                            return -1;
-                        }
-                        return 1;
-                    }
-                    return -1;
-                }
-                return 1;
-            }
-            return -1;
-        }
-
-        public int ForNameInterviewer2DontAnd()
-        {
-            string sentenceCoppy = this.sentence;
-            int checkValue = -1;
-
-            int valueForNamelistInitialsTH = ForNamelistInitialsTH();
-            if (valueForNamelistInitialsTH == 0)
-            {
-                return -1;
-            }
-            else if (valueForNamelistInitialsTH >= 9999)
-            {
-                this.sentence = sentenceCoppy;
-                return -1;
-            }
-            else
-            {
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^\s", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([แ][ล][ะ])", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return -1;
-                        }
-                        return -1;
-                    }
-                    return 1;
-                }
-                return -1;
-            }
-
-        }
-
-        public bool ForNamesInterviewer(int checkSame)
-        {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^\[", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1 || checkSame > 0)
-            {
-                if (checkSame == 0)
-                {
-                    CutString(checkValue);
-                }
-                int checkValueFormate = ForNameInterviewer();
-                if (checkValueFormate == -1)
-                {
-                    return false;
-                }
-                else if (checkValueFormate == 4)
-                {
-                    checkValueFormate = ForNameInterviewerDontAnd();
-                    if (checkValueFormate == 1)
-                    {
-                        CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                        if (checkValue != -1)
-                        {
-
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    CutString(checkValue);
-                                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                                }
-                            }
-                        }
-                    }
-                    else if (checkValueFormate == 8888)
-                    {
-                        CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                            }
-                        }
-                    }
-                    return false;
-                }
-                else if (checkValueFormate == 0 || checkValueFormate == 9999)
-                {
-                    return ForNamesInterviewer(1);
-                }
-                else if (checkValueFormate == 2)
-                {
-                    CheckStringMatch(this.sentence, @"^[แ][ล][ะ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        checkValueFormate = ForNameInterviewerDontAnd();
-                        if (checkValueFormate == 1)
-                        {
-                            CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                            if (checkValue != -1)
-                            {
-
-                                CutString(checkValue);
-                                CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
-                                if (checkValue != -1)
-                                {
-                                    CutString(checkValue);
-                                    CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
-                                    if (checkValue != -1)
-                                    {
-                                        CutString(checkValue);
-                                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                                    }
-                                }
-                            }
-                        }
-                        return false;
-                    }
-                }
-
-                //Match match = Regex.Match(this.sentence, @"^\,\s");
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-
-                    CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^[ผ][ู][้][ส][ั][ม][ภ][า][ษ][ณ][์]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^\]\.\s", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                        }
-                    }
-                    return ForNamesInterviewer(1);
-                }
-
-                CheckStringMatch(this.sentence, @"^[แ][ล][ะ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForNamesInterviewer(1);
-                }
-
-            }
-            return false;
-        }
-
-        public bool ForBookNameES()
-        {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameES();
-                        }
-                    }
-                    return false;
-                }
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameES();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameES();
-            }
             CheckStringMatch(this.sentence, @"^\[", ref checkValue);
 
             if (checkValue != -1)
             {
-                this.checkForBookName = 0;
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-            }
+                CutString(checkValue);
+                if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
+                {
 
+                    this.countCutBold = this.countLength;
+                    if (this.ForBookNameSquareBracketsClose())
+                    {
+                        return true;
+                    }
+
+                }
+            }
             return false;
         }
 
-        public bool ForBookNameESBold()
+        public bool ForBookNameFistSquareBracketsAndName()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameESBold();
-                        }
-                    }
-                    return false;
-                }
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameESBold();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameESBold();
-            }
             CheckStringMatch(this.sentence, @"^\[", ref checkValue);
 
             if (checkValue != -1)
             {
-                this.checkForBookName = 0;
-                return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength));
+                CutString(checkValue);
+                if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
+                {
+                    this.countCutNotBold = this.countLength;
+                    if (this.ForBookNameSquareBracketsCloseAndName())
+                    {
+                        return true;
+                    }
+                }
             }
-
             return false;
         }
 
-        public bool ForBookNameDB(int check)
+        public bool ForBookNameDB()
         {
             int checkValue = -1;
             CheckStringMatch(this.sentence, @"^\(", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                check = 1;
-            }
-            else if (check == 1)
-            {
-
-            }
-            else
-            {
-                return false;
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z๐-๙0-9-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
+                if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
                 {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    this.checkForBookName++;
-                    CutString(checkValue);
-                }
+                    this.countCutNotBold = this.countLength;
+                    if (this.ForPlaceEndColon())
+                    {
+                        this.countCutNotBold = this.countLength;
+                        if (this.ForPublishersEndBrackets())
+                        {
+                          //  CheckStringMatch(this.sentence, @"^\)", ref checkValue);
+                          //  if (checkValue != -1)
+                          //  {
+                          //      this.countCutNotBold = this.countLength;
+                          //      CutString(checkValue);
+                          //      if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
+                          //      {
+                                    return true;
+                          //      }
 
+                          //  }
+                        }
 
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameDB(check);
-            }
-            CheckStringMatch(this.sentence, @"^\)", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                if (this.checkForBookName > 0)
-                {
-                    this.checkForBookName = 0;
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    }
                 }
             }
+
 
             return false;
         }
@@ -4083,7 +4122,7 @@ namespace SeniorProject
                     {
 
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
 
@@ -4120,7 +4159,7 @@ namespace SeniorProject
                 {
 
                     CutString(checkValue);
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
             }
 
@@ -4132,171 +4171,15 @@ namespace SeniorProject
         {
             string sentenceCopy =  this.sentence;
             int countLengthCopy = this.countLength;
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            if (this.ForPlaceEndColon())
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
+                this.countCutNotBold = this.countLength;
+                if (this.ForBookNameFullStopToBold())
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            this.sentence = sentenceCopy;
-                            this.countLength = countLengthCopy;
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForColumnEnd();
-                        }
-                    }
-                    this.sentence = sentenceCopy;
-                    this.countLength = countLengthCopy;
-                    return false;
+                    return true;
                 }
             }
-
-            CheckStringMatch(this.sentence, @"^\(", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            this.sentence = sentenceCopy;
-                            this.countLength = countLengthCopy;
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\))", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-                        }
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForColumnEnd();
-                        }
-                    }
-                    this.sentence = sentenceCopy;
-                    this.countLength = countLengthCopy;
-                    return false;
-                }
-            }
-
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForColumnEnd();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForColumnEnd();
-            }
-            CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
-
-            if (checkValue != -1 && this.checkForBookName > 0)
-            {
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-            }
+        
             this.sentence = sentenceCopy;
             this.countLength = countLengthCopy;
             return false;
@@ -4305,127 +4188,137 @@ namespace SeniorProject
         public bool ForBookNameToIn()
         {
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
+
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 3)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^\[ใ][น]\s", ref checkValue);
                 if (checkValue != -1)
                 {
-
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameToIn();
-                        }
-                    }
-                    return false;
-                }
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameToIn();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
                 return ForBookNameToIn();
             }
-            CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
-
-            if (checkValue != -1)
+            else if (checkStringQuotationMarks == 0)
             {
-                
-                CutString(checkValue);
-                this.checkForBookName = 0;
-                 CheckStringMatch(this.sentence, @"^[ใ][น]", ref checkValue);
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameToIn();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 3)
+            {
+                CheckStringMatch(this.sentence, @"^\[ใ][น]\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameToIn();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameToIn();
+            }
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
+            int valueCheck = CheckStringBoldPublicFullStop();
+            if (valueCheck == 0)
+            {
+                return ForBookNameToIn();
+            }
+            else if (valueCheck == 2)
+            {
+                CheckStringMatch(this.sentence, @"^[ใ][น]\s", ref checkValue);
                  if (checkValue != -1)
                  {
-                     return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                     return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                  }
                  return ForBookNameToIn();
             }
+            return false;
+        }
 
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
+        public bool ForBookNameToRetrieved()
+        {
+            int checkValue = -1;
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
 
-            if (checkValue != -1)
+            int checkStringQuotationMarks = CheckStringQuotationMarks();
+            if (checkStringQuotationMarks == 3)
             {
-                CutString(checkValue);
-                return ForBookNameToIn();
+                CheckStringMatch(this.sentence, @"^[ส][ื][บ][ค][้][น][เ][ม][ื][่][อ]\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameToRetrieved();
+            }
+            else if (checkStringQuotationMarks == 0)
+            {
+
+            }
+            else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameToRetrieved();
+            }
+
+            int checkStringParenthesis = CheckStringParenthesis();
+            if (checkStringParenthesis == 3)
+            {
+                CheckStringMatch(this.sentence, @"^[ส][ื][บ][ค][้][น][เ][ม][ื][่][อ]\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameToRetrieved();
+            }
+            else if (checkStringParenthesis == 0)
+            {
+
+            }
+            else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+            {
+                return false;
+            }
+            else
+            {
+                return ForBookNameToRetrieved();
+            }
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
+            int valueCheck = CheckStringBoldPublicFullStop();
+            if (valueCheck == 0)
+            {
+                return ForBookNameToRetrieved();
+            }
+            else if (valueCheck == 2)
+            {
+                CheckStringMatch(this.sentence, @"^[ส][ื][บ][ค][้][น][เ][ม][ื][่][อ]\s", ref checkValue);
+                if (checkValue != -1)
+                {
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
+                }
+                return ForBookNameToRetrieved();
             }
             return false;
         }
@@ -4469,11 +4362,11 @@ namespace SeniorProject
                                     if (checkValue != -1)
                                     {
                                         CutString(checkValue);
-                                        CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                                        CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
                                         if (checkValue != -1)
                                         {
                                             CutString(checkValue);
-                                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                                         }
                                     }
                                 }
@@ -4498,11 +4391,11 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    CheckStringMatch(this.sentence, @"^([0-9a-zA-z./:=])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์0-9a-zA-z./:=]|(\[)(\])(\))(\())+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
-                        return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                        return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                     }
                 }
             }
@@ -4549,7 +4442,7 @@ namespace SeniorProject
                             if (checkValue != -1)
                             {
                                 CutString(checkValue);
-                                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                                return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                             }
                         }
                     }
@@ -4560,257 +4453,114 @@ namespace SeniorProject
             return false;
         }
 
-        public bool ForBookNameToBracket()
+        public bool ForBookNameToBracketDate(int checkLoop)
         {
+            string sentenceCopy = this.sentence;
+            int countLengthCopy = this.countLength;
             int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
+
+            if (checkLoop > 0)
             {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
+                int checkStringQuotationMarks = CheckStringQuotationMarks();
+                if (checkStringQuotationMarks == 3)
+                {
+                    int copyCountCutNotBold = this.countCutNotBold;
+                    CheckStringMatch(this.sentence, @"^\(", ref checkValue);
+                    if (checkValue != -1)
+                    {
+                        if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
+                        {
+                            this.countCutNotBold = this.countLength;
+                            if (this.ForDate())
+                            {
+                                return true;
+                            }
+                            this.countCutNotBold = copyCountCutNotBold;
+                            return ForBookNameToBracketDate(checkLoop);
+                        }
+                        return false;
+                    }
+                    this.countCutNotBold = copyCountCutNotBold;
+                    return ForBookNameToBracketDate(checkLoop);
+                }
+                else if (checkStringQuotationMarks == 0)
                 {
 
-                    CutString(checkValue);
+                }
+                else if (checkStringQuotationMarks == 2 || checkStringQuotationMarks == -2)
+                {
+                    return false;
+                }
+                else
+                {
+                    return ForBookNameToBracketDate(checkLoop);
+                }
 
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
+                int checkStringParenthesis = CheckStringParenthesis();
+                if (checkStringParenthesis == 3)
+                {
+                    int copyCountCutNotBold = this.countCutNotBold;
+                    CheckStringMatch(this.sentence, @"^\(", ref checkValue);
                     if (checkValue != -1)
                     {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
+                        if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
                         {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
+                            this.countCutNotBold = this.countLength;
+                            if (this.ForDate())
                             {
-                                CutString(checkValue);
+                                return true;
                             }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
+                            this.countCutNotBold = copyCountCutNotBold;
+                            return ForBookNameToBracketDate(checkLoop);
                         }
-                        else
-                        {
-                            return false;
-                        }
+                        return false;
                     }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
+                    this.countCutNotBold = copyCountCutNotBold;
+                    return ForBookNameToBracketDate(checkLoop);
+                }
+                else if (checkStringParenthesis == 0)
+                {
+
+                }
+                else if (checkStringParenthesis == 2 || checkStringParenthesis == -2)
+                {
+                    return false;
+                }
+                else
+                {
+                    return ForBookNameToBracketDate(checkLoop);
+                }
+            }
+            int valueCheck = CheckStringPublicFullStopToBracketDate();
+            if (valueCheck == 0)
+            {
+                return ForBookNameToBracketDate(checkLoop++);
+            }
+            else if (valueCheck == 2)
+            {
+                int copyCountCutNotBold = this.countCutNotBold;
+                CheckStringMatch(this.sentence, @"^\(", ref checkValue);
+                if (checkValue != -1)
+                {
+                    if (CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start)))
                     {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
+                        this.countCutNotBold = this.countLength;
+                        if (this.ForDate())
                         {
-                            CutString(checkValue);
-                            return ForBookNameToBracket();
+                            return true;
                         }
+                        this.countCutNotBold = copyCountCutNotBold;
+                        return ForBookNameToBracketDate(++checkLoop);
                     }
                     return false;
                 }
+                this.countCutNotBold = copyCountCutNotBold;
+                return ForBookNameToBracketDate(++checkLoop);
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameToBracket();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameToBracket();
-            }
-            CheckStringMatch(this.sentence, @"^(\.\s\()", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue-1);
-                this.checkForBookName = 0;
-                return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
-            }
-            
-
-            CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameToBracket();
-            }
-
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameToBracket();
-            }
-
             return false;
         }
 
-        public bool ForBookNameToBracketBold()
-        {
-            int checkValue = -1;
-            var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((\“)|(\”))", ref checkValue));
-            var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                if (checkValue != -1)
-                {
 
-                    CutString(checkValue);
-
-                    CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                    }
-                    CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                    while (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-
-                            CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                            if (checkValue != -1)
-                            {
-                                CutString(checkValue);
-                            }
-
-                            CheckStringMatch(this.sentence, @"^(\s)+", ref checkValue);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    CheckStringMatch(this.sentence, @"^(\”)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                        if (checkValue != -1)
-                        {
-                            CutString(checkValue);
-                            return ForBookNameToBracketBold();
-                        }
-                    }
-                    return false;
-                }
-            }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^[ฯ]", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\?)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                CheckStringMatch(this.sentence, @"^(\.){2,}", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                    return ForBookNameToBracketBold();
-                }
-                if (this.checkForBookName == 0)
-                {
-                    CheckStringMatch(this.sentence, @"^(\:)", ref checkValue);
-                    if (checkValue != -1)
-                    {
-                        this.checkForBookName++;
-                        CutString(checkValue);
-                    }
-                }
-
-                CheckStringMatch(this.sentence, @"^(\s)", ref checkValue);
-                if (checkValue != -1)
-                {
-                    CutString(checkValue);
-                }
-                return ForBookNameToBracketBold();
-            }
-            CheckStringMatch(this.sentence, @"^(\.\s\()", ref checkValue);
-
-            if (checkValue != -1)
-            {
-                CutString(checkValue - 1);
-                this.checkForBookName = 0;
-                return CheckBold(this.range.Application.ActiveDocument.Range(this.countCutBold, this.countLength-2));
-            }
-
-
-            CheckStringMatch(this.sentence, @"^(\.\s)", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameToBracketBold();
-            }
-
-            CheckStringMatch(this.sentence, @"^(\.)", ref checkValue);
-            if (checkValue != -1)
-            {
-                CutString(checkValue);
-                return ForBookNameToBracketBold();
-            }
-
-            return false;
-        }
 
         public bool ForBookNameToBracketForCheck()
         {
@@ -4820,7 +4570,7 @@ namespace SeniorProject
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                 if (checkValue != -1)
                 {
 
@@ -4840,7 +4590,7 @@ namespace SeniorProject
                     while (checkValue != -1)
                     {
                         CutString(checkValue);
-                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -4872,8 +4622,8 @@ namespace SeniorProject
                     return false;
                 }
             }
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
-            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์-/])+", ref checkValue);
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
+            CheckStringMatch(this.sentence, @"^([๐-๙0-9ก-ฮะ-์A-Za-z-/])+", ref checkValue);
 
             if (checkValue != -1)
             {
@@ -4976,7 +4726,7 @@ namespace SeniorProject
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
             }
             return false;
@@ -4991,7 +4741,7 @@ namespace SeniorProject
             {
                 CutString(checkValue);
 
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -5009,7 +4759,7 @@ namespace SeniorProject
                             CutString(checkValue);
                             continue;
                         }
-                        CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                        CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
@@ -5132,7 +4882,7 @@ namespace SeniorProject
                 return valueName2;
             }
             int checkValue = -1;
-            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์])+");
+            //Match match = Regex.Match(this.sentence, @"^([ก-ฮะ-์A-Za-z])+");
             var task = Task.Factory.StartNew(() => CheckStringMatch(this.sentence, @"^((([ก-ฮ])+\.)+)", ref checkValue));
             var completedWithinAllotedTime = task.Wait(TimeSpan.FromMilliseconds(1000));
 
@@ -5176,11 +4926,11 @@ namespace SeniorProject
                 }
             }
 
-            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
             if (checkValue != -1)
             {
                 CutString(checkValue);
-                CheckStringMatch(this.sentence, @"^\,\s", ref checkValue);
+                CheckStringMatch(this.sentence, @"^(\.)?\,\s", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -5219,7 +4969,7 @@ namespace SeniorProject
                     {
                         return false;
                     }
-                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                    CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                     if (checkValue != -1)
                     {
                         CutString(checkValue);
@@ -5239,7 +4989,7 @@ namespace SeniorProject
                                 CutString(checkValue);
                                 return false;
                             }
-                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                            CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                             if (checkValue != -1)
                             {
                                 CutString(checkValue);
@@ -5284,7 +5034,7 @@ namespace SeniorProject
             }
             else
             {
-                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์])+", ref checkValue);
+                CheckStringMatch(this.sentence, @"^([ก-ฮะ-์A-Za-z])+", ref checkValue);
                 if (checkValue != -1)
                 {
                     CutString(checkValue);
@@ -5320,7 +5070,7 @@ namespace SeniorProject
 
                         return ForNameOnePrevious();
                     }
-                    return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                    return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                 }
             }
             return false;
@@ -5368,7 +5118,7 @@ namespace SeniorProject
                         if (checkValue != -1)
                         {
                             CutString(checkValue);
-                            return CheckNotBold(this.range.Application.ActiveDocument.Range(this.countCutNotBold, this.countLength));
+                            return CheckNotBold(this.range.Document.Range(this.countCutNotBold + range.Start, this.countLength + range.Start));
                         }
                     }
                 }
@@ -5381,7 +5131,7 @@ namespace SeniorProject
         {
             this.countLength += strLength;
             this.sentence = this.sentence.Remove(0, strLength);
-            //this.range = this.range.Application.ActiveDocument.Range(0, strLength);
+            //this.range = this.range.Document.Range(0, strLength);
         }
 
         bool CheckBold(Word.Range range)
@@ -5392,6 +5142,7 @@ namespace SeniorProject
             }
             return false;
         }
+        
         bool CheckNotBold(Word.Range range)
         {
             if (range.Bold == 0)

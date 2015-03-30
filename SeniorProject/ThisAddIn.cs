@@ -15,6 +15,8 @@ namespace SeniorProject
     {
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            Ribbon1.addCustomTaskPaneALL();
+           // string sx = s.ActiveDocument.Range(0).Text;
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

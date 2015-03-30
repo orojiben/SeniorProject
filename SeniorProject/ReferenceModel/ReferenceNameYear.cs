@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace SeniorProject
 {
     class ReferenceNameYear
     {
+        public Word.Range range;
         private string name;
         private string year;
+        private char indexCharacter = 'ก';
         private List<char> countCharacter;
         private bool forCheck;
 
@@ -115,5 +118,104 @@ namespace SeniorProject
             return true;
         }
 
+        public bool Edit(ReferenceNameYear value)
+        {
+            if (!this.forCheck)
+            {
+                this.countCharacter.Clear();
+                indexCharacter = 'ก';
+                return true;
+            }
+            if (this.name == value.Name)
+            {
+                if (this.year == value.year)
+                {
+                    if (indexCharacter == 'ก')
+                    {
+                        string memChar = "";
+                        if (this.countCharacter.Count > 0)
+                        {
+                            memChar = this.countCharacter[0] + "";
+                        }
+                        this.FindAndReplace2("(" + this.year + memChar + ")", "(" + this.year + indexCharacter + ")");
+                        ++indexCharacter;
+                        if (indexCharacter == 'ฃ' || indexCharacter == 'ฅ')
+                        {
+                            ++indexCharacter;
+                        }
+                        memChar = "";
+                        if (value.countCharacter.Count > 0)
+                        {
+                            memChar = value.countCharacter[0] + "";
+                        }
+                        this.FindAndReplace2("(" + this.year + memChar + ")", "(" + this.year + indexCharacter + ")");
+                        ++indexCharacter;
+                        if (indexCharacter == 'ฃ' || indexCharacter == 'ฅ')
+                        {
+                            ++indexCharacter;
+                        }
+                    }
+                    else
+                    {
+                        string memChar = "";
+                        if (value.countCharacter.Count > 0)
+                        {
+                            memChar = value.countCharacter[0] + "";
+                        }
+                        this.FindAndReplace2("(" + this.year + memChar + ")", "(" + this.year + indexCharacter + ")");
+                        ++indexCharacter;
+                        if (indexCharacter == 'ฃ' || indexCharacter == 'ฅ')
+                        {
+                            ++indexCharacter;
+                        }
+                    }
+
+                            return true;
+                }
+            }
+            this.countCharacter.Clear();
+            indexCharacter = 'ก';
+            return true;
+        }
+
+        public bool FindAndReplace2(object findText, object replaceWithText)
+        {
+            //options
+            object matchCase = false;
+            object matchWholeWord = false;
+            object matchWildCards = false;
+            object matchSoundsLike = false;
+            object matchAllWordForms = false;
+            object forward = true;
+            object format = false;
+            object matchKashida = false;
+            object matchDiacritics = false;
+            object matchAlefHamza = false;
+            object matchControl = false;
+            object read_only = false;
+            object visible = true;
+            object replace = 1;
+            object wrap = 1;
+
+            //execute find and replace
+
+
+            return range.Find.Execute(
+                ref findText,
+                ref matchCase,
+                ref matchWholeWord,
+                ref matchWildCards,
+                ref matchSoundsLike,
+                ref matchAllWordForms,
+                ref forward,
+                ref wrap,
+                ref format,
+                ref replaceWithText,
+                ref replace,
+                ref matchKashida,
+                ref matchDiacritics,
+                ref matchAlefHamza,
+                ref matchControl);
+        }
     }
 }

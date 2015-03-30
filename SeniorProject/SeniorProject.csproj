@@ -140,10 +140,15 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Tools.Applications.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Tools.Applications.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Office.Tools, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Office.Tools.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Office.Tools.Word, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -179,30 +184,67 @@
   <ItemGroup>
     <Compile Include="FontManager.cs" />
     <Compile Include="MarginPage\MarginPage.cs" />
+    <Compile Include="MarginPage\MarginPageUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MarginPage\MarginPageUC.Designer.cs">
+      <DependentUpon>MarginPageUC.cs</DependentUpon>
+    </Compile>
     <Compile Include="PaperPage\PaperPage.cs" />
+    <Compile Include="PaperPage\PaperPageUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PaperPage\PaperPageUC.Designer.cs">
+      <DependentUpon>PaperPageUC.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Punctuation\FindWordA.cs" />
+    <Compile Include="Punctuation\FindWordB.cs" />
+    <Compile Include="Punctuation\Punctuation.cs" />
+    <Compile Include="Punctuation\PunctuationUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Punctuation\PunctuationUC.Designer.cs">
+      <DependentUpon>PunctuationUC.cs</DependentUpon>
     </Compile>
     <Compile Include="ReferenceModel\LexerECPE.cs" />
     <Compile Include="ReferenceModel\LexerEN.cs" />
     <Compile Include="ReferenceModel\NumberToThai.cs" />
+    <Compile Include="ReferenceModel\RangeErrorForReference.cs" />
+    <Compile Include="ReferenceModel\ReferenceModelEN.cs" />
+    <Compile Include="ReferenceModel\ReferenceModelThai.cs" />
+    <Compile Include="ReferenceModel\ReferenceModelUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ReferenceModel\ReferenceModelUC.Designer.cs">
+      <DependentUpon>ReferenceModelUC.cs</DependentUpon>
+    </Compile>
     <Compile Include="ReferenceModel\ReferenceNameYear.cs" />
     <Compile Include="ReferenceModel\ReferenceModel.cs" />
     <Compile Include="ReferenceModel\LexerTH.cs" />
-    <Compile Include="Sign_Containner.cs">
-      <SubType>Form</SubType>
+    <Compile Include="RoyalWord\RoyalWord.cs" />
+    <Compile Include="RoyalWord\RoyalWordUC.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sign_Containner.Designer.cs">
-      <DependentUpon>Sign_Containner.cs</DependentUpon>
+    <Compile Include="RoyalWord\RoyalWordUC.Designer.cs">
+      <DependentUpon>RoyalWordUC.cs</DependentUpon>
     </Compile>
-    <Compile Include="Verify_Royal_Word_TH.cs" />
-    <Compile Include="Verify_Space_Sign.cs" />
-    <Compile Include="Word_Containner.cs">
-      <SubType>Form</SubType>
+    <Compile Include="ShowCheckAllUC.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Word_Containner.Designer.cs">
-      <DependentUpon>Word_Containner.cs</DependentUpon>
+    <Compile Include="ShowCheckAllUC.Designer.cs">
+      <DependentUpon>ShowCheckAllUC.cs</DependentUpon>
     </Compile>
+    <Compile Include="styles\CreateStyle.cs" />
+    <Compile Include="styles\StyleFont.cs" />
+    <EmbeddedResource Include="MarginPage\MarginPageUC.resx">
+      <DependentUpon>MarginPageUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaperPage\PaperPageUC.resx">
+      <DependentUpon>PaperPageUC.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -212,8 +254,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Punctuation\PunctuationUC.resx">
+      <DependentUpon>PunctuationUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceModel\ReferenceModelUC.resx">
+      <DependentUpon>ReferenceModelUC.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ribbon.resx">
       <DependentUpon>Ribbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RoyalWord\RoyalWordUC.resx">
+      <DependentUpon>RoyalWordUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowCheckAllUC.resx">
+      <DependentUpon>ShowCheckAllUC.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -229,8 +283,8 @@
     <Compile Include="Ribbon.Designer.cs">
       <DependentUpon>Ribbon.cs</DependentUpon>
     </Compile>
-    <Compile Include="StyleFile.cs" />
-    <Compile Include="Styles.cs" />
+    <Compile Include="styles\StyleFile.cs" />
+    <Compile Include="styles\Styles.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -246,6 +300,7 @@
   <ItemGroup>
     <Content Include="styles\word_style.xml" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

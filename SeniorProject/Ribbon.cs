@@ -3,27 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Office.Tools.Ribbon;
+
 using System.IO;
 using System.Windows.Forms;
 
 using Word = Microsoft.Office.Interop.Word;
 using System.Text.RegularExpressions;
+
 namespace SeniorProject
 {
     public partial class Ribbon1
     {
-        MarginPage marginPage;
-        PaperPage paperPage;
+        //Microsoft.Office.Tools.Word;
+        static public MarginPage marginPage;
+        static public PaperPage paperPage;
+        static public RoyalWord royalWord;
+        static public Punctuation punctuation;
+        static public ReferenceModel referenceModel;
+        
         List<Styles> loadStyles;
-        private List<string> font;
-        ReferenceModel referenceModel;
 
+
+        static public string namefileSaveAuto = "";
+
+        public static Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
+
+        static public ShowCheckAllUC showCheckAllUC;
+        static public MarginPageUC marginPageUC;
+        static public PaperPageUC paperPageUC;
+        static public RoyalWordUC royalWordUC;
+        static public PunctuationUC punctuationUC;
+        static public ReferenceModelUC referenceModelUC;
+        static public Styles styles;
+        static public string nameFile = "";
+        int i = 0;
         private void Ribbon1_Load(object sender, RibbonUIEventArgs e)
         {
-            referenceModel = new ReferenceModel();
+            nameFile =  Globals.ThisAddIn.Application.ActiveDocument.Name;
+            styles = new Styles();
+            //Word.Application a = this.r
+            Ribbon1.marginPage = new MarginPage();
+            Ribbon1.paperPage = new PaperPage();
+            Ribbon1.royalWord = new RoyalWord();
+            Ribbon1.punctuation = new Punctuation();
+            Ribbon1.referenceModel = new ReferenceModel();
             loadStyles = StyleFile.LoadStyle();
+           
             readFileStyleToList();
+           
+            
         }
+
+
 
         private void readFileStyleToList()
         {
@@ -44,45 +75,28 @@ namespace SeniorProject
 
         private void dropDown1_SelectionChanged(object sender, RibbonControlEventArgs e)
         {
+            Ribbon1.addCustomTaskPaneALL();
+            Ribbon1.showCustomTaskPane();
             loadDataStyles(this.ddn_Model.SelectedItemIndex);
         }
 
-        int i = 0;
-        private void button1_Click(object sender, RibbonControlEventArgs e)
-        {
-            Word._Application oWord = Globals.ThisAddIn.Application;
-            string s = Globals.ThisAddIn.Application.ActiveDocument.FullName;
-            oWord.Visible = true;
 
-            //object fileName = "NewDocument"+i+".docx";
-            object fileName = "NewDocument.docx";
-            i++;
-            //oWord.ActiveDocument.SaveAs(fileName);
-            //oWord.Documents.Add(@"C:\NewDocument.docx");
-            oWord.ActiveDocument.SaveAs(fileName);
-        }
 
-        private void button2_Click(object sender, RibbonControlEventArgs e)
-        {
-            //FindAndReplace("ben","orojiben");
-            referenceModel.runCheckReferenceAll();
-        }
 
-        
 
         private void btn_checkRoyalWord_Click(object sender, RibbonControlEventArgs e)
         {
-            Verify_Royal_Word_TH verify_th = new Verify_Royal_Word_TH();
-        }
-
-        private void btn_checkSing_Click(object sender, RibbonControlEventArgs e)
-        {
-            Verify_Space_Sign verify = new Verify_Space_Sign();
+            saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
+            royalWord.show();
         }
 
         private void btn_checkFont_Click(object sender, RibbonControlEventArgs e)
         {
+            saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
             this.ShowFont();
+
         }
 
         private void ShowFont()
@@ -93,68 +107,32 @@ namespace SeniorProject
 
         private void btn_correctFont_Click(object sender, RibbonControlEventArgs e)
         {
-            FontManager.CorrectFont(font[0]);
-        }
-
-        private void button3_Click(object sender, RibbonControlEventArgs e)
-        {
-            var wordApp = Globals.ThisAddIn.Application;
-
-
-            foreach (Word.Range range in wordApp.ActiveDocument.StoryRanges)
-            {
-                foreach (Microsoft.Office.Interop.Word.Range rngWord in range.Words)
-                {
-                    System.Windows.Forms.MessageBox.Show(rngWord.Text + " " + rngWord.Font.Name);
-                }
-            }
+            FontManager.CorrectFont(styles.StyleFont[0].FontName);
         }
 
         private void btn_checkAll_Click(object sender, RibbonControlEventArgs e)
         {
 
-            this.ShowFont();
-            referenceModel.runCheckReferenceAll();
-            Verify_Royal_Word_TH verify_th = new Verify_Royal_Word_TH();
-        }
+            saveFileAuto();
 
-        private void button6_Click(object sender, RibbonControlEventArgs e)
-        {
+            addCustomTaskPaneALL();
 
-        }
+            Ribbon1.showCustomTaskPane(0);
+            Ribbon1.showCheckAllUC.visibleAllClose();
+            Ribbon1.showCheckAllUC.resetAll();
+            //System.Windows.Forms.MessageBox.Show(s, "");
+            
+            
 
-        private void button1_Click_1(object sender, RibbonControlEventArgs e)
-        {
-            FontManager.CheckFontSize(16, 18, 20);
-        }
-
-        private void button5_Click(object sender, RibbonControlEventArgs e)
-        {
-            this.marginPage.changing();
-        }
-
-        private void button4_Click(object sender, RibbonControlEventArgs e)
-        {
-            //System.Windows.Forms.MessageBox.Show(this.paperPage.cheking()+"");
-            this.paperPage.changing();
         }
 
         private void loadDataStyles(int index)
         {
-            Styles styles = this.loadStyles[index];
-            string[] words = styles.Margin.Split(',');
-
-            float leftMargin = centimeterToPoint((float)(Convert.ToDouble(words[0])));
-            float rightMargin = centimeterToPoint((float)(Convert.ToDouble(words[1])));
-            float topMargin = centimeterToPoint((float)(Convert.ToDouble(words[2])));
-            float bottomMargin = centimeterToPoint((float)(Convert.ToDouble(words[3])));
-            marginPage = new MarginPage(leftMargin, rightMargin, topMargin, bottomMargin);
-            paperPage = new PaperPage(styles.Paper);
-            font = styles.Fonts;
+            Ribbon1.styles = this.loadStyles[index];
             this.ddn_Department.Items.Clear();
             this.ddn_Department.Visible = false;
-            this.referenceModel.faculty = "";
-            this.referenceModel.department = "";
+            Ribbon1.referenceModel.faculty = "";
+            Ribbon1.referenceModel.department = "";
             if (styles.Departments.Count > 0)
             {
                 this.ddn_Department.Visible = true;
@@ -164,19 +142,218 @@ namespace SeniorProject
                     ribbonDropDownItemImpl1.Label = departments;
                     this.ddn_Department.Items.Add(ribbonDropDownItemImpl1);
                 }
-                this.referenceModel.department = styles.Departments[0];
+                Ribbon1.referenceModel.department = styles.Departments[0];
             }
-            this.referenceModel.faculty = styles.Name;
-        }
-
-        private float centimeterToPoint(float centimeter)
-        {
-            return 28.34645669291f * centimeter;
+            Ribbon1.referenceModel.faculty = styles.Name;
+            Ribbon1.namefileSaveAuto = Ribbon1.referenceModel.faculty + "_" + Ribbon1.referenceModel.department;
         }
 
         private void ddn_Department_SelectionChanged(object sender, RibbonControlEventArgs e)
         {
-            this.referenceModel.department = this.ddn_Department.Items[this.ddn_Department.SelectedItemIndex].Label;
+            Ribbon1.addCustomTaskPaneALL();
+            Ribbon1.showCustomTaskPane();
+            Ribbon1.namefileSaveAuto = Ribbon1.namefileSaveAuto.Substring(0, Ribbon1.referenceModel.faculty.Length);
+            Ribbon1.referenceModel.department = this.ddn_Department.Items[this.ddn_Department.SelectedItemIndex].Label;
+            Ribbon1.namefileSaveAuto += Ribbon1.referenceModel.department;
         }
+
+        private void btn_editReference_Click(object sender, RibbonControlEventArgs e)
+        {
+            Ribbon1.referenceModel.runEditReferenceAll();
+        }
+
+        private void btn_checkPunctuationMark_Click(object sender, RibbonControlEventArgs e)
+        {
+            saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
+            punctuation.show();
+        }
+
+        private void btn_checkMargin_Click(object sender, RibbonControlEventArgs e)
+        {
+            Ribbon1.saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
+            Ribbon1.marginPage.cheking();//)
+            //  {
+            //    System.Windows.Forms.MessageBox.Show("ไม่ตรง");
+            //}
+        }
+
+        private void btn_editMargin_Click(object sender, RibbonControlEventArgs e)
+        {
+            Ribbon1.marginPage.changing();
+        }
+
+        private void btn_editPaper_Click(object sender, RibbonControlEventArgs e)
+        {
+            Ribbon1.paperPage.changing();
+        }
+
+        private void btn_checkPaper_Click(object sender, RibbonControlEventArgs e)
+        {
+            saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
+            Ribbon1.paperPage.cheking();
+            //{
+            //System.Windows.Forms.MessageBox.Show("ไม่ตรง");
+            //}
+        }
+
+        private void btn_checkFontSize_Click(object sender, RibbonControlEventArgs e)
+        {
+            saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
+            FontManager.CheckFontSize(16, 18, 20);
+        }
+
+        public void show()
+        {
+
+            if (Globals.ThisAddIn.CustomTaskPanes.Count > 0)
+            {
+                for (int i = 0; i < Globals.ThisAddIn.CustomTaskPanes.Count; ++i)
+                {
+                    Globals.ThisAddIn.CustomTaskPanes.RemoveAt(i);
+                }
+            }
+
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(showCheckAllUC, "Check All");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = true;
+        }
+
+        static public void addCustomTaskPaneALL()
+        {
+            if (Globals.ThisAddIn.CustomTaskPanes.Count != 0)
+            {
+                return;
+            }
+            showCheckAllUC = new ShowCheckAllUC(marginPage, paperPage, referenceModel, punctuation, royalWord);
+            Ribbon1.marginPageUC = new MarginPageUC();
+            Ribbon1.paperPageUC = new PaperPageUC();
+            Ribbon1.royalWordUC = new RoyalWordUC();
+            Ribbon1.punctuationUC = new PunctuationUC();
+            Ribbon1.referenceModelUC = new ReferenceModelUC();
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.showCheckAllUC, "ตรวจสอบทั้งหมด");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.marginPageUC, "ตรวจสอบระยะขอบกระดาษ");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.paperPageUC, "ตรวจสอบชนิดกระดาษ");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(new UserControl(), "ตรวจสอบชนิดตัวอักษร");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(new UserControl(), "ตรวจสอบขนาดกับชนิดตัวอักษร");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.royalWordUC, "ตรวจสอบคำตามศัพท์บรรญัติ");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.punctuationUC, "ตรวจสอบเครื่องหมายวรรคตอน");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+            Ribbon1.myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(Ribbon1.referenceModelUC, "ตรวจสอบรูปแบบอ้างอิง");
+            Ribbon1.myCustomTaskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
+            Ribbon1.myCustomTaskPane.Width = 300;
+            Ribbon1.myCustomTaskPane.Visible = false;
+        }
+
+        static public void showCustomTaskPane(int show = -1, bool showAll = false)
+        {
+            Globals.ThisAddIn.CustomTaskPanes[0].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[1].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[2].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[3].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[4].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[5].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[6].Visible = false;
+            Globals.ThisAddIn.CustomTaskPanes[7].Visible = false;
+            if (show == -1)
+            {
+                return;
+            }
+            Globals.ThisAddIn.CustomTaskPanes[show].Visible = true;
+            if (showAll)
+            {
+                Ribbon1.showCheckAllUC.setButtonClickALL();
+                Globals.ThisAddIn.CustomTaskPanes[0].Visible = true;
+            }
+
+        }
+
+        private void btn_SaveNewFile_Click(object sender, RibbonControlEventArgs e)
+        {
+            Word._Application oWord = Globals.ThisAddIn.Application;
+            oWord.Visible = true;
+
+            //object fileName = "NewDocument"+i+".docx";
+            object fileName = nameFile+"_ปริญญานิพนธ์ใหม่" + i + ".docx";
+            i++;
+            string pathDoc = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string path = pathDoc + "\\" + fileName;
+            while (File.Exists(path))
+            {
+                //System.Windows.Forms.MessageBox.Show(path);
+                fileName = nameFile + "_ปริญญานิพนธ์ใหม่" + i + ".docx";
+                path = pathDoc + "\\" + fileName;
+                i++;
+            }
+            object missing = System.Reflection.Missing.Value;
+            //oWord.ActiveDocument.SaveAs(fileName);
+            //oWord.Documents.Add(@"C:\NewDocument.docx");
+            //oWord.Options.CreateBackup = true;
+            //oWord.ActiveDocument.Optio
+            oWord.ActiveDocument.SaveAs2(fileName, ref missing, ref missing, ref missing, ref missing, ref missing,
+    ref missing, ref missing, ref missing, ref missing, ref missing,
+    ref missing, ref missing, ref missing, ref missing, ref missing);
+        }
+
+        static public void saveFileAuto()
+        {
+            Word._Application oWord = Globals.ThisAddIn.Application;
+            oWord.Visible = true;
+
+            //object fileName = "NewDocument"+i+".docx";
+            object fileName = nameFile + "_ปริญญานิพนธ์" + Ribbon1.namefileSaveAuto + "ใหม่.docx";
+            string pathDoc = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string path = pathDoc+ "\\" + fileName;
+            int count = 1;
+            while (File.Exists(path))
+            {
+                //System.Windows.Forms.MessageBox.Show(path);
+                fileName = nameFile + "_ปริญญานิพนธ์" + Ribbon1.namefileSaveAuto + "(" + count + ")ใหม่.docx";
+                path = pathDoc + "\\" + fileName;
+                count++;
+            }
+            object missing = System.Reflection.Missing.Value;
+            //oWord.ActiveDocument.SaveAs(fileName);
+            //oWord.Documents.Add(@"C:\NewDocument.docx");
+            
+            oWord.ActiveDocument.SaveAs(fileName, ref missing, ref missing, ref missing, ref missing, ref missing,
+    ref missing, ref missing, ref missing, ref missing, ref missing,
+    ref missing, ref missing, ref missing, ref missing, ref missing);
+        }
+
+        private void btn_checkReference_Click(object sender, RibbonControlEventArgs e)
+        {
+            //FindAndReplace("ben","orojiben");
+
+            saveFileAuto();
+            Ribbon1.addCustomTaskPaneALL();
+            Ribbon1.referenceModel.showUC = true;
+            Ribbon1.referenceModel.runCheckReferenceAll();
+        }
+
     }
 }

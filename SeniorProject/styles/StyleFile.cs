@@ -10,7 +10,11 @@ namespace SeniorProject
 {
     static class StyleFile
     {
-        private static string path = @"styles\word_style.xml";
+        //private static string path = @"styles\word_style.xml";
+        //private static string path = @"C:\styles\word_style.xml";
+        private static string folder = "CheckingThesis";
+        private static string pathDoc = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        private static string path = pathDoc + "\\" + folder + "\\stlyes.xml";
 
 
         static public void CheckCreateFile()
@@ -24,11 +28,28 @@ namespace SeniorProject
             }
         }
 
+        public static XmlDocument LoadStylePath()
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            try
+            {
+                xmlDoc.Load(path);
+       
+            }
+            catch
+            {
+                return LoadStylePath();
+            }
+            return xmlDoc;
+        }
+
         public static List<Styles> LoadStyle()
         {
+            CreateStyle cs = new CreateStyle();
+            cs.Check();
             List<Styles> styles = new List<Styles>();
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(path);
+            XmlDocument xmlDoc = LoadStylePath();
+            //xmlDoc.Load(path);
             XmlNodeList userNodes = xmlDoc.SelectNodes("//styles");
 
             XmlNode rootNodes = userNodes[0];
@@ -38,7 +59,7 @@ namespace SeniorProject
                 foreach (XmlNode nodeClass1 in rootNode.ChildNodes)
                 {
 
-                    if (nodeClass1.LocalName == "dictionarys")
+                   /*if (nodeClass1.LocalName == "dictionarys")
                     {
                         foreach (XmlNode nodeClass2 in nodeClass1.ChildNodes)
                         {
@@ -47,12 +68,64 @@ namespace SeniorProject
                         }
                         styles.Add(style);
                     }
-                    else if (nodeClass1.LocalName == "fonts")
+                    else  */if (nodeClass1.LocalName == "fonts")
                     {
                         foreach (XmlNode nodeClass2 in nodeClass1.ChildNodes)
                         {
                             // Console.Write("\n" + nodeClass2.InnerText + "\n");
-                            style.addFont(nodeClass2.InnerText);
+                            //style.addFont(nodeClass2.InnerText);
+                            string fontName = "";
+                            foreach (XmlNode nodeClass3 in nodeClass2.ChildNodes)
+                            {
+                                if (fontName == "")
+                                {
+                                    fontName = nodeClass3.InnerText;
+                                }
+                                else
+                                {
+                                    float coverTitle = 0.0f;
+                                    float coverOperator = 0.0f;
+                                    float chapter = 0.0f;
+                                    float namechapter = 0.0f;
+                                    float topics = 0.0f;
+                                    float subheading = 0.0f;
+                                    float substance = 0.0f;
+                                    string fontNameLanguage  = nodeClass3.LocalName;
+                                    foreach (XmlNode nodeClass4 in nodeClass3.ChildNodes)
+                                    {
+                                        if (nodeClass4.LocalName == "CoverTitle")
+                                        {
+                                            coverTitle = float.Parse(nodeClass4.InnerText);
+                                        }
+                                        else if (nodeClass4.LocalName == "CoverOperator")
+                                        {
+                                            coverOperator = float.Parse(nodeClass4.InnerText);
+                                        }
+                                        else if (nodeClass4.LocalName == "Chapter")
+                                        {
+                                            chapter = float.Parse(nodeClass4.InnerText);
+                                        }
+                                        else if (nodeClass4.LocalName == "Namechapter")
+                                        {
+                                            namechapter = float.Parse(nodeClass4.InnerText);
+                                        }
+                                        else if (nodeClass4.LocalName == "Topics")
+                                        {
+                                            topics = float.Parse(nodeClass4.InnerText);
+                                        }
+                                        else if (nodeClass4.LocalName == "Subheading")
+                                        {
+                                            subheading = float.Parse(nodeClass4.InnerText);
+                                        }
+                                        else if (nodeClass4.LocalName == "Substance")
+                                        {
+                                            substance = float.Parse(nodeClass4.InnerText);
+                                            style.addFont( fontName,  fontNameLanguage,  coverTitle,  coverOperator,  chapter,
+             namechapter,  topics,  subheading,  substance);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     else if (nodeClass1.LocalName == "Departments")
@@ -71,6 +144,11 @@ namespace SeniorProject
                     {
                         style.Paper = nodeClass1.InnerText;
                     }
+                    else if (nodeClass1.LocalName == "Indent")
+                    {
+                        style.Indent =float.Parse(nodeClass1.InnerText);
+                        styles.Add(style);
+                    }
                     else
                     {
                         style.Name = nodeClass1.InnerText;
@@ -78,9 +156,6 @@ namespace SeniorProject
                     }
 
                 }
-
-
-
             }
 
             return styles;
@@ -136,20 +211,20 @@ namespace SeniorProject
                 XmlNode marginNode = xmlDoc.CreateElement("Margin");
                 XmlNode fontsNode = xmlDoc.CreateElement("fonts");
 
-                foreach (string font in style.Fonts)
+                foreach (StyleFont font in style.StyleFont)
                 {
                     XmlNode fontNode = xmlDoc.CreateElement("font");
-                    fontNode.InnerText = font;
+                    //fontNode.InnerText = font;
                     fontsNode.AppendChild(fontNode);
                 }
 
                 XmlNode dictionarysNode = xmlDoc.CreateElement("dictionarys");
-                foreach (string dictionary in style.Dictionarys)
+               /* foreach (string dictionary in style.Dictionarys)
                 {
                     XmlNode dictionaryNode = xmlDoc.CreateElement("dictionary");
                     dictionaryNode.InnerText = dictionary;
                     dictionarysNode.AppendChild(dictionaryNode);
-                }
+                }*/
                 // XmlAttribute attribute = xmlDoc.CreateAttribute("Nameformat");
                 // attribute.Value = "Engineering";
                 //  user.Attributes.Append(attribute);
@@ -184,19 +259,19 @@ namespace SeniorProject
                         node.ChildNodes[1].InnerText = style.Margin;
                         node.ChildNodes[2].RemoveAll();
                         XmlNode fontsNode = xmlDoc.CreateElement("fonts");
-                        foreach (string value in style.Fonts)
+                        foreach (StyleFont value in style.StyleFont)
                         {
                             XmlNode fontNode = xmlDoc.CreateElement("font");
-                            fontNode.InnerText = value;
+                            //fontNode.InnerText = value;
                             node.ChildNodes[2].AppendChild(fontNode);
                         }
                         node.ChildNodes[3].RemoveAll();
-                        foreach (string value in style.Dictionarys)
+                        /*foreach (string value in style.Dictionarys)
                         {
                             XmlNode dictionaryNode = xmlDoc.CreateElement("dictionary");
                             dictionaryNode.InnerText = value;
                             node.ChildNodes[3].AppendChild(dictionaryNode);
-                        }
+                        }*/
                         break;
                     }
                 }
